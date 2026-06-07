@@ -43,15 +43,15 @@ Identity rule: each agent must know its role (main runtime vs review agent). If 
 
 ## External Agent Sessions
 
-Three external agents have acted in this workspace (all 2026-06-07):
+Three external agents have acted in this workspace (2026-06-07 to 2026-06-08):
 
 1. An unsolicited reviewer cleaned legacy `Codex Partner` terms and proposed agent-to-agent improvements → led to the Trace Protocol above.
 2. An invited peer agent delivered a structural critique (same-day evidence, scaffolding-to-use ratio, workspace staleness) and contributed traces → recorded in `partner/loop-reports/2026-06-07-external-peer-review.md`.
-3. A review agent ran contract alignment: backfilled missing actor/kind fields, merged `focus-risk-loop.md` into `operating-system.md`, and compressed this decision log.
+3. A review agent ran contract alignment: backfilled missing actor/kind fields, merged `focus-risk-loop.md` into `operating-system.md`, compressed all 17 files (~1400 lines removed), moved peer review from `pilots/` to `loop-reports/`, updated verifier.
 
 ## Unverified Claims (carried forward)
 
-- "alphaX lowers human project re-entry cost." All evidence is same-day (2026-06-07).
+- "alphaX lowers human project re-entry cost." All evidence is same two-day period (2026-06-07 to 2026-06-08); no true cross-day reuse.
 - "Structured handoff lowers the next agent's re-entry cost." No reuse data.
 - "Contract version anchoring and self-critique will pay off across multiple projects." No cross-project data.
 - "Reverse feedback will prune unused rules." No applied session has run the prune.

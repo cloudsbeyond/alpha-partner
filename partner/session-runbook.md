@@ -30,7 +30,7 @@ Priority: current local files and command output → exact user-provided links/d
 
 ## 5. Closing A Session
 
-When workspace changes, run `bash scripts/verify-partner-workspace.sh`. Report: what changed, what was verified, what remains active or intentionally deferred. If used against a real project, add compact line to `partner/session-ledger.md`.
+When workspace changes, run `bash scripts/verify-partner-workspace.sh`. Report: what changed, what was verified, what remains active or intentionally deferred. If used against a real project, add a compact entry to `partner/session-ledger.md` with: date, actor, kind (`meta`/`applied`), surface, what happened, evidence, and next action.
 
 When closing a session the next agent may resume, emit a handoff state block:
 

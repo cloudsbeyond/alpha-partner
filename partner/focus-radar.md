@@ -1,6 +1,6 @@
 # Focus Radar
 
-Updated: 2026-06-07
+Updated: 2026-06-08
 
 Compact re-entry view for parallel project work. Reduces context reload cost, exposes missed risk, recommends one next work block.
 
@@ -10,7 +10,7 @@ alphaX helps Lizhaohua recover project context, detect risk, and choose the next
 
 ## Current Recommendation
 
-The single most important next test is **cross-day reuse**. All evidence is same-day (2026-06-07); the core claim "alphaX lowers project re-entry cost" is unverified.
+The single most important next test is **cross-day reuse**. All applied sessions are from 2026-06-07; the core claim "alphaX lowers project re-entry cost" is unverified.
 
 - **Highest priority**: at next cross-day session, cold-start from handoff block, re-enter `agent-interaction-bridge`, inspect dirty WIP on `codex/extract-runtime-services`, determine ownership, make a real code change or explicitly defer.
 - **Highest risk control (same-day)**: read-only `agent-interaction-bridge` WIP review before any implementation.
@@ -28,7 +28,7 @@ The single most important next test is **cross-day reuse**. All evidence is same
 
 ## Cross-Project Risks
 
-- [P0] Same-day evidence: all decisions, ledger entries, pilots, and loop reports are from 2026-06-07.
+- [P0] Same-day evidence: all applied sessions are from 2026-06-07; review-agent meta sessions extend to 2026-06-08 but no true cross-day reuse of applied work.
 - [P1] False completion: passing tests can hide missing human acceptance.
 - [P1] Wrong-layer work: downstream implementation may patch upstream semantic gaps.
 - [P1] WIP ownership drift: dirty repos may include user, other-agent, or old alphaX work.

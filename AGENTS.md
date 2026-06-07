@@ -116,6 +116,7 @@ External research is required, but it must serve the partnership and real projec
 - `partner/pilot-playbook.md`: how to run real project pilots and judge whether the partner mode helps.
 - `partner/pilot-candidates.md`: current real-project queue for testing alphaX against live source of truth.
 - `partner/pilots/`: source-backed pilot evidence packets.
+- `partner/loop-reports/`: manual-trigger loop outputs and external review packets.
 - `partner/session-ledger.md`: compact record of real partner sessions and their evidence.
 - `partner/templates/`: reusable packets for research, project, thinking, and memory loops.
 - `partner/templates/loop-report.md`: compact report template for manual-trigger loops and proactive nudge candidates.

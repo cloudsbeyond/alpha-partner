@@ -79,7 +79,13 @@ Ratio rule (runtime only): after 3 consecutive runtime `meta` entries, next must
 - actor: review-agent | kind: meta
 - what: backfilled missing `actor`/`kind` fields on all ledger entries. Updated verifier for new governance anchors. Merged `focus-risk-loop.md` into `operating-system.md`. Compressed decision-log and session-ledger. Moved peer review from `pilots/` to `loop-reports/`.
 - evidence: `verify-partner-workspace.sh` passed.
-- next: git commit; cross-day reuse.
+- next: cross-day reuse.
+
+### 2026-06-08: Noise Compression
+- actor: review-agent | kind: meta
+- what: compressed all 17 files — removed ~1400 lines of process narrative, verbose source listings, and CLI commands. Only current aligned plans and targets remain. Updated verifier patterns to match compressed content. Removed duplicate/obsolete verifier checks.
+- evidence: `verify-partner-workspace.sh` passed; git diff: -1746 / +334 lines.
+- next: cross-day reuse.
 
 ## Handoff State
 
@@ -88,12 +94,12 @@ Ratio rule (runtime only): after 3 consecutive runtime `meta` entries, next must
 p0: 用一次真实的跨天复用，证伪 alphaX "降低重入成本" 这一主张
 active_surface: /Users/lizhaohua/Desktop/codex (alpha-partner workspace)
 branch: n/a
-last_verified: 2026-06-07
+last_verified: 2026-06-08
 next_block: 跨天 session 从 handoff block 冷启动，重入 agent-interaction-bridge 脏 WIP，判断所有权后做真实改动或明确放弃
 open_risks:
   - id: all-evidence-same-day
     level: P0
-    evidence: 所有条目均为 2026-06-07
+    evidence: 所有条目均为 2026-06-07 至 2026-06-08
   - id: no-real-project-changes
     level: P1
     evidence: 所有 pilot 均为 read-only
@@ -118,3 +124,4 @@ After every three new entries, run a Spec Checkpoint on the workspace itself.
 - **First review** (after 3 entries): keep Markdown-first; use project-local pointers only after repeated use; do not promote to global Skill yet.
 - **Second review** (after 6 entries): alphaX passed two read-only cold starts; next proof must be a real project change or manual acceptance, not more scaffolding.
 - **Third review** (after 9 entries): keep loops manual and report-first. Do not add more process, hosted routines, or cross-app watchers. Cross-day reuse is the single most important next test.
+- **Fourth review** (after 12 entries): workspace compressed ~1400 lines of process narrative. Verifier updated. No new governance added. Cross-day reuse remains the single most important next test.
