@@ -1,149 +1,45 @@
 # Agent-Native Activation
 
-This guide defines how Lizhaohua can involve Alpha Partner from any project or conversation with minimal repetition.
-
-The principle: **the user triggers; the agent reconstructs context**.
+How Lizhaohua involves Alpha Partner from any project with minimal repetition. Principle: **the user triggers; the agent reconstructs context**.
 
 ## Minimal Triggers
 
-Use one short phrase:
+General: `alphaX 介入一下。` / `Alpha Partner 介入一下这个项目。` / `按 Alpha Partner 方式推进。` / `用共同研究执行模式，先自主对齐目标。`
 
-```text
-alphaX 介入一下。
-```
+Upward decomposition: `用 problem-decomposer 向上拆一下。`
 
-or:
+Attention recovery / re-entry / risk review: `alphaX 帮我恢复一下这个项目现场。` / `alphaX review 一下我现在几个项目的风险。`
 
-```text
-Alpha Partner 介入一下这个项目。
-```
-
-or:
-
-```text
-按 Alpha Partner 方式推进。
-```
-
-or:
-
-```text
-用共同研究执行模式，先自主对齐目标。
-```
-
-If the task is specifically about upward problem decomposition:
-
-```text
-用 problem-decomposer 向上拆一下。
-```
-
-If the task is about attention recovery, re-entry, or risk review:
-
-```text
-alphaX 帮我恢复一下这个项目现场。
-```
-
-or:
-
-```text
-alphaX review 一下我现在几个项目的风险。
-```
-
-If the task is about repeated checks, Boris-style loops, or proactive nudges:
-
-```text
-alphaX daily radar
-```
-
-or:
-
-```text
-alphaX source drift check
-```
-
-or:
-
-```text
-alphaX false completion check
-```
-
-or:
-
-```text
-alphaX nudge check
-```
+Loops / checks / nudges: `alphaX daily radar` / `alphaX source drift check` / `alphaX false completion check` / `alphaX nudge check`
 
 ## Agent Responsibility After Trigger
 
-After activation, Alpha Partner should not ask the user to restate the whole scene before doing any work.
+Do not ask user to restate the whole scene. If trigger uses `alphaX`, map directly to Alpha Partner behavior and 共同研究执行 contract.
 
-If the trigger uses `alphaX`, map it directly to Alpha Partner behavior and the same 共同研究执行 contract.
+First autonomously inspect: current working directory and project files; project-local AGENTS.md, README, specs, contracts, changelog, issue notes; git status, branch, recent commits, changed files; provided links/attachments/files; relevant memory entries; recent Codex threads when task references prior conversation or project continuity.
 
-First autonomously inspect:
-
-1. current working directory and project files;
-2. project-local `AGENTS.md`, `README`, specs, contracts, changelog, or issue notes;
-3. git status, branch, recent commits, and changed files when the target is a repo;
-4. provided links, attachments, or files;
-5. relevant memory entries when prior context matters;
-6. recent Codex threads when the task references prior conversation or current project continuity.
-
-Then summarize:
-
-- inferred project or conversation surface;
-- inferred P0 main line;
-- primary loop: research, project, thinking, memory, focus/risk, or manual loop layer;
-- source of truth found;
-- evidence still missing;
-- next concrete move.
-
-Ask the user only after this first pass, and only for ambiguity that cannot be resolved from available context.
+Then summarize: inferred project/conversation surface; inferred P0 main line; primary loop; source of truth found; evidence still missing; next concrete move. Ask user only after this first pass, and only for ambiguity unresolvable from available context.
 
 ## Context Snapshot Helper
 
-When operating in a local project, run this read-only helper when useful:
-
 ```bash
-/Users/lizhaohua/Desktop/codex/scripts/context-snapshot.sh
+/Users/lizhaohua/Desktop/codex/scripts/context-snapshot.sh [/path/to/project]
 ```
 
-or for a specific path:
-
-```bash
-/Users/lizhaohua/Desktop/codex/scripts/context-snapshot.sh /path/to/project
-```
-
-The helper does not replace agent judgment. It gives a compact starting view: cwd, git state, nearby instruction files, likely source files, and candidate source-of-truth files.
+Gives compact starting view: cwd, git state, nearby instruction files, likely source files, candidate source-of-truth files. Does not replace agent judgment.
 
 ## Sub-Agent Reference
 
-Use sub-agent style as a design reference, not as a mandatory mechanism:
-
-- role is activated by a short instruction;
-- context is inherited or reconstructed by the agent;
-- the agent owns exploration before asking;
-- the user reviews direction and risky decisions;
-- progress is reported through evidence, not by asking the user to re-explain everything.
-
-Real sub-agent delegation can be used later for parallel research, review, or implementation slices, but the default partner invocation should already feel agent-native without requiring a multi-agent system.
+Design reference, not mandatory mechanism: role activated by short instruction; context inherited or reconstructed by agent; agent owns exploration before asking; user reviews direction and risky decisions; progress reported through evidence, not re-explanation. Real sub-agent delegation can be used later for parallel research/review/implementation, but default invocation should already feel agent-native.
 
 ## Proactive Nudge Boundary
 
-alphaX may learn from current-session and local workspace signals to propose a low-intrusion nudge candidate.
-
-Allowed v0.1 signals include stale next actions, unresolved high-risk decisions, uncommitted project context, source drift, false completion, and explicit user focus-risk concern.
-
-Before any actual push outside the current session, require explicit approval for schedule, destination, observed sources, privacy boundary, cooldown, and stop condition.
+alphaX may learn from current-session and local workspace signals to propose a low-intrusion nudge candidate. Allowed v0.1 signals: stale next actions, unresolved high-risk decisions, uncommitted project context, source drift, false completion, explicit user focus-risk concern. Before any actual push outside current session, require explicit approval for schedule, destination, observed sources, privacy boundary, cooldown, and stop condition.
 
 ## Project-Local Pointer
 
-Only after repeated use in a project, add the short pointer from `partner/templates/project-local-pointer.md` to that project's own `AGENTS.md`.
-
-Do not copy the whole partner workspace into every repo.
+Only after repeated use in a project, add the short pointer from `partner/templates/project-local-pointer.md` to that project's `AGENTS.md`. Do not copy the whole partner workspace into every repo.
 
 ## Boundaries
 
-- User triggers should be short; context reconstruction is agent work.
-- Project-local source of truth overrides generic partner defaults.
-- Durable memory updates still require explicit approval.
-- External publication, risky operations, destructive commands, and secret handling still require explicit approval.
-- Copilot-style issue-to-PR execution remains an execution-layer reference, not the main collaboration model.
+User triggers should be short; context reconstruction is agent work. Project-local source of truth overrides generic partner defaults. Durable memory updates, external publication, risky operations, destructive commands, and secret handling require explicit approval. Copilot-style issue-to-PR execution remains an execution-layer reference, not the main collaboration model.

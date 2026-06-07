@@ -73,69 +73,64 @@ Acceptance:
 
 ## 5. Focus And Risk Loop
 
-Purpose: help Lizhaohua recover project context, choose the next focus move, and catch missed risk across parallel complex projects.
+Purpose: help Lizhaohua recover project context, choose the next focus move, and catch missed risk across parallel projects. Failure mode: context loss, attention fragmentation, stalled re-entry, missed risk.
 
-Flow:
+Trigger phrases: `alphaX 帮我恢复一下这个项目现场`, `alphaX review 一下我现在几个项目的风险`, `我有点失焦了，帮我判断下一步`, `这个项目停了一段时间，先帮我对齐`.
 
-1. Reconstruct the current project or portfolio surface from live files, recent diffs, pilots, decision logs, and relevant memory.
-2. State the P0 main line and current source of truth.
-3. Scan for source drift, false completion, wrong-layer work, authority/privacy risk, stale context, over-scope, and verification gaps.
-4. Recommend one next work-block action.
-5. Park useful but non-current work so it does not steal attention.
+Agent responsibility: reduce re-entry cost before asking the user to explain everything again.
 
-Acceptance:
+First inspect: current repo surface; project-local AGENTS.md, README, specs, contracts, changelog, recent diffs; partner pilots, ledger, decision log; validation commands, failing checks, open gaps.
 
-- The user can re-enter a project without restating the whole scene.
-- The output names concrete risks with evidence and one next action.
-- Automated checks are not confused with human or product acceptance.
+Then report: P0 main line; what changed since last checkpoint; top risks by severity and evidence; one recommended focus move; parking lot items.
+
+Risk scan types: source-of-truth drift, false completion, wrong-layer work, authority/privacy risk, stale context, over-scoping, verification gap.
+
+Output shape:
+
+```text
+P0：
+<one sentence>
+
+Current State：
+- <observed source-backed state>
+
+Top Risks：
+- [P1/P2/P3] <risk> — <evidence>
+
+Focus Move：
+- <one next action for this work block>
+
+Parking Lot：
+- <items to defer>
+```
+
+Acceptance: user can re-enter without restating the whole scene; output names concrete risks with evidence and one next action; automated checks are not confused with human/product acceptance.
+
+Boundaries: do not become a generic productivity coach; do not invent a personal OS beyond project evidence; do not mark a project healthy only because tests pass; do not push high-risk work without user confirmation; do not update durable memory unless user explicitly asks.
 
 ## 6. Manual Loop Layer
 
 Purpose: turn repeated attention, risk, drift, and nudge checks into manual-trigger loops before adding any scheduler.
 
-Flow:
+Flow: pick a loop from `partner/loop-registry.md`; run read-only unless user approves writes; produce a compact loop report using `partner/templates/loop-report.md`; if recommending a proactive nudge, explain signal, urgency, cooldown, and approval boundary; record evidence in relevant packet, radar, ledger, or decision log.
 
-1. Pick a loop from `partner/loop-registry.md`.
-2. Run it read-only unless the user explicitly approves writes.
-3. Produce a compact loop report using `partner/templates/loop-report.md`.
-4. If the loop recommends a proactive nudge, explain the signal, urgency, cooldown, and approval boundary.
-5. Record evidence in the relevant project packet, focus radar, ledger, or decision log.
-6. Only consider scheduling after manual runs prove useful and safe.
-
-Acceptance:
-
-- The loop reduces attention burden, catches risk, or improves re-entry.
-- The output is a report with evidence, not hidden background action.
-- Scheduling, hosted execution, PR changes, messaging, private-data processing, and cross-app observation remain approval-gated.
+Acceptance: loop reduces attention burden, catches risk, or improves re-entry; output is a report with evidence, not hidden background action; scheduling, hosted execution, PR changes, messaging, private-data processing, and cross-app observation remain approval-gated.
 
 ## Spec Checkpoint Loop
 
-Use this loop when a discussion accumulates constraints or starts drifting:
-
-1. Restate the current P0 main line in one sentence.
-2. Merge duplicates and remove low-value features.
-3. Move useful but non-current items to P1/P2, decision, or research parking.
-4. List only the few decisions still requiring confirmation.
-
-This loop protects the partnership from overbuilding.
+When discussion accumulates constraints or starts drifting: restate P0 main line in one sentence; merge duplicates and remove low-value features; move useful but non-current items to P1/P2 or parking; list only decisions still requiring confirmation. Protects the partnership from overbuilding.
 
 ## Agent Intake Rule
 
-Use this rule when an input comes from another agent: a subagent report, an upstream handoff block, an auto-generated artifact, or an external reviewer agent acting in this workspace.
-
-Principle: **between agents there is no shared runtime and no mutual presence; there is only the trace left in files.** Trust the evidence, not the conclusion.
+When input comes from another agent (subagent report, handoff block, auto-generated artifact, external reviewer): **between agents there is no shared runtime and no mutual presence; there is only the trace left in files.** Trust the evidence, not the conclusion.
 
 1. Separate the other agent's claims from its evidence (commands, files, line numbers, test output, diffs).
-2. Keep only the verifiable evidence as fact.
-3. Demote every evidence-free conclusion to an `unverified_claim`, even if it sounds confident.
-4. Do not let another agent's polished wording enter `decision-log.md`, `focus-radar.md`, or `session-ledger.md` as settled truth without a re-check or an explicit user decision.
-5. When resuming from a handoff state block, carry forward its `confidence` and `unverified_claims` instead of silently upgrading them.
-6. Never write presence-based references ("this reviewer", "the current agent", "me") into durable files. A file is read by an unknown agent at an unknown time, so refer to roles (`main runtime`, `review agent`) instead of whoever is in the session.
+2. Keep only verifiable evidence as fact. Demote evidence-free conclusions to `unverified_claim`.
+3. Do not let another agent's polished wording enter `decision-log.md`, `focus-radar.md`, or `session-ledger.md` as settled truth without re-check or user decision.
+4. When resuming from a handoff block, carry forward its `confidence` and `unverified_claims` instead of silently upgrading them.
+5. Never write presence-based references ("this reviewer", "the current agent", "me") into durable files. Refer to roles (`main runtime`, `review agent`).
 
-Acceptance:
-
-- Hallucinations do not compound across agent handoffs.
-- The next agent can tell what was proven, what was asserted, and what still needs human or product acceptance.
+Acceptance: hallucinations do not compound across agent handoffs; the next agent can tell what was proven, what was asserted, and what still needs human/product acceptance.
 
 ## Loop Packets
 

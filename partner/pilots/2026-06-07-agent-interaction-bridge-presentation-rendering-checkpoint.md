@@ -1,31 +1,10 @@
 # Pilot: presentation.rendering Focused Spec Checkpoint
 
-Date: 2026-06-07
+Date: 2026-06-07 | Surface: `/Users/lizhaohua/work/llm/agent-interaction-bridge`
 
-Surface:
+Scope: `presentation.rendering` contract and Dynamic UI responsibility placement.
 
-- `/Users/lizhaohua/work/llm/agent-interaction-bridge`
-
-Scope:
-
-- `presentation.rendering` contract and Dynamic UI responsibility placement.
-
-## Source Of Truth Inspected
-
-- `architecture/contracts/presentation-rendering.yaml`
-- `architecture/ai-contract-index.md`
-- `architecture/sops/agentic-interaction-change.md`
-- `architecture/system-design.md`
-- `architecture/agentic-ontology.md`
-- `src/runtime/interaction-runtime.ts`
-- `src/interaction/intent.ts`
-- `src/bot/reply-mode-policy.ts`
-- `src/signal/reply-presentation.ts`
-- `src/signal/presentation.ts`
-- `src/presentation/document.ts`
-- `src/interaction/intent.test.ts`
-- `src/bot/reply-mode-policy.test.ts`
-- `src/signal/reply-presentation.test.ts`
+Source of truth inspected: `architecture/contracts/presentation-rendering.yaml`, `architecture/ai-contract-index.md`, `architecture/sops/agentic-interaction-change.md`, `architecture/system-design.md`, `architecture/agentic-ontology.md`, plus 9 source/test files in `src/`.
 
 ## Spec Checkpoint
 
@@ -51,39 +30,20 @@ P0 主链路：
 
 ## Evidence
 
-Observed from source:
+- `presentation.rendering` L2 invariant: Dynamic UI belongs to `ExpressionProfile`/`PresentationPlan`; `InteractionIntent` must not own visual routing.
+- `ai-contract-index.md` marks `presentation.rendering` as `partial` with named gap: Dynamic UI still needs migration.
+- Current `src/interaction/intent.ts` still owns Dynamic UI through `shouldUseDynamicUi`, `dynamicUiTaskIntent`, `presentation.source = dynamic_ui_heuristic`.
+- `src/bot/reply-mode-policy.ts` routes Dynamic UI from `InteractionIntent`.
+- `src/signal/reply-presentation.ts` already has reusable layout generation.
 
-- `presentation.rendering` L2 invariant says Dynamic UI belongs to `ExpressionProfile` and `PresentationPlan`; `InteractionIntent` may record presentation feedback but must not own visual routing.
-- `architecture/ai-contract-index.md` marks `presentation.rendering` as `partial` with the named gap: Dynamic UI still needs migration into `ExpressionProfile` and `PresentationPlan`.
-- Current `src/interaction/intent.ts` still owns Dynamic UI classification through `shouldUseDynamicUi`, `dynamicUiTaskIntent`, and `presentation.source = dynamic_ui_heuristic`.
-- Current `src/bot/reply-mode-policy.ts` routes Dynamic UI task requests to card reply mode from `InteractionIntent`.
-- Current `src/signal/reply-presentation.ts` already has reusable layout generation for architecture, report, comparison, and visual cards.
-
-## Validation Run
-
-Commands run from `/Users/lizhaohua/work/llm/agent-interaction-bridge`:
-
-```bash
-pnpm test -- src/interaction/intent.test.ts src/interaction/model-judge.test.ts src/bot/prompt-plan.test.ts src/bot/reply-mode-policy.test.ts src/signal/reply-presentation.test.ts src/signal/delivery-support-executor.test.ts src/signal/feishu-delivery-support.test.ts src/bot/feishu-signal-delivery.test.ts src/card/presentation-card.test.ts src/card/chat-presentation-contract.test.ts src/card/text-renderer.test.ts src/card/interaction-card.test.ts src/presentation/document.test.ts src/presentation/capabilities.test.ts src/presentation/templates.test.ts src/presentation/renderers/feishu-card.test.ts src/presentation/renderers/html.test.ts src/presentation/renderers/markdown.test.ts src/signal/feishu-renderer.test.ts
-node ./bin/agent-interaction-bridge.mjs architecture check
-git status --short
-```
-
-Observed results:
-
-- test suite passed: 72 files, 250 tests;
-- architecture contract check passed;
-- target project working tree remained clean.
+Validation: test suite passed: 72 files, 250 tests; architecture check passed; working tree clean.
 
 ## Recommendation
 
-Proceed only if the user wants a real project change next.
-
-The smallest useful implementation slice would be:
-
-1. Add a small expression/presentation planning carrier that can represent Dynamic UI selection separately from `InteractionIntent`.
+Smallest useful slice (user-confirmed only):
+1. Add expression/presentation planning carrier separate from `InteractionIntent`.
 2. Move Dynamic UI heuristic ownership out of `src/interaction/intent.ts`.
-3. Keep explicit presentation feedback as feedback meaning in `InteractionIntent`, but lower card/visual choice through the new planning carrier.
+3. Keep presentation feedback as feedback in `InteractionIntent`, lower card/visual choice through new carrier.
 4. Keep `presentAnswerCard` and card renderer mostly unchanged.
-5. Update tests so the contract proves routing no longer lives in intent while current card behavior remains stable.
-6. Keep AI Contract Index status `partial` until the migration has implementation, harness evidence, and architecture check evidence.
+5. Update tests to prove routing no longer lives in intent.
+6. Keep AI Contract Index `partial` until migration has implementation + harness evidence.

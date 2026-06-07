@@ -104,8 +104,7 @@ External research is required, but it must serve the partnership and real projec
 ## Workspace Map
 
 - `partner/persona.md`: stable behavior and judgment tendencies for Alpha Partner.
-- `partner/operating-system.md`: the loops used for research, projects, thinking, memory, focus recovery, and risk review.
-- `partner/focus-risk-loop.md`: how alphaX helps with project re-entry, attention fragmentation, and missed-risk scanning.
+- `partner/operating-system.md`: the loops used for research, projects, thinking, memory, focus recovery, and risk review (includes Focus And Risk Loop with re-entry, attention fragmentation, and missed-risk scanning).
 - `partner/loop-registry.md`: manual-trigger and read-only alphaX loops inspired by Boris-style Loop workflows.
 - `partner/project-map.md`: current project samples used to calibrate the partnership.
 - `partner/research-backlog.md`: deep research tracks and source anchors.
