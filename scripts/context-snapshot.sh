@@ -8,6 +8,7 @@ if [ ! -d "$TARGET" ]; then
 fi
 
 ROOT="$(cd "$TARGET" && pwd -P)"
+ALPHA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 cd "$ROOT"
 
 section() {
@@ -33,6 +34,7 @@ fi
 section "Instruction Files"
 find . -maxdepth 3 -type f \( \
   -name 'AGENTS.md' -o \
+  -path '*/.alphaX/*' -o \
   -name 'README.md' -o \
   -name 'README' -o \
   -name 'CLAUDE.md' -o \
@@ -41,12 +43,15 @@ find . -maxdepth 3 -type f \( \
 \) -print | sort | sed -n '1,80p'
 
 section "Partner Pointer"
-if [ -f "AGENTS.md" ] && rg -n "Alpha Partner|/Users/lizhaohua/Desktop/codex/AGENTS.md|共同研究执行" "AGENTS.md" >/dev/null 2>&1; then
+if [ -d ".alphaX" ]; then
+  printf 'present: .alphaX project metadata\n'
+  find .alphaX -maxdepth 2 -type f -print | sort | sed -n '1,20p'
+elif [ -f "AGENTS.md" ] && rg -n "Alpha Partner|alphaX|共同研究执行" "AGENTS.md" >/dev/null 2>&1; then
   printf 'present: root AGENTS.md references Alpha Partner\n'
-  rg -n "Alpha Partner|/Users/lizhaohua/Desktop/codex/AGENTS.md|共同研究执行" "AGENTS.md" | sed -n '1,20p'
+  rg -n "Alpha Partner|alphaX|共同研究执行" "AGENTS.md" | sed -n '1,20p'
 else
   printf 'not found in root AGENTS.md\n'
-  printf 'pointer_template: /Users/lizhaohua/Desktop/codex/partner/templates/project-local-pointer.md\n'
+  printf 'pointer_template: %s/partner/templates/project-local-pointer.md\n' "$ALPHA_ROOT"
 fi
 
 section "Likely Source Of Truth"

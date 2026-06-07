@@ -1,6 +1,6 @@
 # Pilot Plan: online_community Manual Acceptance
 
-Date: 2026-06-07 | Surface: `/Users/lizhaohua/work/llm/clouds-beyond/online_community`
+Date: 2026-06-07 | Surface: `{online_community}`
 
 Purpose: Turn the current structural Session Runtime harness into a real-discussion manual acceptance review without committing transcript content or claiming product quality from tests alone.
 
@@ -18,7 +18,7 @@ Do not commit transcript content. Do not paste transcript content into partner w
 
 ## Runbook
 
-From `/Users/lizhaohua/work/llm/clouds-beyond/online_community/backend`:
+From `{online_community}/backend`:
 
 ```bash
 bash ../scripts/check_backend.sh

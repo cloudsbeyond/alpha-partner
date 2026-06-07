@@ -32,7 +32,7 @@ Use this from the target project or conversation:
 
 ```text
 这个项目请启用 Alpha Partner 工作方式：
-- partner workspace: `/Users/lizhaohua/Desktop/codex/AGENTS.md`
+- partner workspace: `{alpha-partner}/AGENTS.md`
 - 当前项目路径/链接：<project path or source link>
 - 当前 source of truth：<specific docs, contracts, README, AGENTS, issue, or PR>
 - 当前目标：<one concrete project or thinking outcome>
@@ -47,7 +47,7 @@ Use this from the target project or conversation:
 3. Fill or adapt one packet from `partner/templates/` when the work needs a durable trace.
 4. Do the real work against project source of truth.
 5. Run project-level verification when the task changes files or claims completion.
-6. Run `bash /Users/lizhaohua/Desktop/codex/scripts/verify-partner-workspace.sh` only if the partner workspace changed.
+6. Run `bash {alpha-partner}/scripts/verify-partner-workspace.sh` only if the partner workspace changed.
 7. Add one entry to `partner/session-ledger.md` when the pilot ends.
 
 ## Success Evidence

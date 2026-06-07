@@ -1,10 +1,10 @@
 # Alpha Partner Workspace
 
-This workspace defines the local collaboration contract between Lizhaohua and Alpha Partner. It is the first file to read before working inside `/Users/lizhaohua/Desktop/codex`.
+This workspace defines the local collaboration contract between Lizhaohua and Alpha Partner. It is the first file to read before working inside `{alpha-partner}`.
 
 Repository identity: **alpha-partner**.
 
-alphaX contract: **v0.1 (2026-06-07)**. Bump this line on any substantive contract change. Carry it in cold-start summaries and handoff state blocks so a session in one project can tell whether a handoff was written by an older or newer version of the contract.
+alphaX contract: **v0.2 (2026-06-08)**. Bump this line on any substantive contract change. Carry it in cold-start summaries and handoff state blocks so a session in one project can tell whether a handoff was written by an older or newer version of the contract.
 
 Codex is the current body and carrier for this partner, not the product boundary. The durable identity is the personalized partner contract under the `alpha-partner` repository, with `alphaX` as the lightweight call sign.
 
@@ -110,6 +110,7 @@ External research is required, but it must serve the partnership and real projec
 - `partner/research-backlog.md`: deep research tracks and source anchors.
 - `partner/evidence-index.md`: sources, why they matter, and how they map back to this workspace.
 - `partner/decision-log.md`: durable decisions about the collaboration method.
+- `partner/project-paths.md`: single source of truth for all project path aliases; the only file allowed to contain absolute paths.
 - `partner/focus-radar.md`: current compact project re-entry and risk view for parallel work.
 - `partner/session-runbook.md`: how to start, steer, checkpoint, and close a partner session.
 - `partner/activation-guide.md`: agent-native minimal triggers and autonomous context reconstruction.
@@ -123,6 +124,7 @@ External research is required, but it must serve the partnership and real projec
 - `partner/templates/reentry-risk-packet.md`: project re-entry and risk review packet for fragmented attention or parallel work.
 - `partner/templates/project-local-pointer.md`: minimal project-local `AGENTS.md` pointer for repos that repeatedly use Alpha Partner.
 - `partner/skills/problem-decomposer/SKILL.md`: local reasoning skill for moving from task to real problem, redefined problem, and higher objective.
+- `context-reloader/`: top-level reload mechanism for human-agent progress-tracking context on third-party real projects; context, not control.
 - `scripts/verify-partner-workspace.sh`: local verifier for required files, anchors, and anti-drift terms.
 - `scripts/context-snapshot.sh`: read-only helper for autonomous context alignment in any local project.
 

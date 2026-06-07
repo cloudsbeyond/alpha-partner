@@ -1,8 +1,8 @@
 # Pilot: online_community Session Runtime Cold Start
 
-Date: 2026-06-07 | Surface: `/Users/lizhaohua/work/llm/clouds-beyond/online_community`
+Date: 2026-06-07 | Surface: `{online_community}`
 
-Trigger: `alphaX 介入一下 /Users/lizhaohua/work/llm/clouds-beyond/online_community。先自主对齐 session runtime 的 source of truth 和验收链路，不改文件，指出当前最值得验证的 P0 风险。`
+Trigger: `alphaX 介入一下 {online_community}。先自主对齐 session runtime 的 source of truth 和验收链路，不改文件，指出当前最值得验证的 P0 风险。`
 
 ## Result
 

@@ -23,7 +23,7 @@ Then summarize: inferred project/conversation surface; inferred P0 main line; pr
 ## Context Snapshot Helper
 
 ```bash
-/Users/lizhaohua/Desktop/codex/scripts/context-snapshot.sh [/path/to/project]
+{alpha-partner}/scripts/context-snapshot.sh [/path/to/project]
 ```
 
 Gives compact starting view: cwd, git state, nearby instruction files, likely source files, candidate source-of-truth files. Does not replace agent judgment.

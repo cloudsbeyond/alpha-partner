@@ -1,6 +1,6 @@
 # Pilot: presentation.rendering Focused Spec Checkpoint
 
-Date: 2026-06-07 | Surface: `/Users/lizhaohua/work/llm/agent-interaction-bridge`
+Date: 2026-06-07 | Surface: `{agent-interaction-bridge}`
 
 Scope: `presentation.rendering` contract and Dynamic UI responsibility placement.
 

@@ -1,6 +1,6 @@
 # Pilot: agent-interaction-bridge Project-Local Pointer Adoption
 
-Date: 2026-06-07 | Surface: `/Users/lizhaohua/work/llm/agent-interaction-bridge`
+Date: 2026-06-07 | Surface: `{agent-interaction-bridge}`
 
 ## Why
 
@@ -8,7 +8,7 @@ Date: 2026-06-07 | Surface: `/Users/lizhaohua/work/llm/agent-interaction-bridge`
 
 ## Change
 
-Added a short `Alpha Partner` section to project-local `AGENTS.md`. The pointer maps `alphaX 介入一下` to `/Users/lizhaohua/Desktop/codex/AGENTS.md`; states that project-local instructions, source-of-truth files, validation commands, permissions, and risk boundaries take precedence; requires autonomous context inspection before asking the user to restate the scene; preserves explicit approval for durable memory, external docs, publication targets, secrets, production state, and destructive state.
+Added a short `Alpha Partner` section to project-local `AGENTS.md`. The pointer maps `alphaX 介入一下` to `{alpha-partner}/AGENTS.md`; states that project-local instructions, source-of-truth files, validation commands, permissions, and risk boundaries take precedence; requires autonomous context inspection before asking the user to restate the scene; preserves explicit approval for durable memory, external docs, publication targets, secrets, production state, and destructive state.
 
 ## Validation
 

@@ -10,31 +10,30 @@ alphaX helps Lizhaohua recover project context, detect risk, and choose the next
 
 ## Current Recommendation
 
-The single most important next test is **cross-day reuse**. All applied sessions are from 2026-06-07; the core claim "alphaX lowers project re-entry cost" is unverified.
+The `agent-interaction-bridge` work stream is fully closed on `main`: Runtime Services separation (bridge PR #8 `e64bba0`, runtime-services PR #1 `d20a334`) and `.alphaX` injection are both merged. The next P0 move is **`online_community` manual acceptance against one real transcript outside git**.
 
-- **Highest priority**: at next cross-day session, cold-start from handoff block, re-enter `agent-interaction-bridge`, inspect dirty WIP on `codex/extract-runtime-services`, determine ownership, make a real code change or explicitly defer.
-- **Highest risk control (same-day)**: read-only `agent-interaction-bridge` WIP review before any implementation.
-- **Low re-entry cost**: run prepared `online_community` manual acceptance plan outside git.
-- **Do not**: add new loops, templates, or process layers until cross-day reuse proves or disproves the core claim.
+- **Highest priority**: run the prepared `online_community` manual acceptance plan; record only a non-sensitive summary.
+- **Highest risk control**: do not expand governance further; use existing mechanisms to drive a real decision before adding any new layer.
+- **Do not**: add new loops, templates, process layers, scheduled automation, or cross-app observation.
 
 ## Project Radar
 
 | Surface | P0 | Current State | Top Risk | Focus Move |
 | --- | --- | --- | --- | --- |
-| `/Users/lizhaohua/Desktop/codex` | Keep alphaX usable as a human-agent peer workspace. | Markdown-first workspace; daily radar and external peer review recorded in `partner/loop-reports/`. | [P1] Workspace staleness: focus radar itself goes stale across days, not tracked by any loop. [P2] Scaffolding creep if loop reports multiply without driving real decisions. | Cross-day reuse is the single most important next test. |
-| `/Users/lizhaohua/work/llm/agent-interaction-bridge` | Build a bounded interaction agent with clean Product Runtime and Build-Time Governance boundaries. | Live branch `codex/extract-runtime-services`; dirty WIP includes `AGENTS.md`, `package.json`, `pnpm-lock.yaml`, `src/signal/delivery-support*.ts`, new `src/runtime/runtime-services-adapter*.ts`. | [P1] Stale context and ownership risk: dirty WIP may be user work, other-agent work, or old alphaX work. | Run read-only WIP review before any implementation. |
-| `/Users/lizhaohua/work/llm/clouds-beyond/online_community` | Turn Work Buddy prototype into reusable Session Runtime. | Live branch `codex/session-runtime-acceptance-report`; working tree clean; manual acceptance plan prepared. | [P1] False completion: automated checks prove structure and privacy, not real discussion usefulness. | Run manual acceptance on one real transcript outside git. |
-| `/Users/lizhaohua/work/llm/clouds-beyond` | Govern CloudsBeyond root as current-state source index. | Live branch `codex/changelog-may-compression`; working tree clean. | [P3] Lower urgency unless root governance blocks a subproject. | Keep parked. |
+| `{alpha-partner}` | Keep alphaX usable as a human-agent peer workspace. | Git repo on `main`; Context Reloader and `.alphaX` injection mechanism committed; verifier passes. | [P1] Workspace staleness across days; no tracking mechanism. [P2] Scaffolding creep if context grows without driving real decisions. | Use existing mechanisms to drive `online_community` acceptance; no further expansion. |
+| `{agent-interaction-bridge}` | Build a bounded interaction agent with clean Product Runtime and Build-Time Governance boundaries. | Runtime Services separation merged (PR #8 `e64bba0`); bridge no longer owns model/resource/storage. `.alphaX/` is ignored local injected metadata; usage method committed in `AGENTS.md`. | [P2] `.alphaX` local files are unversioned by design; cross-machine availability depends on alphaX reinjection. | Park; closed on `main`. |
+| `{agent-runtime-services}` | Provide provider-neutral model/resource/artifact/vector/runtime support for bridge and future agents. | On `main`; initial package merged in PR #1 as `d20a334`. | [P2] Real long-running RPC process consistency remains unproven outside local tests. | Park unless bridge runtime operations require it. |
+| `{online_community}` | Turn Work Buddy prototype into reusable Session Runtime. | Live branch `codex/session-runtime-acceptance-report`; working tree clean; manual acceptance plan prepared. | [P1] False completion: automated checks prove structure and privacy, not real discussion usefulness. | Run manual acceptance on one real transcript outside git. |
+| `{clouds-beyond}` | Govern CloudsBeyond root as current-state source index. | Live branch `codex/changelog-may-compression`; working tree clean. | [P3] Lower urgency unless root governance blocks a subproject. | Keep parked. |
 
 ## Cross-Project Risks
 
-- [P0] Same-day evidence: all applied sessions are from 2026-06-07; review-agent meta sessions extend to 2026-06-08 but no true cross-day reuse of applied work.
 - [P1] False completion: passing tests can hide missing human acceptance.
 - [P1] Wrong-layer work: downstream implementation may patch upstream semantic gaps.
-- [P1] WIP ownership drift: dirty repos may include user, other-agent, or old alphaX work.
 - [P1] Workspace staleness: focus radar itself goes stale across days; no tracking mechanism.
-- [P2] Scaffolding-to-use ratio: 7 loops defined, 2 exercised; 7 packet templates, 3 visibly used.
-- [P2] Attention loss: uncommitted local context can be forgotten when switching projects.
+- [P2] Scaffolding-to-use ratio: 7 loops defined, 3 exercised; 7 packet templates, 4 visibly used.
+- [P2] Context growth: Context Reloader should stay thin until it proves cross-day re-entry value.
+- [P2] Attention loss: ignored `.alphaX` local metadata can be forgotten if not regenerated by alphaX.
 - [P2] Over-scope: future-useful agent/product ideas can steal current P0 focus.
 
 ## Parking Lot

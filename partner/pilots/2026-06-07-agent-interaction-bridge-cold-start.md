@@ -1,8 +1,8 @@
 # Pilot: agent-interaction-bridge Cold Start
 
-Date: 2026-06-07 | Surface: `/Users/lizhaohua/work/llm/agent-interaction-bridge`
+Date: 2026-06-07 | Surface: `{agent-interaction-bridge}`
 
-Trigger: `alphaX 介入一下 /Users/lizhaohua/work/llm/agent-interaction-bridge。先只做 cold start，不改文件。`
+Trigger: `alphaX 介入一下 {agent-interaction-bridge}。先只做 cold start，不改文件。`
 
 ## Result
 

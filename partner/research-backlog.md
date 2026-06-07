@@ -111,22 +111,6 @@ Use:
 
 ## Track 7: Workspace Portability And Path Treaty
 
-Question:
+Resolved 2026-06-08: `partner/project-paths.md` is the single source of truth for all project paths; all other files use `{alias}` references. Verifier enforces no absolute paths outside `project-paths.md`. The workspace is a git project — clone it, update one file with local paths, and all alias references resolve. Scripts self-locate via `BASH_SOURCE`. No resolver script or env var needed.
 
-- The workspace and its loops currently depend on hardcoded absolute paths (`/Users/lizhaohua/Desktop/codex/...`, `/Users/lizhaohua/work/llm/...`). What is the lightest way to make alphaX survive a machine change, a collaborator change, or a body other than Codex, without becoming an app?
-
-Origin:
-
-- Surfaced in a real session when a reviewer agent noted the "Codex is only the current body" claim has no portability evidence yet.
-
-Candidate options (do not build until a real cross-machine or collaborator scenario forces it):
-
-- A: one `ALPHA_PARTNER_HOME` env var with self-locating scripts (`verify-partner-workspace.sh` already self-locates via `BASH_SOURCE`); docs reference the var instead of absolute paths. Lowest cost, solves machine change.
-- B: a `partner/projects.yaml` registry declaring governed projects and their `~`-relative paths and source-of-truth files; loops and `context-snapshot.sh` read paths from it instead of hardcoding. This is the real lesson of Go `go.work`: not the `src/` layout, but one file that declares which units are governed and where.
-- C: promote to a CLI or MCP server. Explicitly parked; building it now would repeat the over-engineering the workspace already pruned.
-
-Use:
-
-- Treat A as the first move only when a second machine or collaborator actually appears.
-- Treat B as the move when daily-radar path sprawl becomes a felt pain, not a hypothetical one.
-- Keep the "Codex is only the current body" claim labeled as unverified until at least option A is exercised on a real second environment.
+The "Codex is only the current body" claim remains unverified until a real second environment exercises this mechanism.

@@ -27,7 +27,7 @@ Unverified: "structured handoff lowers re-entry cost" and "alphaX lowers human r
 ## Governance: Four Cross-Project Rules (2026-06-07)
 
 1. **Meta/applied separation**: every ledger entry tagged `meta` or `applied`; after 3 consecutive runtime `meta` entries the next must be `applied`. Review-agent entries are `meta` by design and excluded.
-2. **Contract version anchor**: `alphaX contract: v0.1 (2026-06-07)` in `AGENTS.md`, bumped on substantive change, carried in cold-start and handoff blocks.
+2. **Contract version anchor**: `alphaX contract: v0.2 (2026-06-08)` in `AGENTS.md`, bumped on substantive change, carried in cold-start and handoff blocks.
 3. **Reverse feedback**: after each applied session, name which contract rule helped, which got in the way, and which went unused. Unused rules become deletion candidates.
 4. **Loop 7 alphaX self-critique**: manual-trigger, read-only loop that hunts for internally consistent but unverified claims, applying the Agent Intake Rule to alphaX's own files.
 
@@ -40,6 +40,16 @@ Confidence: high for rules 1 and 3 (backed by current ledger pattern); medium fo
 3. **Review agents**: observe alphaX, give feedback, help evolve it. Context scoped to alphaX; must not spill into external projects. Produce `meta` work only.
 
 Identity rule: each agent must know its role (main runtime vs review agent). If it does not know, it must ask Lizhaohua before reach-sensitive work. Never assume.
+
+## Governance: Context Reloader (2026-06-08)
+
+Added top-level `context-reloader/` as alphaX's third-party project re-entry mechanism. It stores human-agent progress-tracking context, not external project facts. Principle: **context, not control**.
+
+Project Context belongs to `alpha-partner`, not to the external project. It is not a spec, roadmap, ADR, contract, changelog, or control surface. Live external project source of truth wins. Default behavior is report-first; no auto write-back.
+
+First Project Context: `context-reloader/projects/agent-interaction-bridge.md`, because `agent-interaction-bridge` is the report-first / interaction delivery engineering carrier for alphaX and has alphaX-driven Runtime Services separation work that needs report-first closure before commit or push.
+
+Follow-up correction: project-local pointers should expose an optional `.alphaX/` metadata surface after repeated alphaX use, rather than hardcoding the alpha-partner workspace path into the external project. alphaX injects and maintains `.alphaX/`; the external project `AGENTS.md` injects only the usage method. This prevents engineering-repo sessions from seeing only local contracts while missing the human-agent progress-tracking context, without making the external project depend on a private path. The pointer still preserves the boundary: `.alphaX/` and Project Context are context, not control, and live project source of truth wins.
 
 ## External Agent Sessions
 

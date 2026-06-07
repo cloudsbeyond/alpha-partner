@@ -17,7 +17,7 @@ Do not add a project-local pointer until the pilot proves repeated use.
 
 Path:
 
-- `/Users/lizhaohua/work/llm/agent-interaction-bridge`
+- `{agent-interaction-bridge}`
 
 Why this is the first candidate:
 
@@ -29,7 +29,7 @@ Why this is the first candidate:
 AlphaX pilot prompt:
 
 ```text
-alphaX 介入一下 /Users/lizhaohua/work/llm/agent-interaction-bridge。
+alphaX 介入一下 {agent-interaction-bridge}。
 先只做 cold start，不改文件：读取 partner contract 和项目 source of truth，给出 P0 主链路、primary loop、source of truth、当前风险、下一步验证路径。
 ```
 
@@ -50,7 +50,7 @@ Status:
 
 Path:
 
-- `/Users/lizhaohua/work/llm/clouds-beyond/online_community`
+- `{online_community}`
 
 Why this is useful:
 
@@ -62,7 +62,7 @@ Why this is useful:
 AlphaX pilot prompt:
 
 ```text
-alphaX 介入一下 /Users/lizhaohua/work/llm/clouds-beyond/online_community。
+alphaX 介入一下 {online_community}。
 先自主对齐 session runtime 的 source of truth 和验收链路，不改文件，指出当前最值得验证的 P0 风险。
 ```
 
@@ -82,7 +82,7 @@ Status:
 
 Path:
 
-- `/Users/lizhaohua/work/llm/clouds-beyond`
+- `{clouds-beyond}`
 
 Why this is useful:
 
@@ -92,7 +92,7 @@ Why this is useful:
 AlphaX pilot prompt:
 
 ```text
-alphaX 介入一下 /Users/lizhaohua/work/llm/clouds-beyond。
+alphaX 介入一下 {clouds-beyond}。
 先只做 changelog governance cold start：读取 root source of truth，判断当前 changelog 是否需要压缩或保持不动，并给出验证依据。
 ```
 

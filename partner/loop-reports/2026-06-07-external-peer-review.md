@@ -1,6 +1,6 @@
 # External Peer Review: alpha-partner Workspace
 
-Date: 2026-06-07 | Reviewer: external peer agent (invited by Lizhaohua) | Surface: `/Users/lizhaohua/Desktop/codex`
+Date: 2026-06-07 | Reviewer: external peer agent (invited by Lizhaohua) | Surface: `{alpha-partner}`
 
 ## Context
 
@@ -46,7 +46,7 @@ The workspace is both OS (must be stable for reliable context reconstruction) an
 
 ## Recommendation
 
-**Cross-day reuse** is the single most important next action. At next session: cold-start from handoff block, re-enter `agent-interaction-bridge`, inspect dirty WIP on `codex/extract-runtime-services`, determine ownership, make a real code change or explicitly defer. This directly verifies or falsifies "alphaX lowers project re-entry cost."
+**Cross-day reuse** is the single most important next action. At next session: cold-start from handoff block, re-enter `agent-interaction-bridge`, inspect alphaX-driven WIP on `codex/extract-runtime-services`, determine closure path, make a real code change or explicitly defer. This directly verifies or falsifies "alphaX lowers project re-entry cost."
 
 ## Boundary
 

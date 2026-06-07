@@ -1,6 +1,6 @@
 # Loop Report: Daily Focus Radar
 
-Date: 2026-06-07 22:10 CST | Loop: Daily Focus Radar | Surface: `/Users/lizhaohua/Desktop/codex` + active project samples
+Date: 2026-06-07 22:10 CST | Loop: Daily Focus Radar | Surface: `{alpha-partner}` + active project samples
 
 ## P0
 
@@ -12,7 +12,7 @@ Files inspected: `AGENTS.md`, `partner/loop-registry.md`, `partner/focus-radar.m
 
 ## Findings
 
-- **agent-interaction-bridge**: dirty on branch `codex/extract-runtime-services` (modified `AGENTS.md`, `package.json`, `pnpm-lock.yaml`, `src/signal/delivery-support*.ts`, new `src/runtime/runtime-services-adapter*.ts` + test). Previous radar understated this risk.
+- **agent-interaction-bridge**: alphaX-driven Runtime Services separation WIP on branch `codex/extract-runtime-services` (modified `AGENTS.md`, `package.json`, `pnpm-lock.yaml`, `src/signal/delivery-support*.ts`, new `src/runtime/runtime-services-adapter*.ts` + test). Previous radar understated the closure risk.
 - **online_community**: clean on `codex/session-runtime-acceptance-report`; manual acceptance remains next gate.
 - **clouds-beyond root**: clean on `codex/changelog-may-compression`.
 - **alpha-partner**: not a git repo; verification relies on local verifier and scans.
@@ -23,4 +23,4 @@ Should push inside current session: `agent-interaction-bridge` has expanded WIP 
 
 ## Recommendation
 
-Next focus move: before any new `agent-interaction-bridge` implementation, run read-only WIP review to identify ownership, intended main line, tests, and safe next action. Needs human decision: whether WIP is intentional user work, another agent's work, or work alphaX should take over. Do not: schedule recurring loops, create cross-app watchers, or modify dirty repo without approval.
+Next focus move: before any new `agent-interaction-bridge` implementation, run WIP closure review to identify intended main line, tests, and safe next action. Human correction on 2026-06-08: this is alphaX-driven model infrastructure separation work, not uncontrolled external WIP. Do not: schedule recurring loops, create cross-app watchers, or treat the WIP as external uncontrolled changes.
