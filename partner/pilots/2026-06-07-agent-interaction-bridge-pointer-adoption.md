@@ -17,7 +17,7 @@ That satisfies the partner workspace rule: add a project-local pointer only afte
 
 ## Change Made
 
-Added a short `Codex Partner` section to project-local `AGENTS.md`.
+Added a short `Alpha Partner` section to project-local `AGENTS.md`.
 
 The pointer:
 
@@ -38,7 +38,7 @@ git diff -- AGENTS.md
 
 Observed results:
 
-- `context-snapshot.sh` detected the project-local Codex Partner pointer;
+- `context-snapshot.sh` detected the project-local Alpha Partner pointer;
 - architecture contract check passed;
 - diff only changed the project-local `AGENTS.md` pointer section.
 

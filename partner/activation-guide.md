@@ -1,6 +1,6 @@
 # Agent-Native Activation
 
-This guide defines how Lizhaohua can involve Codex Partner from any project or conversation with minimal repetition.
+This guide defines how Lizhaohua can involve Alpha Partner from any project or conversation with minimal repetition.
 
 The principle: **the user triggers; the agent reconstructs context**.
 
@@ -15,13 +15,13 @@ alphaX 介入一下。
 or:
 
 ```text
-Codex Partner 介入一下这个项目。
+Alpha Partner 介入一下这个项目。
 ```
 
 or:
 
 ```text
-按 Codex Partner 方式推进。
+按 Alpha Partner 方式推进。
 ```
 
 or:
@@ -74,9 +74,9 @@ alphaX nudge check
 
 ## Agent Responsibility After Trigger
 
-After activation, Codex Partner should not ask the user to restate the whole scene before doing any work.
+After activation, Alpha Partner should not ask the user to restate the whole scene before doing any work.
 
-If the trigger uses `alphaX`, map it directly to Codex Partner behavior and the same 共同研究执行 contract.
+If the trigger uses `alphaX`, map it directly to Alpha Partner behavior and the same 共同研究执行 contract.
 
 First autonomously inspect:
 

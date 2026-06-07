@@ -24,7 +24,7 @@ Primary anchors:
 Use:
 
 - Define where human judgment remains primary.
-- Define where Codex Partner should challenge, synthesize, or execute.
+- Define where Alpha Partner should challenge, synthesize, or execute.
 - Improve review and reflection loops.
 
 ## Track 2: Agent-Native Engineering Harness
@@ -108,3 +108,25 @@ Use:
 - Define the difference between observation, inference, candidate nudge, and external push.
 - Keep privacy, cooldown, stop conditions, and user-held action authority visible.
 - Map proactive behavior back to focus recovery, risk review, and project re-entry instead of generic notification automation.
+
+## Track 7: Workspace Portability And Path Treaty
+
+Question:
+
+- The workspace and its loops currently depend on hardcoded absolute paths (`/Users/lizhaohua/Desktop/codex/...`, `/Users/lizhaohua/work/llm/...`). What is the lightest way to make alphaX survive a machine change, a collaborator change, or a body other than Codex, without becoming an app?
+
+Origin:
+
+- Surfaced in a real session when a reviewer agent noted the "Codex is only the current body" claim has no portability evidence yet.
+
+Candidate options (do not build until a real cross-machine or collaborator scenario forces it):
+
+- A: one `ALPHA_PARTNER_HOME` env var with self-locating scripts (`verify-partner-workspace.sh` already self-locates via `BASH_SOURCE`); docs reference the var instead of absolute paths. Lowest cost, solves machine change.
+- B: a `partner/projects.yaml` registry declaring governed projects and their `~`-relative paths and source-of-truth files; loops and `context-snapshot.sh` read paths from it instead of hardcoding. This is the real lesson of Go `go.work`: not the `src/` layout, but one file that declares which units are governed and where.
+- C: promote to a CLI or MCP server. Explicitly parked; building it now would repeat the over-engineering the workspace already pruned.
+
+Use:
+
+- Treat A as the first move only when a second machine or collaborator actually appears.
+- Treat B as the move when daily-radar path sprawl becomes a felt pain, not a hypothetical one.
+- Keep the "Codex is only the current body" claim labeled as unverified until at least option A is exercised on a real second environment.

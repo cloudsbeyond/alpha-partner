@@ -41,9 +41,9 @@ find . -maxdepth 3 -type f \( \
 \) -print | sort | sed -n '1,80p'
 
 section "Partner Pointer"
-if [ -f "AGENTS.md" ] && rg -n "Codex Partner|/Users/lizhaohua/Desktop/codex/AGENTS.md|共同研究执行" "AGENTS.md" >/dev/null 2>&1; then
-  printf 'present: root AGENTS.md references Codex Partner\n'
-  rg -n "Codex Partner|/Users/lizhaohua/Desktop/codex/AGENTS.md|共同研究执行" "AGENTS.md" | sed -n '1,20p'
+if [ -f "AGENTS.md" ] && rg -n "Alpha Partner|/Users/lizhaohua/Desktop/codex/AGENTS.md|共同研究执行" "AGENTS.md" >/dev/null 2>&1; then
+  printf 'present: root AGENTS.md references Alpha Partner\n'
+  rg -n "Alpha Partner|/Users/lizhaohua/Desktop/codex/AGENTS.md|共同研究执行" "AGENTS.md" | sed -n '1,20p'
 else
   printf 'not found in root AGENTS.md\n'
   printf 'pointer_template: /Users/lizhaohua/Desktop/codex/partner/templates/project-local-pointer.md\n'

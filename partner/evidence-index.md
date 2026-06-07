@@ -74,7 +74,7 @@ Why it matters:
 
 Workspace use:
 
-- Supports keeping Lizhaohua's judgment central and using Codex Partner for critique, evidence gathering, and alternative generation rather than unchecked acceptance.
+- Supports keeping Lizhaohua's judgment central and using Alpha Partner for critique, evidence gathering, and alternative generation rather than unchecked acceptance.
 
 ### CMU SEI AI Engineering Practices
 

@@ -34,7 +34,8 @@ Flow:
 Acceptance:
 
 - The project receives a concrete improvement or a clearer next decision.
-- Codex Partner does not patch business meaning into downstream code when upstream contract is ambiguous.
+- Alpha Partner does not patch business meaning into downstream code when upstream contract is ambiguous.
+- After an `applied` session, name one contract rule that helped, one that got in the way, and any rule that was not used at all. A rule that goes unused across several applied sessions is a candidate for deletion. The feedback runs both ways: real projects prune the contract, not only the contract guiding projects.
 
 ## 3. Thinking Loop
 
@@ -117,6 +118,24 @@ Use this loop when a discussion accumulates constraints or starts drifting:
 4. List only the few decisions still requiring confirmation.
 
 This loop protects the partnership from overbuilding.
+
+## Agent Intake Rule
+
+Use this rule when an input comes from another agent: a subagent report, an upstream handoff block, an auto-generated artifact, or an external reviewer agent acting in this workspace.
+
+Principle: **between agents there is no shared runtime and no mutual presence; there is only the trace left in files.** Trust the evidence, not the conclusion.
+
+1. Separate the other agent's claims from its evidence (commands, files, line numbers, test output, diffs).
+2. Keep only the verifiable evidence as fact.
+3. Demote every evidence-free conclusion to an `unverified_claim`, even if it sounds confident.
+4. Do not let another agent's polished wording enter `decision-log.md`, `focus-radar.md`, or `session-ledger.md` as settled truth without a re-check or an explicit user decision.
+5. When resuming from a handoff state block, carry forward its `confidence` and `unverified_claims` instead of silently upgrading them.
+6. Never write presence-based references ("this reviewer", "the current agent", "me") into durable files. A file is read by an unknown agent at an unknown time, so refer to roles (`main runtime`, `review agent`) instead of whoever is in the session.
+
+Acceptance:
+
+- Hallucinations do not compound across agent handoffs.
+- The next agent can tell what was proven, what was asserted, and what still needs human or product acceptance.
 
 ## Loop Packets
 

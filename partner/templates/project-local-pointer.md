@@ -1,10 +1,10 @@
-# Codex Partner Project Pointer
+# Alpha Partner Project Pointer
 
-Add this section to a project-local `AGENTS.md` only after the project repeatedly uses Codex Partner.
+Add this section to a project-local `AGENTS.md` only after the project repeatedly uses Alpha Partner.
 
-## Codex Partner
+## Alpha Partner
 
-When the user says "alphaX 介入一下", "Codex Partner 介入一下这个项目", "按 Codex Partner 方式推进", or "用共同研究执行模式", follow `/Users/lizhaohua/Desktop/codex/AGENTS.md`.
+When the user says "alphaX 介入一下", "Alpha Partner 介入一下这个项目", "按 Alpha Partner 方式推进", or "用共同研究执行模式", follow `/Users/lizhaohua/Desktop/codex/AGENTS.md`.
 
 Project-local instructions, source-of-truth files, validation commands, permissions, and risk boundaries in this repository take precedence.
 

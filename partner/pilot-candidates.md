@@ -24,7 +24,7 @@ Why this is the first candidate:
 - It directly tests the user's L0-L2 and L3-L4 boundary preference.
 - Memory routes this repo to architecture governance, YAML contracts, freeze signals, Product Runtime, and Build-Time Governance.
 - Current snapshot shows project-local `AGENTS.md`, `README.md`, architecture docs, contracts, tests, and an active branch.
-- Current snapshot shows no root Codex Partner pointer, so cold-start quality is testable.
+- Current snapshot shows no root Alpha Partner pointer, so cold-start quality is testable.
 
 AlphaX pilot prompt:
 
@@ -57,7 +57,7 @@ Why this is useful:
 - It tests evidence traceability, acceptance reporting, guardrails, and privacy constraints.
 - Memory routes this project to session runtime manual acceptance, evidence index, guardrail cases, and transcript privacy.
 - Current snapshot shows `specs/session-runtime-v1/spec.md`, backend contracts, acceptance code, tests, and nested `AGENTS.md` files.
-- Current snapshot shows no root Codex Partner pointer.
+- Current snapshot shows no root Alpha Partner pointer.
 
 AlphaX pilot prompt:
 

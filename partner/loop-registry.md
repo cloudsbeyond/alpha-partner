@@ -215,6 +215,46 @@ Requires approval:
 - cross-app data access;
 - private chat or meeting transcript processing.
 
+## Loop 7: alphaX Self-Critique
+
+Trigger:
+
+```text
+alphaX self-critique
+```
+
+Purpose:
+
+- institutionalize the dissenter role so it is a mechanism, not an accident of whoever happens to be in the conversation.
+- have an agent with a clean context read alphaX itself and hunt for claims that are internally consistent but never verified.
+
+Why it exists:
+
+- both the user and the runtime tend to like this project; when both sides are satisfied, no one naturally pushes back.
+- the value of a reviewer is in challenge, not acceptance; this loop supplies challenge on demand.
+
+Allowed signals:
+
+- decision-log or contract claims asserted with no evidence trace, command, file, or line number;
+- value claims ("lowers re-entry cost", "Codex is only the body") still labeled or implicitly treated as proven without a real cross-day or cross-machine test;
+- a run of `meta` ledger entries with no `applied` entry, signaling method-maintenance drift;
+- contract rules that no `applied` session has ever reported using.
+
+Output:
+
+- a compact critique list: each item names the suspect claim, why it is unverified, and the cheapest evidence that would confirm or falsify it.
+- explicitly separate "proven by diff" from "asserted", applying the Agent Intake Rule to alphaX's own files.
+
+Default actions:
+
+- read-only; produce the critique inside the current session;
+- do not edit the contract or delete rules without explicit user approval.
+
+Requires approval:
+
+- any deletion of a contract rule the critique flags as unused;
+- promotion to a scheduled or automated self-audit.
+
 ## Upgrade Gate
 
 Before any loop becomes scheduled, hosted, or proactively pushed outside the current session, require:

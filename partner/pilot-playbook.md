@@ -1,6 +1,6 @@
 # Pilot Playbook
 
-Use this playbook to test whether Codex Partner improves real project R&D and thinking exploration.
+Use this playbook to test whether Alpha Partner improves real project R&D and thinking exploration.
 
 ## Pilot Purpose
 
@@ -31,7 +31,7 @@ Use a different project only if it has a clear source of truth and a concrete cu
 Use this from the target project or conversation:
 
 ```text
-这个项目请启用 Codex Partner 工作方式：
+这个项目请启用 Alpha Partner 工作方式：
 - partner workspace: `/Users/lizhaohua/Desktop/codex/AGENTS.md`
 - 当前项目路径/链接：<project path or source link>
 - 当前 source of truth：<specific docs, contracts, README, AGENTS, issue, or PR>

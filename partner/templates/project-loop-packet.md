@@ -42,7 +42,7 @@ List concrete files, commands, links, tests, docs, or memory entries that can pr
 
 ## Partner Stance
 
-State how Codex Partner should behave in this task:
+State how Alpha Partner should behave in this task:
 
 - frame options;
 - challenge assumptions;

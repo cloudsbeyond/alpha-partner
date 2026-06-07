@@ -19,7 +19,7 @@ Read in this order:
 
 Then summarize in plain language:
 
-- Codex Partner is a human-agent peer / partner / co-founder style collaborator.
+- Alpha Partner is a human-agent peer / partner / co-founder style collaborator.
 - Default mode is 共同研究执行.
 - The work is about improving research, project R&D, judgment, validation, and memory, not just coding throughput.
 - The workspace is Markdown-first and intentionally not an MCP server, app, or full knowledge base.
@@ -36,6 +36,7 @@ Before doing substantial work, classify the task as one primary loop:
 - Memory loop: the goal is continuity, decision preservation, or candidate durable memory.
 - Focus/risk loop: the user needs re-entry, attention recovery, portfolio triage, or risk review across active projects.
 - Manual loop layer: the task is about repeated checks, monitors, scheduled work, Boris-style loops, or proactive nudges.
+- Self-critique loop: the task is about institutional dissent—hunting for internally consistent but unverified claims in alphaX's own files (see Loop 7 in `partner/loop-registry.md`).
 
 If the task spans several loops, name the primary loop and keep the others secondary.
 
@@ -50,7 +51,7 @@ Use the matching packet when the work needs to leave a reusable trace:
 
 Packets can be copied into a project, notes folder, or future `sessions/` area. Keep the filled packet source-backed and compact.
 
-For a project that repeatedly uses Codex Partner, use `partner/templates/project-local-pointer.md` as the minimal local pointer. Do not copy the whole partner workspace into that repo.
+For a project that repeatedly uses Alpha Partner, use `partner/templates/project-local-pointer.md` as the minimal local pointer. Do not copy the whole partner workspace into that repo.
 
 Use `partner/skills/problem-decomposer/SKILL.md` when the work is stuck at the task level, lacks a clear evaluation method, or needs upward problem decomposition before choosing a path.
 
@@ -100,5 +101,31 @@ Then report:
 - what remains active or intentionally deferred.
 
 If the session used this workspace against a real project, add a compact line to `partner/session-ledger.md`.
+
+When closing a session that the next agent (a future alphaX, a subagent, or another harness) may resume, also emit a handoff state block. The prose ledger stays for humans; this block is the agent-readable shortcut so the next agent can reload state without re-reading every file.
+
+```yaml
+# alphaX handoff state
+p0: <one-line current main line>
+active_surface: <project path, repo, or conversation>
+branch: <branch or n/a>
+last_verified: <YYYY-MM-DD>
+next_block: <one concrete next action>
+open_risks:
+  - id: <short-id>
+    level: <P0|P1|P2|P3>
+    evidence: <file, command, or note>
+confidence: <high|medium|low>   # honest confidence in the above state
+unverified_claims:
+  - <claim that is asserted but not yet proven by evidence>
+```
+
+Rules for the block:
+
+- Record `unverified_claims` even when checks passed. Passing checks are not human or product acceptance.
+- State real `confidence`; do not hide uncertainty with polished wording.
+- When the input being closed out came from another agent, keep only its verifiable evidence (commands, files, line numbers, test results) and demote evidence-free conclusions to `unverified_claims`.
+
+This block is a habit, not a new system. Keep it inline in the session output or the relevant ledger entry; do not create a new file format or tracker for it yet.
 
 Do not mark the long-running goal complete unless the full collaboration system is demonstrably established and no required work remains.

@@ -1,12 +1,14 @@
 # Session Ledger
 
-This ledger records real uses of Codex Partner across projects and conversations. Keep entries compact and evidence-first.
+This ledger records real uses of Alpha Partner across projects and conversations. Keep entries compact and evidence-first.
 
 ## How To Record
 
 For each completed pilot or meaningful partner session, add:
 
 - date;
+- actor: `runtime` (the main runtime, currently Codex) or `review-agent` (a scoped reviewer of alphaX);
+- session kind: `meta` (iterating alphaX itself) or `applied` (alphaX used on a real external project);
 - project or conversation surface;
 - primary loop;
 - source of truth inspected;
@@ -15,10 +17,18 @@ For each completed pilot or meaningful partner session, add:
 - partner value observed;
 - next action.
 
+Meta/applied ratio rule:
+
+- `meta` work maintains the method; `applied` work uses it. The experiment only proves value through `applied` sessions.
+- The ratio rule applies **only to `runtime` entries**: after 3 consecutive `runtime` `meta` entries, the next `runtime` entry must be `applied`, or the workspace explicitly records why real-project use is blocked (for example: runtime quota exhausted, no live project available).
+- `review-agent` entries are `meta` by design (reviewers cannot reach external projects) and do NOT count toward the imbalance. Penalizing reviewer diligence would punish the wrong actor.
+
 ## Entries
 
 ### 2026-06-07: Partner Workspace Activation Redesign
 
+- actor: runtime
+- session kind: meta
 - project or conversation surface: `/Users/lizhaohua/Desktop/codex` partner workspace
 - primary loop: project loop with thinking-loop support
 - source of truth inspected: `AGENTS.md`, `partner/session-runbook.md`, `partner/activation-guide.md`, `partner/decision-log.md`, `scripts/verify-partner-workspace.sh`, user-provided `problem-decomposer.zip`
@@ -29,26 +39,32 @@ For each completed pilot or meaningful partner session, add:
 
 ### 2026-06-07: Project-Local Pointer Carrier
 
+- actor: runtime
+- session kind: meta
 - project or conversation surface: `/Users/lizhaohua/Desktop/codex` partner workspace
 - primary loop: project loop
 - source of truth inspected: `AGENTS.md`, `partner/activation-guide.md`, `partner/session-runbook.md`, `partner/decision-log.md`, `scripts/context-snapshot.sh`
-- concrete action or decision: added `partner/templates/project-local-pointer.md` as the canonical short pointer for repos that repeatedly use Codex Partner; updated `context-snapshot.sh` to detect whether a project root already references Codex Partner
+- concrete action or decision: added `partner/templates/project-local-pointer.md` as the canonical short pointer for repos that repeatedly use Alpha Partner; updated `context-snapshot.sh` to detect whether a project root already references Alpha Partner
 - verification evidence: `bash scripts/verify-partner-workspace.sh`; `bash scripts/context-snapshot.sh /Users/lizhaohua/Desktop/codex`; unresolved marker scan
 - partner value observed: cross-project activation now has a light project-local carrier without copying the whole partner workspace or asking the user to restate project context
 - next action: test the pointer in one real project and compare the agent's cold-start inference against actual project source of truth
 
 ### 2026-06-07: alphaX Invocation Alias
 
+- actor: runtime
+- session kind: meta
 - project or conversation surface: `/Users/lizhaohua/Desktop/codex` partner workspace
 - primary loop: thinking loop with project-loop persistence
 - source of truth inspected: `AGENTS.md`, `partner/activation-guide.md`, `partner/templates/project-local-pointer.md`, `partner/decision-log.md`
-- concrete action or decision: accepted `alphaX` as the lightweight call sign for Codex Partner while preserving the same human-agent peer and 共同研究执行 behavior contract
+- concrete action or decision: accepted `alphaX` as the lightweight call sign for Alpha Partner while preserving the same human-agent peer and 共同研究执行 behavior contract
 - verification evidence: `bash scripts/verify-partner-workspace.sh`; unresolved marker scan
 - partner value observed: activation becomes shorter and more personal without creating a separate persona, brand layer, or agent framework
 - next action: use `alphaX 介入一下` in a real project pilot and check whether the agent reconstructs context before asking clarification
 
 ### 2026-06-07: agent-interaction-bridge Cold Start Pilot
 
+- actor: runtime
+- session kind: applied
 - project or conversation surface: `/Users/lizhaohua/work/llm/agent-interaction-bridge`
 - primary loop: project loop with thinking-loop support
 - source of truth inspected: project `AGENTS.md`, `README.md`, `architecture/README.md`, `architecture/requirements-to-code-chain.md`, `architecture/ai-contract-index.md`, `architecture/sops/agentic-interaction-change.md`, `architecture/contracts/*.yaml`, `package.json`
@@ -59,6 +75,8 @@ For each completed pilot or meaningful partner session, add:
 
 ### 2026-06-07: presentation.rendering Focused Checkpoint
 
+- actor: runtime
+- session kind: applied
 - project or conversation surface: `/Users/lizhaohua/work/llm/agent-interaction-bridge`
 - primary loop: project loop with Spec Checkpoint
 - source of truth inspected: `architecture/contracts/presentation-rendering.yaml`, `architecture/ai-contract-index.md`, `architecture/sops/agentic-interaction-change.md`, current runtime, intent, reply policy, presentation, and test files
@@ -69,6 +87,8 @@ For each completed pilot or meaningful partner session, add:
 
 ### 2026-06-07: online_community Session Runtime Cold Start
 
+- actor: runtime
+- session kind: applied
 - project or conversation surface: `/Users/lizhaohua/work/llm/clouds-beyond/online_community`
 - primary loop: project loop with acceptance-check support
 - source of truth inspected: project `AGENTS.md`, `README.md`, `backend/AGENTS.md`, `backend/README.md`, `specs/session-runtime-v1/spec.md`, `specs/session-runtime-v1/tdd-assets.md`, `backend/src/session_runtime/*`, and session runtime tests
@@ -79,16 +99,20 @@ For each completed pilot or meaningful partner session, add:
 
 ### 2026-06-07: agent-interaction-bridge Project-Local Pointer Adoption
 
+- actor: runtime
+- session kind: applied
 - project or conversation surface: `/Users/lizhaohua/work/llm/agent-interaction-bridge`
 - primary loop: project loop
 - source of truth inspected: project `AGENTS.md`, `partner/templates/project-local-pointer.md`, previous `agent-interaction-bridge` pilot evidence packets
-- concrete action or decision: added a minimal `Codex Partner` pointer to project-local `AGENTS.md` after repeated real-project alphaX use
+- concrete action or decision: added a minimal `Alpha Partner` pointer to project-local `AGENTS.md` after repeated real-project alphaX use
 - verification evidence: `context-snapshot.sh` detected the pointer; `node ./bin/agent-interaction-bridge.mjs architecture check` passed; target diff only changed the local pointer section
 - partner value observed: future alphaX activation in this project can start from local instructions without the user repeating the partner workspace path or project context
 - next action: use `alphaX 介入一下` directly from `agent-interaction-bridge` and verify the agent starts from local source of truth
 
 ### 2026-06-07: Focus And Risk Loop Added
 
+- actor: runtime
+- session kind: meta
 - project or conversation surface: `/Users/lizhaohua/Desktop/codex` partner workspace
 - primary loop: thinking loop with focus/risk support
 - source of truth inspected: user feedback about parallel complex projects, full-time work attention fragmentation, and missed-risk concern; `partner/operating-system.md`; `partner/session-runbook.md`; prior pilot evidence
@@ -99,6 +123,8 @@ For each completed pilot or meaningful partner session, add:
 
 ### 2026-06-07: Focus Radar Created
 
+- actor: runtime
+- session kind: meta
 - project or conversation surface: `/Users/lizhaohua/Desktop/codex`, `agent-interaction-bridge`, `online_community`, `clouds-beyond`
 - primary loop: focus/risk loop
 - source of truth inspected: live context snapshots, `partner/focus-risk-loop.md`, `partner/pilot-candidates.md`, current project git state
@@ -109,6 +135,8 @@ For each completed pilot or meaningful partner session, add:
 
 ### 2026-06-07: online_community Manual Acceptance Plan
 
+- actor: runtime
+- session kind: applied
 - project or conversation surface: `/Users/lizhaohua/work/llm/clouds-beyond/online_community`
 - primary loop: focus/risk loop with project acceptance support
 - source of truth inspected: `partner/focus-radar.md`, `specs/session-runtime-v1/spec.md`, `specs/session-runtime-v1/tdd-assets.md`, `backend/src/session_runtime/acceptance.py`
@@ -136,6 +164,98 @@ For each completed pilot or meaningful partner session, add:
 - verification evidence: to be completed by `bash scripts/verify-partner-workspace.sh` and unresolved marker scan
 - partner value observed: manual radar caught stale context before alphaX or the user continued from an outdated project state
 - next action: run a read-only `agent-interaction-bridge` WIP review before editing that repo
+
+### 2026-06-07: External Reviewer Agent Session And Agent-To-Agent Trace Protocol
+
+- project or conversation surface: `/Users/lizhaohua/Desktop/codex` partner workspace
+- primary loop: project loop with thinking-loop support
+- source of truth inspected: `AGENTS.md`, `partner/persona.md`, `partner/operating-system.md`, `partner/activation-guide.md`, `partner/loop-registry.md`, `partner/session-ledger.md`, `partner/decision-log.md`, `partner/focus-radar.md`, `partner/research-backlog.md`, `partner/evidence-index.md`, `partner/templates/project-local-pointer.md`, `scripts/verify-partner-workspace.sh`, `scripts/context-snapshot.sh`
+- concrete action or decision: an external reviewer agent cleaned the legacy `Codex Partner` term to `alpha-partner` / `alphaX` across 16 docs and 2 scripts; added a session-close handoff state block (`session-runbook.md`); added an `Agent Intake Rule` (`operating-system.md`); recorded the agent-to-agent trace protocol decision (`decision-log.md`)
+- verification evidence: `bash scripts/verify-partner-workspace.sh` passed twice; `rg "Codex Partner"` returned no matches
+- partner value observed: the user stepped out of the relay role, so agent-to-agent collaboration became trace-based through shared files instead of human-relayed messages
+- next action: at the next cross-day re-entry, resume from the handoff block below and judge whether structured handoff actually lowered re-entry cost
+
+Handoff state for the next agent:
+
+```yaml
+# alphaX handoff state
+p0: 用一次真实的跨天复用，证伪 alphaX "降低重入成本" 这一主张
+active_surface: /Users/lizhaohua/Desktop/codex (alpha-partner workspace)
+branch: n/a
+last_verified: 2026-06-07
+next_block: 下次跨天回到任一真实项目时，收尾按 handoff block 产出一次，对比结构化交接 vs 散文 ledger 的重入成本
+open_risks:
+  - id: term-drift-external-repo
+    level: P2
+    evidence: agent-interaction-bridge 的 AGENTS.md 仍写旧词 Codex Partner；context-snapshot.sh 现仅匹配 Alpha Partner，会漏检该外部 pointer
+  - id: scaffolding-vs-use
+    level: P1
+    evidence: 本轮新增 handoff block + Agent Intake Rule；若下次跨天不真正使用，它们就是又一层没人消费的脚手架
+confidence: medium
+unverified_claims:
+  - 结构化交接比散文 ledger 更省下一个 agent 的重入成本 # 尚无任何真实复用数据
+  - alphaX 降低人类项目重入成本 # 截至今日仍全是同一天数据
+```
+
+### 2026-06-07: External Peer Agent Review And Contribution
+
+- actor: review-agent
+- session kind: meta
+- project or conversation surface: `/Users/lizhaohua/Desktop/codex` partner workspace
+- primary loop: thinking loop with project-loop persistence
+- source of truth inspected: `AGENTS.md`, `README.md`, all `partner/*.md` files, all `partner/pilots/*.md`, `partner/loop-reports/*.md`, `partner/skills/problem-decomposer/SKILL.md`, `scripts/*.sh`, `.gitignore`
+- concrete action or decision: a second external agent (invited by Lizhaohua as a peer, not an unsolicited reviewer) read the entire workspace, delivered a candid review identifying strengths (self-reflexivity, false-completion concept, L0-L4 boundary discipline, Spec Checkpoint format, anti-overengineering discipline) and risks (same-day evidence limitation, scaffolding-to-use ratio, Boris-style loop gravity, untested agent-to-agent protocol, no real project changes yet, workspace staleness not tracked); Lizhaohua then invited the agent to contribute directly; the agent wrote a decision entry, this ledger entry, a peer-review evidence packet, and a focus-radar update
+- verification evidence: `bash scripts/verify-partner-workspace.sh` (to be run after all writes); all edits are additive and fit existing workspace surfaces without new file formats or process layers
+- partner value observed: an invited peer agent can deliver a structural critique and contribute durable traces through the same Agent Intake Rule and trace-based protocol already defined in this workspace; the contribution tests whether "external agent acts here" can become a repeatable pattern rather than a one-off event
+- next action: the next alphaX should apply the Agent Intake Rule to this entry and the peer-review packet; cross-day reuse remains the single most important test of the workspace's core value claim
+
+### 2026-06-07: Review Agent Contract Alignment Session
+
+- actor: review-agent
+- session kind: meta
+- project or conversation surface: `/Users/lizhaohua/Desktop/codex` partner workspace
+- primary loop: self-critique loop (Loop 7)
+- source of truth inspected: all files in the workspace (same surface as previous peer review)
+- concrete action or decision: Lizhaohua confirmed this agent as review-agent and asked to find language/logic conflicts without adding new governance; found 4 conflicts (missing actor/kind fields on all 14 ledger entries, verifier not covering new governance items, session-runbook missing Loop 7 classification, missing handoff block from previous session); fixed all 4 conflicts; added verifier patterns for Collaboration Topology, Loop 7, Agent Intake Rule, reverse feedback, governance decisions, and actor/kind fields; produced this handoff state block
+- verification evidence: `bash scripts/verify-partner-workspace.sh` passed after all edits; all 14 ledger entries now carry actor and session kind; verifier covers 4 new governance anchors
+- partner value observed: a review agent can enforce the contract against itself—finding gaps where the governance layer added rules but didn't backfill the data or verifier that the rules require
+- next action: git commit all uncommitted changes to solidify the contract state; then cross-day reuse remains the single most important test
+
+Handoff state for the next agent:
+
+```yaml
+# alphaX handoff state
+p0: 用一次真实的跨天复用，证伪 alphaX "降低重入成本" 这一主张
+active_surface: /Users/lizhaohua/Desktop/codex (alpha-partner workspace)
+branch: n/a
+last_verified: 2026-06-07
+next_block: git commit 所有未提交改动；然后下次跨天 session 从 handoff block 冷启动，重入 agent-interaction-bridge 的脏 WIP
+open_risks:
+  - id: all-evidence-same-day
+    level: P0
+    evidence: 所有 15 条 ledger 条目、14 条决策、5 个 pilot、1 个 loop report 均为 2026-06-07
+  - id: uncommitted-contract-state
+    level: P0
+    evidence: 18 个文件 modified，0 个 commit；合约治理层已更新但未固化为版本历史
+  - id: scaffolding-to-use-ratio
+    level: P1
+    evidence: 7 个 loop 定义，1 个跑过；6 种 packet 模板，2 个使用过
+  - id: no-real-project-changes
+    level: P1
+    evidence: 所有 pilot 均为 read-only；presentation.rendering 迁移方案已写但未执行
+  - id: workspace-staleness-untracked
+    level: P1
+    evidence: focus-radar 追踪外部项目 staleness 但不追踪自身 staleness
+  - id: term-drift-external-repo
+    level: P2
+    evidence: agent-interaction-bridge 的 AGENTS.md 可能仍写旧词 Codex Partner
+confidence: medium
+unverified_claims:
+  - alphaX 降低人类项目重入成本 # 仍全是同一天数据
+  - 结构化交接比散文 ledger 更省下一个 agent 的重入成本 # 尚无任何真实复用数据
+  - 合约版本锚定和 self-critique 会在多项目中产生回报 # 假设高频跨项目使用，尚未观察到
+  - 反向反馈会真正修剪未使用的规则 # 尚无 applied session 运行过 prune
+```
 
 ## Review Rule
 

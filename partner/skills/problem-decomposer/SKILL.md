@@ -165,7 +165,7 @@ Useful missing-context questions:
 
 ## Partner Workspace Use
 
-Inside the Codex Partner workspace, use this skill as a thinking-loop accelerator:
+Inside the Alpha Partner workspace, use this skill as a thinking-loop accelerator:
 
 - before locking a P0 main line;
 - when a project is stuck in implementation details;
