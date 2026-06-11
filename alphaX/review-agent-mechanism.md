@@ -1,0 +1,113 @@
+# Review Agent Mechanism
+
+The review agent is a reusable alphaX governance mechanism. It is not a
+project-specific artifact, not a hidden supervisor, and not a second runtime
+that acts on target projects.
+
+Its job is to improve the alphaX function itself by reviewing contract drift,
+evidence quality, false completion, stale state, and weak assumptions. The
+mechanism is shareable because any alphaX user can run the same review role
+against their own alpha-partner checkout and ignored `.alphaX/process/` data.
+
+## Why It Exists
+
+Long-running agent collaboration tends to fail in predictable ways:
+
+- the agent agrees too easily with its own previous conclusion;
+- process scaffolding grows faster than useful output;
+- source-of-truth drift is missed across sessions;
+- handoff state becomes stale;
+- local project facts leak into generic source;
+- completion is claimed without enough evidence.
+
+The review agent exists to create a separate, evidence-first check on those
+failure modes. It should produce useful dissent when evidence supports dissent,
+and it should state the checked scope when it finds no issue.
+
+## Public Source Anchors
+
+This mechanism is a synthesis of external and internal sources, not a copy of
+any one product pattern.
+
+- Anthropic's Claude Code dynamic workflows describe parallel subagents,
+  independent verification, adversarial checking, and convergence before
+  results are returned. alphaX takes the cross-checking lesson but keeps it as a
+  scoped governance mechanism, not as a large unattended execution fleet.
+  Source: https://claude.com/blog/introducing-dynamic-workflows-in-claude-code
+- GitHub Copilot cloud agent shows the value of traceable background agent work:
+  research, planning, branch changes, review, logs, and repository-scoped
+  limits. alphaX uses it as an execution-layer contrast: review agents are
+  governance reviewers, not issue-to-PR coding workers.
+  Source:
+  https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-cloud-agent
+- Public alphaX source anchors are `AGENTS.md`, `docs/evidence-index.md`, this
+  mechanism file, and `alphaX/review-agent-bootstrap.md`.
+
+## Optional Local Evidence
+
+Local alphaX practice can show whether long-running Markdown-first collaboration
+needs a durable reviewer role that challenges governance drift without touching
+external projects. When present, `.alphaX/process/session-ledger.md` and
+`.alphaX/process/reviewer-backlog.md` are local evidence for that checkout only.
+They are not public source anchors or publication authority.
+
+## Mechanism Contract
+
+The review agent has a narrow role:
+
+- read `AGENTS.md` and current alphaX source;
+- read ignored `.alphaX/process/` local process data when available;
+- inspect the open-source boundary and verifier state;
+- challenge unsupported claims and stale handoff state;
+- identify false completion and scaffolding-to-use imbalance;
+- produce `meta` work only.
+
+It must not:
+
+- read or modify external target projects;
+- act as the runtime carrier executing alphaX on user projects;
+- write applied project output;
+- infer another agent's intent without file evidence;
+- add a new mechanism before existing mechanisms are proven insufficient.
+
+## How To Use
+
+Use the review agent when:
+
+- alphaX source changed materially;
+- local `.alphaX/process/` state has grown stale;
+- a session has produced several governance decisions without independent
+  challenge;
+- the user asks for an alphaX consistency review;
+- the source is about to be published or handed off to another agent.
+
+Invocation:
+
+```text
+Use the review-agent mechanism for alpha-partner.
+Read alphaX/review-agent-mechanism.md and alphaX/review-agent-bootstrap.md.
+Review only alphaX source and ignored .alphaX/process/ data. Do not touch
+external projects.
+```
+
+Then follow `alphaX/review-agent-bootstrap.md` for the concrete cold-start
+procedure.
+
+## Expected Output
+
+Every review should end with:
+
+1. verifier result;
+2. risk list with evidence and `confidence`;
+3. drift markers;
+4. proposed or written local ledger entry, if a ledger exists;
+5. handoff update, if applicable;
+6. Spec Checkpoint, if the discussion has accumulated enough scope or drift.
+
+## Adoption Rule
+
+Other users can adopt this mechanism by copying the alphaX source and running
+the same review role against their own checkout. Their local process evidence
+must stay in their ignored `.alphaX/process/`; generic mechanism improvements
+belong in the open-source tree only after they are redacted out of local project
+facts.

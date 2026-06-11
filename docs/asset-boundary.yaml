@@ -1,0 +1,123 @@
+# alphaX Data Asset Index
+#
+# Classifies data assets around alphaX. These are not the reusable alphaX
+# function itself. They can be omitted, redacted, or regenerated when sharing
+# alpha-partner.
+
+schema_version: 1
+owner: alphaX
+kind: data_asset_classification
+
+shareable_function_assets:
+  description: Generic alphaX contract, SOPs, templates, and verifier rules.
+  examples:
+    - AGENTS.md
+    - README.md
+    - functions/context-reloader/README.md
+    - alphaX/persona.md
+    - alphaX/operating-system.md
+    - alphaX/activation-guide.md
+    - alphaX/session-runbook.md
+    - alphaX/loop-registry.md
+    - alphaX/pilot-playbook.md
+    - alphaX/review-agent-mechanism.md
+    - alphaX/review-agent-bootstrap.md
+    - docs/research-backlog.md
+    - docs/evidence-index.md
+    - docs/asset-boundary.yaml
+    - docs/local-alphaX-schema.md
+    - templates/
+    - skills/problem-decomposer/SKILL.md
+    - scripts/init-local-alphaX.sh
+    - scripts/verify-local-alphaX.sh
+    - scripts/context-snapshot.sh
+    - scripts/verify-alpha-source.sh
+
+alphaX_process_data_assets:
+  description: Goal calibration, risk judgment, decision rationale, review summaries, and reusable lessons. These are reviewable reasoning summaries, not raw hidden model chain-of-thought.
+  historical_term_policy: Historical entries may contain superseded terms such as workspace, project metadata, Context Reloader project records, or main runtime. Treat those terms as historical evidence only; current source-of-truth terminology is AGENTS.md.
+  assets:
+    - path: .alphaX/process/focus-radar.md
+      kind: risk_judgment_snapshot
+      coupling: portfolio-level alphaX risk judgment over current projects
+      sharing_rule: local only; do not commit to GitHub
+
+    - path: .alphaX/process/session-ledger.md
+      kind: process_history_and_decision_trace
+      coupling: concrete sessions, commits, PRs, applied decisions, and handoff state
+      sharing_rule: local only; redact into generic examples before sharing
+      current_state_rule: use AGENTS.md for current terminology; Handoff State is local resume state only; older entries are historical snapshots
+
+    - path: .alphaX/process/decision-log.md
+      kind: local_decision_trace
+      coupling: local governance history, unverified claims, and applied decisions
+      sharing_rule: local only; extract only generic decisions if needed
+
+    - path: .alphaX/process/pilots/
+      kind: applied_calibration_evidence
+      coupling: project-specific pilots and validation notes
+      sharing_rule: local only; not required for alphaX function execution
+
+    - path: .alphaX/process/loop-reports/
+      kind: applied_risk_and_goal_alignment_reports
+      coupling: project-specific manual runs, review reports, and closure packets
+      sharing_rule: local only; not required for alphaX function execution
+      current_state_rule: older reports may mention superseded mechanisms; do not use them as current rules without checking AGENTS.md
+
+    - path: .alphaX/process/reviewer-backlog.md
+      kind: local_review_working_surface
+      coupling: local review-agent todos and unsettled consensus
+      sharing_rule: local only
+
+local_meta_data_assets:
+  - path: .alphaX/local/project-paths.md
+    kind: local_path_alias_data
+    coupling: machine-specific absolute paths
+    sharing_rule: local only; do not commit to GitHub
+
+  - path: .alphaX/local/project-meta-index.yaml
+    kind: quasi_static_project_meta_data
+    coupling: project aliases, alphaX mapping paths, source-of-truth anchors
+    sharing_rule: local only; create redacted examples separately if needed
+
+  - path: .alphaX/local/project-map.md
+    kind: local_project_sample_map
+    coupling: user-specific project samples and product ideas
+    sharing_rule: local only
+
+  - path: .alphaX/local/pilot-candidates.md
+    kind: local_pilot_queue
+    coupling: current project queue and private prioritization
+    sharing_rule: local only
+
+external_project_local_objective_data:
+  description: Concrete project alphaX mappings live with each project and are ignored local objective data by default.
+  canonical_paths:
+    - "{project}/.alphaX/AGENTS.md"
+    - "{project}/.alphaX/project-context.md"
+    - "{project}/.alphaX/reports/"
+  allowed_content:
+    - project key and source anchors
+    - observed state snapshots
+    - iteration events
+    - validation evidence pointers
+    - local report artifact paths
+  disallowed_content:
+    - raw secrets
+    - private transcript content
+    - target project source-of-truth replacements
+    - broad alphaX risk judgment assets
+    - raw hidden model chain-of-thought
+  sharing_rule: share with the project only when explicitly intended; do not bundle into generic alpha-partner distribution
+
+open_source_repository_rule:
+  tracked_tree_contains:
+    - shareable_function_assets
+  tracked_tree_must_not_contain:
+    - .alphaX/
+    - local project paths
+    - concrete project status
+    - transcript content
+    - process ledgers
+    - pilot evidence
+    - loop reports
