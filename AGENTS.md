@@ -6,7 +6,7 @@ for Alpha Partner. It is the first file to read before working inside
 
 Repository identity: **alpha-partner**.
 
-alphaX contract: **v0.2**.
+alphaX contract: **v0.2.1**.
 Baseline freeze: **alphaX-contract-v0.1**.
 Change rule: bump the contract version on any substantive contract change.
 Carry the contract version in cold-start summaries and handoff state blocks so a

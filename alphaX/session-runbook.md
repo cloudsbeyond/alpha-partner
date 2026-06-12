@@ -4,7 +4,24 @@ Repeatable session habit for working inside `{alpha-partner}` or on the Alpha Pa
 
 ## 1. Cold Start
 
-Read in order: `AGENTS.md` → `alphaX/persona.md` → `alphaX/operating-system.md` → `alphaX/activation-guide.md` (if from another project) → `functions/context-reloader/README.md` (if re-entering a project) → the target project's `.alphaX/AGENTS.md` and `.alphaX/project-context.md` when present → `alphaX/target-project-review-mode.md` (if reviewing one target project's delivery, handoff, merge, release, or claimed completion) → optional local `.alphaX/local/project-meta-index.yaml` only for quasi-static project clues → `alphaX/pilot-playbook.md` (if real project pilot) → optional local `.alphaX/local/pilot-candidates.md` (if choosing next pilot) → `alphaX/operating-system.md` Focus And Risk Loop (section 5) (if returning to project, juggling several, asking for review, or worried about missed risk) → optional local `.alphaX/process/focus-radar.md` (if asking what to focus on or portfolio risk review) → `alphaX/loop-registry.md` (if about recurring attention, monitoring, loops, routines, scheduled work, proactive nudges) → task-specific files under `docs/`, `templates/`, or ignored `.alphaX/`.
+Always read these first:
+
+1. `AGENTS.md`
+2. `alphaX/persona.md`
+3. `alphaX/operating-system.md`
+
+Then read conditionally:
+
+| Condition | Read |
+| --- | --- |
+| Activated from another project | `alphaX/activation-guide.md` |
+| Re-entering a project | `functions/context-reloader/README.md`, then the target project's `.alphaX/AGENTS.md` and `.alphaX/project-context.md` when present |
+| Reviewing one target project's delivery, handoff, merge, release, or claimed completion | `alphaX/target-project-review-mode.md` |
+| Looking for quasi-static local project clues | optional `.alphaX/local/project-meta-index.yaml` |
+| Running a real project pilot or choosing the next pilot | `alphaX/pilot-playbook.md`, optional `.alphaX/local/pilot-candidates.md` |
+| Returning to work, juggling several projects, asking for review, or worried about missed risk | `alphaX/operating-system.md` Focus And Risk Loop, optional `.alphaX/process/focus-radar.md` |
+| Discussing recurring checks, monitoring, loops, routines, scheduled work, or proactive nudges | `alphaX/loop-registry.md` |
+| Doing task-specific work | relevant files under `docs/`, `templates/`, or ignored `.alphaX/` |
 
 If a local `.alphaX/` tree is needed but absent, run `bash scripts/init-local-alphaX.sh` before relying on local process data. Then run `bash scripts/verify-local-alphaX.sh`.
 
@@ -21,6 +38,10 @@ Before writing files, classify the runtime mode:
   project or problem. Treat `alpha-partner` as read-only source. Do not write to
   this repository or this checkout's `.alphaX/process/` unless the user
   explicitly switches the task to Source Evolution Mode.
+
+Write boundary and review target are separate decisions. Reviewing alphaX itself
+without writing is review-agent/meta read-only work, not External Assistance
+Mode; writing Alpha Partner Source is Source Evolution Mode.
 
 In External Assistance Mode, write outputs only to the target project, the
 target project's ignored `.alphaX/`, an OS temporary directory, or the
