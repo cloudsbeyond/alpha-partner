@@ -103,6 +103,8 @@ Why it matters:
 Source use:
 
 - Serves as a contrast case: useful for execution mechanics, but not the main model for partner / co-founder collaboration.
+- Informs target-project review boundaries only at the repo-scoped evidence and
+  handoff-log level; it does not turn alphaX review into an issue-to-PR worker.
 
 ### Claude Code Dynamic Workflows
 
@@ -118,6 +120,9 @@ Why it matters:
 Source use:
 
 - Supports the review-agent topology, `alphaX/review-agent-mechanism.md`, Agent Intake Rule, `confidence` / `unverified_claims` fields, and context economy (scaffolding-to-use discipline).
+- Supports `alphaX/target-project-review-mode.md` by reinforcing independent
+  verification, adversarial checking, and explicit convergence before claimed
+  completion.
 - Serves as a contrast case for product form: large unattended agent fleets are a low-level execution reference, not the high-checkpoint partner model.
 
 ## Internal Evidence Sources

@@ -21,6 +21,7 @@ supervisor-agent action, but this repository is the Markdown-first source.
 It focuses on:
 
 - project re-entry and risk review;
+- target-project delivery review before handoff, merge, or release;
 - source-backed judgment formation;
 - contract-first engineering;
 - verifiable implementation;
@@ -77,12 +78,18 @@ For portfolio focus and risk:
 alphaX daily radar
 ```
 
+For target-project delivery review:
+
+```text
+alphaX review this target project before handoff.
+```
+
 Triggers are semantic, not literal. User prompts in another language should map
 to the same alphaX behaviors when the intent is the same.
 
 ## Repository Layout
 
-- `alphaX/`: alphaX behavior, operating loops, activation, session, pilot, and review-agent mechanism/runbooks.
+- `alphaX/`: alphaX behavior, operating loops, activation, session, pilot, review-agent mechanism/runbooks, and target-project review mode.
 - `functions/`: reusable function/SOP surfaces, starting with Context Reloader.
 - `templates/`: packets and project-local mapping templates.
 - `skills/`: local reasoning skills.
@@ -98,6 +105,17 @@ quality, stale state, false completion, and weak assumptions. It produces
 
 Use `alphaX/review-agent-bootstrap.md` as the cold-start procedure when running
 that mechanism.
+
+## Target-Project Review
+
+`alphaX/target-project-review-mode.md` defines the scoped review mode for one
+target project. It checks claimed completion, changed files, validation
+evidence, source drift, and project-local `.alphaX/` objective data before a
+handoff, merge, release, or readiness claim.
+
+This mode is External Assistance Mode by default. Output is report-first;
+durable review summaries belong in the target project's ignored `.alphaX/`, not
+in this checkout's `.alphaX/process/`.
 
 ## Data Boundary
 

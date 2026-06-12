@@ -22,11 +22,13 @@ shareable_function_assets:
     - alphaX/pilot-playbook.md
     - alphaX/review-agent-mechanism.md
     - alphaX/review-agent-bootstrap.md
+    - alphaX/target-project-review-mode.md
     - docs/research-backlog.md
     - docs/evidence-index.md
     - docs/asset-boundary.yaml
     - docs/local-alphaX-schema.md
     - templates/
+    - templates/target-project-review-report.md
     - skills/problem-decomposer/SKILL.md
     - scripts/init-local-alphaX.sh
     - scripts/verify-local-alphaX.sh
@@ -102,6 +104,7 @@ external_project_local_objective_data:
     - iteration events
     - validation evidence pointers
     - local report artifact paths
+    - target-project review reports
   disallowed_content:
     - raw secrets
     - private transcript content
@@ -109,6 +112,27 @@ external_project_local_objective_data:
     - broad alphaX risk judgment assets
     - raw hidden model chain-of-thought
   sharing_rule: share with the project only when explicitly intended; do not bundle into generic alpha-partner distribution
+
+target_project_review_artifacts:
+  description: Review outputs for one concrete target project. They verify claims, changed files, drift, and validation evidence; they are not alphaX source governance records.
+  alpha_partner_shareable_assets:
+    - alphaX/target-project-review-mode.md
+    - templates/target-project-review-report.md
+  target_project_local_outputs:
+    - "{project}/.alphaX/reports/target-project-review-*.md"
+    - "{project}/.alphaX/project-context.md"
+  default_output_rule: report in the conversation first
+  write_rule: write only non-sensitive summaries to the target project's ignored .alphaX/ when useful and allowed
+  prohibited_locations:
+    - "{alpha-partner}/.alphaX/process/"
+    - "{alpha-partner}/docs/"
+    - "{alpha-partner}/alphaX/"
+  prohibited_content:
+    - secrets
+    - private transcript content
+    - raw hidden model chain-of-thought
+    - source-of-truth replacements for the target project
+    - broad alphaX governance judgment
 
 open_source_repository_rule:
   tracked_tree_contains:

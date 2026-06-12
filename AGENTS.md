@@ -6,7 +6,7 @@ for Alpha Partner. It is the first file to read before working inside
 
 Repository identity: **alpha-partner**.
 
-alphaX contract: **v0.1**.
+alphaX contract: **v0.2**.
 Baseline freeze: **alphaX-contract-v0.1**.
 Change rule: bump the contract version on any substantive contract change.
 Carry the contract version in cold-start summaries and handoff state blocks so a
@@ -59,7 +59,7 @@ The real collaboration topology has five layers:
 2. **Project objective data**: each concrete project owns its ignored `.alphaX/` directory. That directory is objective project state and iteration data for alphaX re-entry.
 3. **Runtime carrier**: an agent session executes the function by reading the project, its `.alphaX/`, and user instructions.
 4. **Dedicated entity runtime**: a reserved layer may host alphaX as Alpha Soul Agent, but that is not this source boundary.
-5. **Review agents** (one or more): observe alphaX's contract and traces prudently and pragmatically, give feedback, and help evolve alphaX. Their context is scoped to alphaX itself and must not spill into the other real projects the runtime is driving. Review agents produce `meta` work only.
+5. **Review agents** (one or more): observe alphaX's contract and traces prudently and pragmatically, give feedback, and help evolve alphaX. Their context is scoped to alphaX itself and must not spill into the other real projects the runtime is driving. Review agents produce `meta` work only. Target-project review is a separate External Assistance Mode surface, not an expansion of this review-agent role.
 
 Identity rule:
 
@@ -140,6 +140,24 @@ before any write to this repository. External project process data must not be
 stored in this checkout's `.alphaX/process/`; that directory is for alphaX
 self-governance and source-evolution process data only.
 
+## Target Project Review Mode
+
+Target Project Review Mode is the scoped review surface for one concrete target
+project. It checks whether target-project claims, changed files, validation
+evidence, and project-local `.alphaX/` objective data support a handoff, merge,
+release, or claimed completion.
+
+Trigger it when the user explicitly asks to review a target project, when a
+handoff or merge is about to claim completion, when context reload finds stale
+or conflicting project evidence, or when the user asks about false completion or
+missed risk in a target project.
+
+This mode is External Assistance Mode by default. It is report-first. Durable
+review data belongs in the target project's ignored `.alphaX/reports/` or
+`.alphaX/project-context.md` only when useful and allowed. Do not write target
+project review data into this checkout's `.alphaX/process/`, and do not change
+Alpha Partner Source while reviewing an external target project.
+
 ## Interaction Language
 
 English is the canonical source language for this repository. Runtime
@@ -211,6 +229,7 @@ External research is required, but it must serve the partnership and real projec
 - `alphaX/pilot-playbook.md`: how to run real project pilots and judge whether the partner mode helps.
 - `alphaX/review-agent-mechanism.md`: reusable review-agent mechanism, source anchors, usage contract, and adoption rule.
 - `alphaX/review-agent-bootstrap.md`: cold-start opener for the review agent role.
+- `alphaX/target-project-review-mode.md`: target-project review trigger contract, role, write boundary, and report procedure.
 - `docs/research-backlog.md`: deep research tracks and source anchors.
 - `docs/evidence-index.md`: sources, why they matter, and how they map back to this source.
 - `docs/asset-boundary.yaml`: data classification and open-source boundary rules.
@@ -218,6 +237,7 @@ External research is required, but it must serve the partnership and real projec
 - `templates/`: reusable packets for research, project, thinking, and memory loops.
 - `templates/loop-report.md`: compact report template for manual-trigger loops and proactive nudge candidates.
 - `templates/reentry-risk-packet.md`: project re-entry and risk review packet for fragmented attention or parallel work.
+- `templates/target-project-review-report.md`: report template for reviewing one target project's claims, evidence, drift, and next action.
 - `templates/project-local-pointer.md`: minimal project-local `AGENTS.md` pointer for repos that repeatedly use alphaX.
 - `skills/problem-decomposer/SKILL.md`: local reasoning skill for moving from task to real problem, redefined problem, and higher objective.
 - `functions/context-reloader/`: alphaX re-entry function/SOP. It reads project-local `.alphaX/` and live source; it does not store project contexts.

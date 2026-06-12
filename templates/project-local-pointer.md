@@ -6,7 +6,7 @@ The injection has three surfaces:
 
 1. Versioned project `AGENTS.md`: one local Agent-assisted project-management loader sentence only.
 2. Versioned project `.gitignore`: ignore `.alphaX/`.
-3. Local ignored `.alphaX/`: target-project objective state data, iteration events, evidence pointers, and local report artifacts for the alphaX function.
+3. Local ignored `.alphaX/`: target-project objective state data, iteration events, evidence pointers, target-project review reports, and local report artifacts for the alphaX function.
 
 Do not put heavy alphaX context, private alpha-partner paths, old Context Reloader project paths, full project status, or active P0 details into the third-party project's versioned `AGENTS.md`.
 
@@ -147,6 +147,7 @@ itself.
 
 - re-entry report;
 - source drift report;
+- target-project review report;
 - risk report;
 - next-action recommendation;
 - what not to do now.

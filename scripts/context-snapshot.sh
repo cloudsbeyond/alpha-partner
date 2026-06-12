@@ -32,20 +32,35 @@ else
 fi
 
 section "Instruction Files"
-find . -maxdepth 3 -type f \( \
-  -name 'AGENTS.md' -o \
-  -path '*/.alphaX/*' -o \
-  -name 'README.md' -o \
-  -name 'README' -o \
-  -name 'CLAUDE.md' -o \
-  -name 'GEMINI.md' -o \
-  -name '*.code-workspace' \
-\) -print | sort | sed -n '1,80p'
+{
+  find . -maxdepth 3 -type f \( \
+    -name 'AGENTS.md' -o \
+    -name 'README.md' -o \
+    -name 'README' -o \
+    -name 'CLAUDE.md' -o \
+    -name 'GEMINI.md' -o \
+    -name '*.code-workspace' \
+  \) -not -path './.alphaX/*' -print
+  for file in \
+    ".alphaX/AGENTS.md" \
+    ".alphaX/project-context.md" \
+    ".alphaX/local/project-meta-index.yaml"
+  do
+    [ -f "$file" ] && printf './%s\n' "$file"
+  done
+} | sort | sed -n '1,80p'
 
 section "alphaX Project Mapping"
 if [ -d ".alphaX" ]; then
   printf 'present: .alphaX alphaX function mapping/context\n'
-  find .alphaX -maxdepth 2 -type f -print | sort | sed -n '1,20p'
+  for file in \
+    ".alphaX/AGENTS.md" \
+    ".alphaX/project-context.md" \
+    ".alphaX/local/project-meta-index.yaml" \
+    ".alphaX/manifest.yaml"
+  do
+    [ -f "$file" ] && printf '%s\n' "$file"
+  done
 elif [ -f "AGENTS.md" ] && rg -n "Alpha Partner|alphaX|Joint Research Execution" "AGENTS.md" >/dev/null 2>&1; then
   printf 'present: root AGENTS.md references Alpha Partner\n'
   rg -n "Alpha Partner|alphaX|Joint Research Execution" "AGENTS.md" | sed -n '1,20p'
@@ -66,6 +81,7 @@ find . -maxdepth 4 -type f \( \
   -iname '*acceptance*' \
 \) -not -path '*/node_modules/*' \
   -not -path '*/.git/*' \
+  -not -path '*/.alphaX/process/*' \
   -not -path '*/dist/*' \
   -not -path '*/build/*' \
   -print | sort | sed -n '1,120p'

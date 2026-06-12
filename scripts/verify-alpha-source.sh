@@ -48,6 +48,7 @@ required_files=(
   "alphaX/pilot-playbook.md"
   "alphaX/review-agent-mechanism.md"
   "alphaX/review-agent-bootstrap.md"
+  "alphaX/target-project-review-mode.md"
   "docs/asset-boundary.yaml"
   "docs/README.zh-CN.md"
   "docs/local-alphaX-schema.md"
@@ -60,6 +61,7 @@ required_files=(
   "templates/memory-candidate-packet.md"
   "templates/reentry-risk-packet.md"
   "templates/loop-report.md"
+  "templates/target-project-review-report.md"
   "templates/project-local-pointer.md"
   "skills/problem-decomposer/SKILL.md"
   "scripts/init-local-alphaX.sh"
@@ -77,17 +79,19 @@ check_pattern "^\\.agents/$" ".gitignore"
 check_pattern "MIT License" "LICENSE"
 check_pattern "Alpha Partner Source" "AGENTS.md"
 check_pattern "alphaX contract" "AGENTS.md"
-check_pattern "alphaX contract: \\*\\*v0\\.1\\*\\*" "AGENTS.md"
+check_pattern "alphaX contract: \\*\\*v0\\.2\\*\\*" "AGENTS.md"
 check_pattern "personified collaboration function" "AGENTS.md"
 check_pattern "Local Data Map" "AGENTS.md"
 check_pattern "Runtime Modes And Write Boundary" "AGENTS.md"
 check_pattern "External Assistance Mode" "AGENTS.md"
+check_pattern "Target Project Review Mode" "AGENTS.md"
 check_pattern "Interaction Language" "AGENTS.md"
 check_pattern "GitHub" "AGENTS.md"
 check_pattern "open-source function source only" "README.md"
 check_pattern "LICENSE" "README.md"
 check_pattern "docs/README.zh-CN.md" "README.md"
 check_pattern "shareable_function_assets" "docs/asset-boundary.yaml"
+check_pattern "target_project_review_artifacts" "docs/asset-boundary.yaml"
 check_pattern "open_source_repository_rule" "docs/asset-boundary.yaml"
 check_pattern "tracked_tree_must_not_contain" "docs/asset-boundary.yaml"
 check_pattern "Required Shape" "docs/local-alphaX-schema.md"
@@ -105,6 +109,10 @@ check_pattern "Pilot Playbook" "alphaX/pilot-playbook.md"
 check_pattern "Review Agent Mechanism" "alphaX/review-agent-mechanism.md"
 check_pattern "Source Anchors" "alphaX/review-agent-mechanism.md"
 check_pattern "Review Agent" "alphaX/review-agent-bootstrap.md"
+check_pattern "Target Project Review Mode" "alphaX/target-project-review-mode.md"
+check_pattern "Trigger Contract" "alphaX/target-project-review-mode.md"
+check_pattern "Asset And Data Boundary" "alphaX/target-project-review-mode.md"
+check_pattern "Target Project Review Report" "templates/target-project-review-report.md"
 check_pattern "problem-decomposer" "skills/problem-decomposer/SKILL.md"
 check_pattern "Interaction Language" "skills/problem-decomposer/SKILL.md"
 
@@ -121,6 +129,12 @@ fi
 if git -C "$ROOT" ls-files '.alphaX/*' | rg . >/dev/null; then
   git -C "$ROOT" ls-files '.alphaX/*' >&2
   fail ".alphaX local data is tracked by git"
+fi
+
+snapshot_output="$(bash "$ROOT/scripts/context-snapshot.sh" "$ROOT")"
+if printf '%s\n' "$snapshot_output" | rg -n '\.alphaX/(process/|\.DS_Store)' >/dev/null; then
+  printf '%s\n' "$snapshot_output" | rg -n '\.alphaX/(process/|\.DS_Store)' >&2
+  fail "context snapshot includes noisy local alphaX process or system files"
 fi
 
 check_absent_public "/Users/"

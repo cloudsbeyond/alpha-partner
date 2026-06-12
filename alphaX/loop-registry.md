@@ -2,7 +2,7 @@
 
 Adapts Boris-style Loop thinking to alphaX. Principle: **loops protect attention; they do not replace judgment**.
 
-## v0.1 Boundary
+## Current Boundary
 
 Current loops are manual-trigger and read-only by default. Do not schedule recurring tasks, create hosted routines, watch private systems, modify repos, post externally, or run destructive operations without explicit user approval.
 
@@ -36,7 +36,7 @@ Trigger: `alphaX research intake`. Purpose: periodically map external alphaX col
 
 ## Loop 6: Proactive Nudge Experiment
 
-Trigger: `alphaX nudge check`. Purpose: infer whether alphaX should proactively push a low-intrusion reminder, risk note, or focus suggestion. Allowed v0.1 signals: unresolved high-risk decisions in local process data, uncommitted or stale project-local objective data, prior local ledger next action with no follow-through, automated checks passed but manual acceptance missing, user explicitly says attention/focus/risk is degraded. Output: compact candidate nudge with evidence, reason, urgency, recommended channel. Default: produce inside current session; do not create recurring automation or push notification. Requires approval: Codex heartbeat/cron, Slack/Feishu/email/app notification, cross-app data access, private chat/meeting transcript processing.
+Trigger: `alphaX nudge check`. Purpose: infer whether alphaX should proactively push a low-intrusion reminder, risk note, or focus suggestion. Allowed current signals: unresolved high-risk decisions in local process data, uncommitted or stale project-local objective data, prior local ledger next action with no follow-through, automated checks passed but manual acceptance missing, user explicitly says attention/focus/risk is degraded. Output: compact candidate nudge with evidence, reason, urgency, recommended channel. Default: produce inside current session; do not create recurring automation or push notification. Requires approval: Codex heartbeat/cron, Slack/Feishu/email/app notification, cross-app data access, private chat/meeting transcript processing.
 
 ## Loop 7: alphaX Self-Critique
 
