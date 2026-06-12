@@ -4,6 +4,10 @@ The review agent is a reusable alphaX governance mechanism. It is not a
 project-specific artifact, not a hidden supervisor, and not a second runtime
 that acts on target projects.
 
+Target-project delivery review is handled separately by
+`alphaX/target-project-review-mode.md`. Do not expand this review-agent role to
+read or modify external target projects.
+
 Its job is to improve the alphaX function itself by reviewing contract drift,
 evidence quality, false completion, stale state, and weak assumptions. The
 mechanism is shareable because any alphaX user can run the same review role

@@ -12,6 +12,7 @@ alphaX 是一个可复用的协作函数，用来辅助 AI 产品和软件工程
 
 - 降低项目重新进入成本；
 - 识别并复查项目风险；
+- 在 handoff、合入或发布前复查目标项目交付证据；
 - 形成有来源支撑的判断；
 - 维护 contract-first 的工程链路；
 - 保持实现、验证和证据可追踪；
@@ -53,6 +54,7 @@ bash scripts/verify-alpha-source.sh
 alphaX 介入一下
 帮我恢复一下这个项目现场
 review 一下我现在几个项目的风险
+合入前审一下这个项目声称的功能是否真的实现
 这件事真正要解决的问题是什么？
 ```
 
@@ -60,7 +62,7 @@ review 一下我现在几个项目的风险
 
 ## 目录结构
 
-- `alphaX/`：行为、运行循环、激活、会话、pilot 和 review-agent 机制/runbook。
+- `alphaX/`：行为、运行循环、激活、会话、pilot、review-agent 机制/runbook 和目标项目 review mode。
 - `functions/`：可复用 function/SOP，目前包括 Context Reloader。
 - `templates/`：研究、项目、思考、记忆和项目本地映射模板。
 - `skills/`：本地 reasoning skill。
@@ -72,6 +74,12 @@ review 一下我现在几个项目的风险
 `alphaX/review-agent-mechanism.md` 定义了一个可复用的 alphaX 治理复查机制。review agent 用来检查 alphaX 自身的 contract drift、证据质量、过期状态、false completion 和弱假设。
 
 review agent 只产出 `meta`，不得触达外部目标项目。真正运行这个机制时，使用 `alphaX/review-agent-bootstrap.md` 作为 cold-start 程序。
+
+## 目标项目 Review Mode
+
+`alphaX/target-project-review-mode.md` 定义了单个目标项目内的 review mode。它用于在 handoff、合入、发布或声称完成前，复查目标项目的声明、代码改动、验证证据、source drift 和项目本地 `.alphaX/` objective data。
+
+这个 mode 默认属于 External Assistance Mode，优先在对话中输出报告；如果需要落本地证据，只能写入目标项目 ignored `.alphaX/`，不能写入本 checkout 的 `.alphaX/process/`。
 
 ## 数据边界
 
