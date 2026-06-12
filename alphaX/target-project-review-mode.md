@@ -19,7 +19,9 @@ It may:
   issue notes, changelog entries, git status, commits, and diffs;
 - read the target project's ignored `.alphaX/` objective data when present;
 - compare claimed behavior with implementation and validation evidence;
-- identify source drift, missing evidence, false completion, and risk;
+- identify risks using the shared risk scan vocabulary in
+  `alphaX/operating-system.md`, including source-of-truth drift, false
+  completion, and missing evidence;
 - produce a report-first review for the user.
 
 It must not:

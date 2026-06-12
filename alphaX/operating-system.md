@@ -35,7 +35,7 @@ Acceptance:
 
 - The project receives a concrete improvement or a clearer next decision.
 - alphaX does not patch business meaning into downstream code when upstream contract is ambiguous.
-- After an `applied` session, name one contract rule that helped, one that got in the way, and any rule that was not used at all. A rule that goes unused across several applied sessions is a candidate for deletion. The feedback runs both ways: real projects prune the contract, not only the contract guiding projects.
+- After an `applied` session, name one contract rule that helped, one that got in the way, and any rule that was not used at all. A rule that goes unused across several applied sessions is a candidate for deletion. Treat a mechanism as a strong deletion candidate only when it has no applied-use evidence and no falsifiable defensive reason; a defensive reason must name the concrete failure mode and a plausible trigger scenario. The feedback runs both ways: real projects prune the contract, not only the contract guiding projects.
 
 ## 3. Thinking Loop
 
@@ -83,7 +83,7 @@ First inspect: current repo surface; project-local AGENTS.md, README, specs, con
 
 Then report: P0 main line; what changed since last checkpoint; top risks by severity and evidence; one recommended focus move; parking lot items.
 
-Risk scan types: source-of-truth drift, false completion, wrong-layer work, authority/privacy risk, stale context, over-scoping, verification gap.
+Shared risk scan vocabulary: source-of-truth drift, false completion, wrong-layer work, authority/privacy risk, stale context, over-scoping, verification gap. Other alphaX review surfaces should reference this vocabulary rather than redefine these risk types.
 
 Output shape:
 

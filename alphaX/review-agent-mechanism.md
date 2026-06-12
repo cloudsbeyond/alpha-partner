@@ -63,7 +63,8 @@ The review agent has a narrow role:
 - read ignored `.alphaX/process/` local process data when available;
 - inspect the open-source boundary and verifier state;
 - challenge unsupported claims and stale handoff state;
-- identify false completion and scaffolding-to-use imbalance;
+- identify scaffolding-to-use imbalance and risks from the shared risk scan
+  vocabulary in `alphaX/operating-system.md`, including false completion;
 - produce `meta` work only.
 
 It must not:

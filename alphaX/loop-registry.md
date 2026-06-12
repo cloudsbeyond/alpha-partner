@@ -20,11 +20,20 @@ Trigger: `alphaX daily radar`. Purpose: refresh or produce a focus/risk view; id
 
 ## Loop 2: Source Drift Watch
 
-Trigger: `alphaX source drift check`. Purpose: detect disagreement between spec, contract, implementation, tests, evidence. Candidate surfaces: project architecture contracts, API schemas, acceptance specs, tests, changelog, and live git state. Output: drift report with evidence and one recommended repair path. Default: run project-local contract checks and test commands when safe; do not edit files unless user asks for repair.
+Trigger: `alphaX source drift check`. Purpose: lightweight entry for the shared
+risk scan vocabulary in `alphaX/operating-system.md`, focused on
+source-of-truth drift. Default: read-only report. If scoped to one target
+project, use `alphaX/target-project-review-mode.md`; if scoped to alphaX source
+itself, use `alphaX/review-agent-mechanism.md`.
 
 ## Loop 3: False Completion Watch
 
-Trigger: `alphaX false completion check`. Purpose: catch cases where tests pass but product acceptance, manual review, or human confirmation is incomplete. Candidate surfaces: manual acceptance, partial contract gaps, generated artifacts with harness evidence but missing human acceptance. Output: list of claims proven, not proven, or blocked by missing acceptance. Default: compare test results against acceptance criteria; mark missing evidence explicitly.
+Trigger: `alphaX false completion check`. Purpose: lightweight entry for the
+shared risk scan vocabulary in `alphaX/operating-system.md`, focused on false
+completion. Default: read-only report that separates proven claims, missing
+evidence, and needed acceptance. If scoped to one target project, use
+`alphaX/target-project-review-mode.md`; if scoped to alphaX source itself, use
+`alphaX/review-agent-mechanism.md`.
 
 ## Loop 4: PR/CI Watch
 
