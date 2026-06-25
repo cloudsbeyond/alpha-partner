@@ -1,0 +1,6 @@
+*.DS_Store
+.alphaX/
+.agents/
+*.log
+tmp/
+temp/
