@@ -27,7 +27,7 @@ loops:
   L1_daily_focus_radar:
     trigger: alphaX daily radar
     purpose: focus/risk view and next work block
-    inputs: [focus-radar, session-ledger, context-snapshot, target instructions, target .alphaX/project-context.md, target .alphaX/evidence.md or .alphaX/decisions.md when referenced]
+    inputs: [focus-radar, session-ledger, context-snapshot, target instructions, target .alphaX/project-context.md, optional target .alphaX/* when referenced]
     output: compact focus/risk report
     approval_needed_for: [writing project files, scheduling, publishing]
 

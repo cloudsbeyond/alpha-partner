@@ -12,7 +12,7 @@
         "README/specs/contracts",
         "git status/diff",
         "target .alphaX/project-context.md when present",
-        "target .alphaX/evidence.md or .alphaX/decisions.md when referenced"
+        "optional target .alphaX/* when referenced"
       ],
       "must_output": [
         "P0",
@@ -38,7 +38,7 @@
         "alphaX/project-work/context-reloader.md",
         "target instructions",
         "target .alphaX/project-context.md when present",
-        "target .alphaX/evidence.md or .alphaX/decisions.md when referenced",
+        "optional target .alphaX/* when referenced",
         "live source/diff"
       ],
       "must_output": [

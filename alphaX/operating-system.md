@@ -46,7 +46,7 @@ loops:
     triggers: [re-entry, handoff, freeze, project review, source iteration, remembered-state claim]
     dimensions: [re-entry memory, update memory, evidence memory, action memory]
     calls: [pass, partial, fail]
-    evidence_inputs: [live source, target .alphaX/project-context.md, target .alphaX/evidence.md or .alphaX/decisions.md when referenced, explicit user decisions, command output, artifacts, already available memory notes]
+    evidence_inputs: [live source, target .alphaX/project-context.md, optional target .alphaX/* when referenced or review depth requires it, explicit user decisions, command output, artifacts, already available memory notes]
     boundary: no runtime service, no centralized project store, no scheduler, no connector, no approval engine
     accept:
       - each dimension has call, evidence pointer, gap
@@ -64,7 +64,7 @@ loops:
       - current repo surface
       - target AGENTS.md/README/specs/contracts/changelog/diff
       - target .alphaX/project-context.md when present
-      - target .alphaX/evidence.md or .alphaX/decisions.md when referenced
+      - optional target .alphaX/* only when referenced or review depth requires it
       - validation commands and open gaps
     report: [P0, current state, top risks, focus move, parking lot]
     risk_vocabulary: [source-of-truth drift, false completion, wrong-layer work, authority/privacy risk, stale context, over-scoping, verification gap]

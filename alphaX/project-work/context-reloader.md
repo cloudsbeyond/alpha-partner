@@ -22,10 +22,9 @@ not:
 source_priority:
   - target AGENTS.md, README, specs, contracts, tests, changelog, live git state
   - target ignored .alphaX/project-context.md as context only
-  - optional target ignored .alphaX/evidence.md and .alphaX/decisions.md when referenced by project-context.md
+  - optional target ignored .alphaX/* only when referenced by project-context.md or required by review depth
   - current command output and validation evidence
-  - optional .alphaX/local/project-meta-index.yaml for quasi-static clues
-  - optional alphaX process reports as historical evidence
+  - optional source checkout ignored .alphaX/local/project-meta-index.yaml for quasi-static clues
   - other-agent feedback as context input only
 
 project_local_objective_data:
@@ -36,13 +35,14 @@ project_local_objective_data:
   must_not_replace: versioned source of truth
   should_avoid: broader alphaX risk judgment, goal calibration, raw logs, or project-source copies
 
-alphaX_process_data_assets:
+source_process_data_boundary:
   belongs_to: alpha-partner ignored .alphaX/process/
-  examples: [goal calibration, risk judgments, decision rationale, review summaries, reusable lessons]
-  not: raw hidden model chain-of-thought
+  project_work_read: false
+  project_review_exception: sanitized mechanism feedback only; no project facts
+  not: target project state or raw hidden model chain-of-thought
 
 project_meta_index:
-  path: .alphaX/local/project-meta-index.yaml
+  path: source checkout ignored .alphaX/local/project-meta-index.yaml
   allowed: [project key, path alias, local context path, alphaX relationship, source-of-truth anchors]
   forbidden: [current branch, PR status, active P0, live risks, private transcripts, implementation status, acceptance state]
 
@@ -51,9 +51,9 @@ sop:
   - identify project and project key
   - read target instructions and live git/source state
   - read .alphaX/project-context.md when present as context, not control
-  - read .alphaX/evidence.md, .alphaX/decisions.md, or .alphaX/reviews/ only when referenced or required by review depth
-  - consult .alphaX/local/project-meta-index.yaml only for quasi-static clues
-  - separate live facts, project-local objective data, alphaX process judgments, historical evidence, unverified claims
+  - read target .alphaX/* optional files only when referenced or required by review depth
+  - consult source checkout ignored .alphaX/local/project-meta-index.yaml only for quasi-static clues
+  - separate live facts, project-local objective data, source-local clues, historical evidence, unverified claims
   - produce report-first output
   - write back only with explicit approval and only into target-owned surfaces
 

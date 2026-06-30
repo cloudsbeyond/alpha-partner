@@ -28,7 +28,7 @@ agent_responsibility:
     - cwd and project files
     - target AGENTS.md, README, specs, contracts, changelog, issues
     - target .alphaX/project-context.md when present
-    - target .alphaX/evidence.md or .alphaX/decisions.md when referenced
+    - optional target .alphaX/* only when referenced or review depth requires it
     - git status, branch, recent commits, changed files
     - provided links, attachments, files
     - relevant memory entries when prior context matters

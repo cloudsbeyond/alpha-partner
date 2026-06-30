@@ -29,7 +29,7 @@ intents:
     triggers: ["alphaX 现在项目进展到哪儿了", "restore this project context", "项目现在怎么样"]
     default_scope: project work unless reviewing completion
     loop: Focus/risk plus Context Reloader
-    first_read: [alphaX/project-work/context-reloader.md, target .alphaX/project-context.md when present, optional target .alphaX/evidence.md or .alphaX/decisions.md when referenced, live project source]
+    first_read: [alphaX/project-work/context-reloader.md, target .alphaX/project-context.md when present, optional target .alphaX/* when referenced or review depth requires it, live project source]
     minimum_output: [current state, changed evidence, risks, next action]
 
   risk_review:
@@ -78,7 +78,7 @@ scope_rules:
 required_first_pass:
   - identify target
   - read relevant alpha-partner contract/SOP
-  - read target AGENTS.md/README/specs/contracts/tests/changelog/diff, target .alphaX/project-context.md when present, and boundary-specific target .alphaX optional files when referenced
+  - read target AGENTS.md/README/specs/contracts/tests/changelog/diff, target .alphaX/project-context.md when present, and optional target .alphaX/* only when referenced or review depth requires it
   - separate live facts, project-local objective data, memory/handoff claims, inference, missing evidence, user decisions
   - produce minimum output before optional durable trace
 
@@ -92,7 +92,7 @@ output_self_check:
 
 forbidden_shortcuts:
   - treating .alphaX/project-context.md as current truth without rereading live source
-  - treating optional .alphaX/evidence.md, .alphaX/decisions.md, or .alphaX/reviews/ as control or source of truth
+  - treating optional target .alphaX/* as control or source of truth
   - treating passing checks as human/product acceptance
   - using design docs as proof of implementation
   - writing project facts into Alpha Partner Source

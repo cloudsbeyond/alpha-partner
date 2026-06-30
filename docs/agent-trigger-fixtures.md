@@ -23,7 +23,7 @@ fixtures:
     expected_intent: risk_review
     scope: focus/risk
     loop: Focus/risk
-    must_read: [target AGENTS.md, README/specs/contracts, git status/diff, target .alphaX/project-context.md when present, target .alphaX/evidence.md or .alphaX/decisions.md when referenced]
+    must_read: [target AGENTS.md, README/specs/contracts, git status/diff, target .alphaX/project-context.md when present, optional target .alphaX/* when referenced]
     must_output: [P0, current state, top risks with evidence, confidence, next focus move]
     forbidden: [code edits, source edits, scheduled nudge, completion call unless evidence review is explicitly requested]
 
@@ -32,7 +32,7 @@ fixtures:
     expected_intent: context_progress
     scope: project work unless completion judgment requested
     loop: Focus/risk plus Context Reloader
-    must_read: [alphaX/project-work/context-reloader.md, target instructions, target .alphaX/project-context.md when present, target .alphaX/evidence.md or .alphaX/decisions.md when referenced, live source/diff]
+    must_read: [alphaX/project-work/context-reloader.md, target instructions, target .alphaX/project-context.md when present, optional target .alphaX/* when referenced, live source/diff]
     forbidden: [treating stale .alphaX/ as truth]
 
   F03-before-merge-review:

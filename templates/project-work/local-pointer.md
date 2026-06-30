@@ -135,13 +135,13 @@ open_items: []
 
 review:
   last_project_review: "<YYYY-MM-DD|none>"
-  completion_call: "<blocked|needs-owner-decision|handoffable|mergeable|publishable|insufficient-evidence|not-reviewed>"
   summary: "<compact result or none>"
 
 completion_state:
   implementation_state: "<not-found|partial|implemented|not-reviewed>"
   validation_state: "<not-run|failed|partial|passed|not-applicable>"
   integration_state: "<local-only|branch-only|merged|released|not-reviewed>"
+  completion_call: "<blocked|needs-owner-decision|handoffable|mergeable|publishable|insufficient-evidence|not-reviewed>"
 
 lifecycle_hygiene:
   trigger: "<pr-or-merge|handoff|freeze|release|publication|open-source-readiness|stale-alphaX|noisy-alphaX|not-checked>"
