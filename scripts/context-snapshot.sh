@@ -41,26 +41,22 @@ section "Instruction Files"
     -name 'GEMINI.md' -o \
     -name '*.code-workspace' \
   \) -not -path './.alphaX/*' -print
-  for file in \
-    ".alphaX/AGENTS.md" \
-    ".alphaX/project-context.md" \
-    ".alphaX/local/project-meta-index.yaml"
-  do
-    [ -f "$file" ] && printf './%s\n' "$file"
-  done
 } | sort | sed -n '1,80p'
 
 section "alphaX Project Mapping"
 if [ -d ".alphaX" ]; then
-  printf 'present: .alphaX alphaX function mapping/context\n'
+  printf 'present: .alphaX objective data/context\n'
   for file in \
-    ".alphaX/AGENTS.md" \
+    ".alphaX/index.md" \
     ".alphaX/project-context.md" \
+    ".alphaX/evidence.md" \
+    ".alphaX/decisions.md" \
     ".alphaX/local/project-meta-index.yaml" \
     ".alphaX/manifest.yaml"
   do
     [ -f "$file" ] && printf '%s\n' "$file"
   done
+  [ -d ".alphaX/reviews" ] && printf '%s\n' ".alphaX/reviews/"
 elif [ -f "AGENTS.md" ] && rg -n "Alpha Partner|alphaX|Joint Research Execution" "AGENTS.md" >/dev/null 2>&1; then
   printf 'present: root AGENTS.md references Alpha Partner\n'
   rg -n "Alpha Partner|alphaX|Joint Research Execution" "AGENTS.md" | sed -n '1,20p'

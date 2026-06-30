@@ -35,10 +35,26 @@ process:
   directory: .alphaX/process
 EOF
 
+write_if_missing "$ROOT/.alphaX/index.md" <<'EOF'
+# alphaX Local Data Index
+
+# Subdirectory
+
+- [local](local/index.md) - Machine-local and user-local clues for this source checkout.
+- [process](process/index.md) - Local alphaX process traces for this source checkout.
+EOF
+
 write_if_missing "$ROOT/.alphaX/local/README.md" <<'EOF'
+---
+type: "Guide"
+title: "alphaX Local Data"
+description: "Machine-local and user-local clues for this source checkout."
+tags: ["alphax", "local-data"]
+---
+
 # alphaX Local Data
 
-Machine-local and user-local clues for this checkout.
+Machine-local and user-local clues for this source checkout.
 
 Allowed:
 
@@ -46,23 +62,34 @@ Allowed:
 - quasi-static project metadata;
 - local project map;
 - local pilot queue.
-- resident agent-runtime-services endpoint config.
 
 Do not commit this directory. Live project source wins over this data.
 EOF
 
-write_if_missing "$ROOT/.alphaX/local/agent-runtime-services.json" <<'EOF'
-{
-  "agentRuntimeServices": {
-    "baseUrl": "http://127.0.0.1:8765/"
-  }
-}
+write_if_missing "$ROOT/.alphaX/local/index.md" <<'EOF'
+# Guide
+
+- [alphaX Local Data](README.md) - Machine-local and user-local clues for this source checkout.
+- [Local Pilot Candidates](pilot-candidates.md) - Local candidate projects for alphaX pilots.
+- [Local Project Paths](project-paths.md) - Machine-local path aliases for this source checkout.
+
+# Data
+
+- [project-meta-index](project-meta-index.yaml) - Quasi-static local project metadata.
+- [private-patterns](private-patterns.txt) - Local private literals excluded from tracked source.
 EOF
 
 write_if_missing "$ROOT/.alphaX/process/README.md" <<'EOF'
+---
+type: "Guide"
+title: "alphaX Process Data"
+description: "Local alphaX process traces for this source checkout."
+tags: ["alphax", "process-data"]
+---
+
 # alphaX Process Data
 
-Local alphaX process traces for this checkout.
+Local alphaX process traces for this source checkout.
 
 Allowed:
 
@@ -79,7 +106,27 @@ Do not store raw hidden model chain-of-thought, secrets, or private transcript
 content here. Do not commit this directory.
 EOF
 
+write_if_missing "$ROOT/.alphaX/process/index.md" <<'EOF'
+# Guide
+
+- [alphaX Process Data](README.md) - Local alphaX process traces for this source checkout.
+
+# Process Data
+
+- [Local Decision Log](decision-log.md) - Local decisions, unverified claims, and rationale.
+- [Local Focus Radar](focus-radar.md) - Local focus and risk snapshots.
+- [Local Session Ledger](session-ledger.md) - Local alphaX session ledger.
+- [Local Source Review Backlog](source-review-backlog.md) - Local source review todos and unsettled consensus.
+EOF
+
 write_if_missing "$ROOT/.alphaX/local/project-paths.md" <<'EOF'
+---
+type: "Local Data"
+title: "Local Project Paths"
+description: "Machine-local path aliases for this source checkout."
+tags: ["alphax", "local-data", "paths"]
+---
+
 # Local Project Paths
 
 schema_version: 1
@@ -100,6 +147,13 @@ projects: []
 EOF
 
 write_if_missing "$ROOT/.alphaX/local/pilot-candidates.md" <<'EOF'
+---
+type: "Local Data"
+title: "Local Pilot Candidates"
+description: "Local candidate projects for alphaX pilots."
+tags: ["alphax", "local-data", "pilots"]
+---
+
 # Local Pilot Candidates
 
 schema_version: 1
@@ -115,6 +169,13 @@ write_if_missing "$ROOT/.alphaX/local/private-patterns.txt" <<'EOF'
 EOF
 
 write_if_missing "$ROOT/.alphaX/process/session-ledger.md" <<'EOF'
+---
+type: "Process Data"
+title: "Local Session Ledger"
+description: "Local alphaX sessions recorded when a durable trace is useful."
+tags: ["alphax", "process-data", "ledger"]
+---
+
 # Local Session Ledger
 
 schema_version: 1
@@ -123,6 +184,13 @@ Record local alphaX sessions when a durable local trace is useful.
 EOF
 
 write_if_missing "$ROOT/.alphaX/process/focus-radar.md" <<'EOF'
+---
+type: "Process Data"
+title: "Local Focus Radar"
+description: "Local focus and risk snapshots recorded when needed."
+tags: ["alphax", "process-data", "risk"]
+---
+
 # Local Focus Radar
 
 schema_version: 1
@@ -131,6 +199,13 @@ Record local focus and risk snapshots when needed.
 EOF
 
 write_if_missing "$ROOT/.alphaX/process/decision-log.md" <<'EOF'
+---
+type: "Process Data"
+title: "Local Decision Log"
+description: "Local decisions, unverified claims, and rationale recorded when needed."
+tags: ["alphax", "process-data", "decisions"]
+---
+
 # Local Decision Log
 
 schema_version: 1
@@ -139,6 +214,13 @@ Record local decisions, unverified claims, and rationale when needed.
 EOF
 
 write_if_missing "$ROOT/.alphaX/process/source-review-backlog.md" <<'EOF'
+---
+type: "Process Data"
+title: "Local Source Review Backlog"
+description: "Local source review todos and unsettled consensus."
+tags: ["alphax", "process-data", "source-review"]
+---
+
 # Local Source Review Backlog
 
 schema_version: 1

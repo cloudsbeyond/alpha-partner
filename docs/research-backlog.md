@@ -1,128 +1,76 @@
+---
+type: "Research Backlog"
+title: "Research Backlog"
+description: "Research tracks and source anchors for Alpha Partner Source calibration."
+tags: ["alphax", "research", "backlog"]
+---
 # Research Backlog
 
-This backlog organizes deep research for Alpha Partner Source. The goal is not a generic Agent report; the goal is to improve alphaX collaboration quality and agent-native project work.
+```yaml
+purpose: improve alphaX collaboration quality and agent-native project work
+not: generic Agent report
 
-## Research Rules
+rules:
+  - prefer primary sources: official docs, research papers, engineering blogs, product docs
+  - extract mechanisms and failure modes
+  - map each source back to Alpha Partner Source
+  - treat Copilot/GitHub issue-to-PR agents as execution-layer references
+  - record useful source conclusions in docs/evidence-index.md
+  - keep project-coupled decisions in ignored local process data
 
-- Prefer primary sources: official docs, research papers, engineering blogs, product docs.
-- Extract mechanisms and failure modes.
-- Map each source back to this source.
-- Do not treat Copilot/GitHub issue-to-PR agents as the main model; they are execution-layer references.
-- Record useful source conclusions in `docs/evidence-index.md`; keep project-coupled decisions in ignored local process data.
+tracks:
+  human_agent_peer_collaboration:
+    question: agent as partner in problem definition, research, design, validation, reflection
+    anchors:
+      - https://arxiv.org/abs/2606.03394
+      - https://arxiv.org/abs/2603.15911
+    use: [human judgment boundary, challenge/synthesize/execute split, review/reflection loops]
 
-## Track 1: Human-Agent Peer Collaboration
+  agent_native_engineering_harness:
+    question: infrastructure primitives for reliable long-running agent work
+    anchors:
+      - https://openai.com/index/the-next-evolution-of-the-agents-sdk/
+      - https://openai.com/index/unrolling-the-codex-agent-loop/
+      - https://openai.com/index/unlocking-the-codex-harness/
+    use: [tools, skills, AGENTS.md, shell, patch, sandbox, manifest, durable execution]
 
-Question:
+  context_memory_tool_boundaries:
+    question: useful context and memory without polluting source or global memory
+    anchors:
+      - https://code.claude.com/docs/en/best-practices
+      - https://modelcontextprotocol.io/specification/
+      - https://arxiv.org/abs/2606.22877
+    use: [context loading, progressive disclosure, tool boundaries, source tracing, checkpoint memory evaluation]
+    deferred: adapter/backend implementation until applied checkpoint evidence proves need
 
-- What changes when the agent is a partner in problem definition, research, design, validation, and reflection, not only a coding executor?
+  evaluation_governance_oversight:
+    question: trustworthy agent-native engineering/product decisions
+    anchors:
+      - https://www.sei.cmu.edu/library/ai-engineering-twelve-foundational-practices/
+      - https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-cloud-agent
+    use: [evaluation, traceability, uncertainty, oversight, modularity, execution-layer comparison]
 
-Primary anchors:
+  agent_native_product_form:
+    question: software objects for people, roles, projects, context, actions, validation
+    anchors:
+      - https://www.anthropic.com/news/introducing-claude-tag
+      - https://claude.com/docs/claude-tag/overview
+      - https://code.claude.com/docs/en/slack
+    explicit_anchor_label: Claude Tag
+    use: [workflow object model, collaboration surface, validation loop]
+    p1_parking_lot: [channel identity, team marketplace, always-on runtime after function source proves useful]
 
-- Human-AI Collaboration and the Transformation of Software Engineering Work: https://arxiv.org/abs/2606.03394
-- Human-AI Synergy in Agentic Code Review: https://arxiv.org/abs/2603.15911
+  local_first_proactive_agents:
+    question: useful interruption timing without opaque observation
+    anchors:
+      - concrete local-first product cases from project sessions
+      - user-provided local-first product sources when inspected
+      - official scheduled-agent docs only after permission model is clear
+    use: [observation vs inference vs nudge vs push, privacy, cooldown, stop condition, action authority]
 
-Use:
-
-- Define where human judgment remains primary.
-- Define where Alpha Partner should challenge, synthesize, or execute.
-- Improve review and reflection loops.
-
-## Track 2: Agent-Native Engineering Harness
-
-Question:
-
-- What infrastructure primitives make agents reliable enough for long-running work?
-
-Primary anchors:
-
-- OpenAI Agents SDK evolution: https://openai.com/index/the-next-evolution-of-the-agents-sdk/
-- OpenAI Codex harness and App Server material: https://openai.com/index/unrolling-the-codex-agent-loop/ and https://openai.com/index/unlocking-the-codex-harness/
-
-Use:
-
-- Compare local source primitives against frontier harness primitives: tools, skills, `AGENTS.md`, shell, patch, sandbox, manifest, durable execution.
-- Decide which mechanisms belong in local Markdown now and which belong in later engineering.
-
-## Track 3: Context, Memory, and Tool Boundaries
-
-Question:
-
-- How should context and memory be shaped so the agent remains useful without polluting Alpha Partner Source or global memory?
-
-Primary anchors:
-
-- Claude Code best practices: https://code.claude.com/docs/en/best-practices
-- Model Context Protocol specification: https://modelcontextprotocol.io/specification/
-- DynamicMem long-horizon memory benchmark: https://arxiv.org/abs/2606.22877
-- agent-runtime-services memory substrate: https://github.com/cloudsbeyond/agent-runtime-services
-
-Use:
-
-- Improve context loading, progressive disclosure, tool boundaries, and source tracing.
-- Decide when a local note becomes a durable memory candidate.
-- Evaluate memory quality through checkpoints before adding backend complexity.
-- Use `agent-runtime-services` memory family calls as the reference storage and
-  recall path when alphaX needs executable memory substrate support.
-
-## Track 4: Evaluation, Governance, and Oversight
-
-Question:
-
-- What checks make agent-native work trustworthy in production-grade engineering and product decisions?
-
-Primary anchors:
-
-- CMU SEI AI Engineering: Twelve Foundational Practices: https://www.sei.cmu.edu/library/ai-engineering-twelve-foundational-practices/
-- GitHub Copilot cloud agent docs as an execution-layer comparison: https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-cloud-agent
-
-Use:
-
-- Keep evaluation, traceability, uncertainty, oversight, and modularity visible.
-- Use Copilot-style agents only as a contrast for task execution, logging, and review flow.
-
-## Track 5: Agent-Native Product Form
-
-Question:
-
-- What product surfaces become possible when software expresses people, roles, projects, context, actions, and validation as active collaboration objects?
-
-Primary anchors:
-
-- Anthropic official Claude Tag announcement: https://www.anthropic.com/news/introducing-claude-tag
-- Claude Tag product docs: https://claude.com/docs/claude-tag/overview
-- Claude Code in Slack migration and access docs: https://code.claude.com/docs/en/slack
-- Local projects or product surfaces provided during concrete sessions.
-- External product and engineering sources gathered during concrete project work.
-
-Use:
-
-- Avoid closed-door theorizing.
-- Tie every product claim to a real workflow, object model, or validation loop.
-- P1 parking lot for the post-personal-plugin shape:
-  - channel identity: one alphaX identity inside a collaboration channel or project room;
-  - team marketplace: shared distribution and update path for a team-local alphaX plugin;
-  - always-on runtime: dedicated runtime that can host alphaX as an entity-like service after the function source proves useful.
-
-## Track 6: Local-First Proactive Agents
-
-Question:
-
-- How should a local-first agent learn usage patterns, infer useful interruption timing, and recover user data permission from centralized super apps without becoming another opaque observer?
-
-Primary anchors:
-
-- Concrete local-first product cases provided during project sessions.
-- User-provided local-first product thinking when a concrete source is provided or inspected in a project session.
-- Official docs for scheduled agent work, only as execution references after the permission model is clear.
-
-Use:
-
-- Define the difference between observation, inference, candidate nudge, and external push.
-- Keep privacy, cooldown, stop conditions, and user-held action authority visible.
-- Map proactive behavior back to focus recovery, risk review, and project re-entry instead of generic notification automation.
-
-## Track 7: Source Portability And Path Treaty
-
-Decision: open-source function source must not track local project paths. Machine-local path aliases, if needed, live under ignored `.alphaX/local/project-paths.md`. Scripts self-locate via `BASH_SOURCE`. No resolver script or env var is required for the open-source source itself.
-
-The runtime-carrier portability claim remains unverified until a second environment exercises this mechanism.
+  source_portability_path_treaty:
+    decision: open-source function source must not track local project paths
+    local_aliases: ignored .alphaX/local/project-paths.md
+    scripts: self-locate via BASH_SOURCE
+    unverified_claim: runtime-carrier portability needs second-environment exercise
+```

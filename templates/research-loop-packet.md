@@ -1,60 +1,41 @@
+---
+type: "Template"
+title: "Research Loop Packet"
+description: "Template for evidence work that improves decisions or collaboration methods."
+tags: ["alphax", "template", "research"]
+---
 # Research Loop Packet
 
-Use this packet when the session needs external or internal evidence to improve a decision, project practice, or collaboration method.
+```yaml
+generated_frontmatter:
+  type: Research Packet
+  title: Research Loop Packet
+  date: "<YYYY-MM-DD>"
+  actor: alphaX
+  kind: research_loop_packet
 
-## Question
+question: "<project-linked or collaboration-bottleneck question>"
+p0_relevance: "<how this changes project R&D, thinking, alphaX, or agent-native practice>"
 
-State the research question in relation to a real project or collaboration bottleneck.
+source_plan:
+  allowed: [official docs, research papers, engineering blogs, product docs, local project files, memory entries when prior context matters]
+  prefer_primary_sources: true
 
-## P0 Relevance
+evidence:
+  - source: "<url|path>"
+    source_type: "<official|paper|engineering-blog|product-doc|local|memory>"
+    observed_claim: "<claim>"
+    mechanism_or_failure_mode: "<mechanism>"
+    confidence: "<high|medium|low>"
+    local_implication: "<implication>"
 
-Explain how this research improves project R&D, thinking exploration, alphaX collaboration quality, or agent-native product/engineering practice.
+synthesis:
+  observation: []
+  inference: []
+  judgment: []
+  decision_candidate: []
 
-## Source Plan
-
-List the source classes to inspect:
-
-- official docs;
-- research papers;
-- engineering blogs;
-- product docs;
-- local project files;
-- memory entries when prior context matters.
-
-## Evidence
-
-For each source, record:
-
-- source link or local path;
-- source type;
-- observed claim;
-- mechanism or failure mode;
-- confidence;
-- local implication.
-
-## Synthesis
-
-Separate:
-
-- observation;
-- inference;
-- judgment;
-- decision candidate.
-
-## Partner Challenge
-
-Write the strongest counterargument or risk.
-
-## Output
-
-Choose the durable destination:
-
-- update `evidence-index.md`;
-- update local process data;
-- create a project note;
-- create a memory candidate;
-- no durable update because the source did not change a decision.
-
-## Verification
-
-State how the research changed a decision, question, experiment, or project practice.
+partner_challenge: "<strongest counterargument or risk>"
+output_destination: "<evidence-index|local process data|project note|memory candidate|none>"
+verification: "<how research changed decision, question, experiment, or practice>"
+```

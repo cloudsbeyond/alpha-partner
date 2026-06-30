@@ -1,123 +1,152 @@
+---
+type: "SOP"
+title: "Alpha Partner Source Session Runbook"
+description: "Machine-facing session start, route, evidence, and close contract."
+tags: ["alphax", "session", "sop"]
+---
 # Alpha Partner Source Session Runbook
 
-Repeatable session habit for working inside `{alpha-partner}` or on the Alpha Partner source itself.
-
-## 1. Cold Start
-
-Always read these first:
-
-1. `AGENTS.md`
-2. `alphaX/persona.md`
-3. `alphaX/operating-system.md`
-
-Then read conditionally:
-
-| Condition | Read |
-| --- | --- |
-| Activated from another project | `alphaX/activation-guide.md` |
-| Re-entering a project | `alphaX/project-work/context-reloader.md`, then the project's `.alphaX/AGENTS.md` and `.alphaX/project-context.md` when present |
-| Reviewing Alpha Partner Source or alphaX mechanisms | `alphaX/source-review/README.md`, then `alphaX/source-review/bootstrap.md` when adopting the review role |
-| Reviewing one project's delivery, handoff, merge, release, or claimed completion | `alphaX/project-review/README.md` |
-| Looking for quasi-static local project clues | optional `.alphaX/local/project-meta-index.yaml` |
-| Running a real project pilot or choosing the next pilot | `alphaX/pilot-playbook.md`, optional `.alphaX/local/pilot-candidates.md` |
-| Returning to work, juggling several projects, asking for review, or worried about missed risk | `alphaX/operating-system.md` Focus And Risk Loop, optional `.alphaX/process/focus-radar.md` |
-| Discussing recurring checks, monitoring, loops, routines, scheduled work, or proactive nudges | `alphaX/loop-registry.md` |
-| Doing task-specific work | relevant files under `docs/`, `templates/`, or ignored `.alphaX/` |
-
-If a local `.alphaX/` tree is needed but absent, run `bash scripts/init-local-alphaX.sh` before relying on local process data. Then run `bash scripts/verify-local-alphaX.sh`.
-
-Then summarize: alphaX is a personified collaboration function; default mode is Joint Research Execution; work is about improving research, project R&D, judgment, validation, memory; Alpha Partner Source is Markdown-first, not an MCP server, app, knowledge base, or centralized project context store.
-
-## 2. Classify The Scope
-
-Before writing files, classify one scope:
-
-- **`source work`**: the user is changing Alpha Partner Source or the alphaX
-  function itself. Writes to this repository are allowed only for that requested
-  source change after the owner accepts the source work scope.
-- **`source review`**: the user is reviewing Alpha Partner Source, this
-  checkout's ignored `.alphaX/process/` data, or alphaX mechanisms. Output is
-  report-first `meta` work. Do not change tracked source unless the user
-  switches to `source work`.
-- **`project work`**: the user is using alphaX to help a project or problem.
-  Treat `alpha-partner` as read-only source. Do not write to this repository or
-  this checkout's `.alphaX/process/` unless the user explicitly switches to
-  `source work`.
-- **`project review`**: report-first evidence review for one concrete project.
-  Do not implement fixes unless the user switches to `project work`.
-
-The scope guard is the write boundary attached to the chosen scope. Reviewing
-alphaX itself is `source review`; writing Alpha Partner Source is `source work`.
-
-In `project work` or `project review`, write outputs only to the project being
-helped, the project's ignored `.alphaX/`, an OS temporary directory, or the
-conversation response. If the current working directory is `{alpha-partner}` but
-the request concerns an external project, ask before writing anything here.
-
-If activated from another project with little context, use `alphaX/activation-guide.md`. If the project has `.alphaX/`, use it as the project objective data surface, then read live project source of truth before deciding. In a local project, run `scripts/context-snapshot.sh` when it helps reconstruct the scene.
-
-Classify as one primary loop: Research (external/internal evidence needed), Project (real project/repo/document being changed or reviewed), Project review (one concrete project's claims, diff, validation, and handoff evidence), Source review (alphaX source and mechanism evidence), Thinking (synthesis, judgment, framing, critique), Memory (continuity, decision preservation, candidate durable memory), Focus/risk (re-entry, attention recovery, portfolio triage, risk review), Manual loop layer (repeated checks, monitors, scheduled work, Boris-style loops, proactive nudges), Self-critique (institutional dissent—hunting unverified claims in alphaX's own files, see Loop 7 in `alphaX/loop-registry.md`).
-
-Use matching packet for durable trace: research → `templates/research-loop-packet.md`, project → `templates/project-work/loop-packet.md`, project review → `templates/project-review/report.md`, source review → `templates/source-review/feedback-report.md` or a compact `.alphaX/process/` review note, thinking → `templates/thinking-loop-packet.md`, memory → `templates/memory-candidate-packet.md`, focus/risk → `templates/reentry-risk-packet.md`, manual loop → `templates/loop-report.md`. If the trace is coupled to alphaX source work or source review, write it under this checkout's ignored `.alphaX/process/`; if it is coupled to a project, write it under the project's own ignored `.alphaX/` or return it in chat. Do not add traces to the open-source function source.
-
-If feedback may change alphaX, record it first as ignored candidate material
-under this checkout's `.alphaX/process/`. Tracked source changes require
-owner-accepted `source work`.
-
-For repeated project use, add `templates/project-work/local-pointer.md` as minimal local pointer. Do not copy the whole Alpha Partner Source into a project. Use `skills/problem-decomposer/SKILL.md` when stuck at task level or needing upward decomposition.
-
-## 3. Partner Behavior
-
-Default: ground in current files/repo state/source links; propose options when tradeoffs matter; recommend one path; challenge unclear goals, weak evidence, over-scoped designs; use Spec Checkpoint when discussion accumulates constraints or drifts; use Focus And Risk Loop when fragmented across projects, returning after interruption, or asking for review/risk scanning; use `alphaX/loop-registry.md` when repeated checks, watches, scheduled routines, or proactive nudges are considered; keep P1/P2 parked unless it changes P0.
-
-Do not: reduce relationship to ticket execution; treat Copilot/GitHub issue-to-PR patterns as main model; update durable memory, external docs, or risky state without explicit approval.
-
-## 4. Evidence Rules
-
-Priority: current local files and command output → exact user-provided links/documents → memory entries (when prior context matters) → external primary sources → secondary trend sources (weak signals only). For every nontrivial conclusion, be clear whether observed, inferred, or decided.
-
-## 5. Closing A Session
-
-When Alpha Partner Source changes, run `bash scripts/verify-alpha-source.sh`.
-When this checkout's local `.alphaX/` data is used or initialized, run
-`bash scripts/verify-local-alphaX.sh`. Report: what changed, what was verified,
-what remains active or intentionally deferred.
-
-In `source work`, if a local ledger exists, add a compact entry to this
-checkout's ignored `.alphaX/process/session-ledger.md` with: date, actor, kind
-(`meta`/`applied`), surface, what happened, evidence, and next action.
-
-In `source review`, if a local ledger exists, add a compact
-`actor: source-review, kind: meta` entry when useful.
-
-In `project work` or `project review`, do not write to this checkout's session
-ledger. Write any needed process trace to the project's own ignored `.alphaX/`
-or return a report in the conversation.
-
-Exception: after a project review, write a sanitized `review_feedback`
-note from `templates/source-review/feedback-report.md` to this checkout's ignored
-`.alphaX/process/review-feedback/` when alphaX mechanism feedback was observed.
-Record only mechanism feedback and evidence pointers; do not copy project
-facts or treat the note as approval for tracked source edits.
-
-When closing a session the next agent may resume, emit a handoff state block:
-
 ```yaml
-# alphaX handoff state
-p0: <one-line current main line>
-active_surface: <project path, repo, or conversation>
-branch: <branch or n/a>
-last_verified: <YYYY-MM-DD>
-next_block: <one concrete next action>
-open_risks:
-  - id: <short-id>
-    level: <P0|P1|P2|P3>
-    evidence: <file, command, or note>
-confidence: <high|medium|low>
-unverified_claims:
-  - <claim asserted but not yet proven by evidence>
+cold_start:
+  canonical:
+    - read: AGENTS.md
+      purpose: identity, scope guard, data boundary, source map
+    - when: Short alphaX trigger
+      read: docs/agent-invocation-contract.md
+      before: scope_or_loop_call
+    - read: smallest matching SOP
+    - when: behavior calibration needed
+      read: alphaX/persona.md
+    - when: loop, evidence rubric, memory, focus/risk, manual loop, or intake rule needed
+      read: alphaX/operating-system.md
+  summarize:
+    - alphaX is a personified collaboration function
+    - default mode is Joint Research Execution
+    - project .alphaX/ stores ignored objective project data, starting from index.md and project-context.md
+    - source checkout .alphaX/ stores ignored local/process data
+
+conditional_reads:
+  activated_from_project: [alphaX/activation-guide.md]
+  short_trigger: [docs/agent-invocation-contract.md, docs/agent-trigger-fixtures.json]
+  project_reentry: [alphaX/project-work/context-reloader.md, target .alphaX/project-context.md when present]
+  source_review: [alphaX/source-review/README.md]
+  project_review: [alphaX/project-review/README.md]
+  pilot: [alphaX/pilot-playbook.md]
+  focus_or_risk: [alphaX/operating-system.md, optional .alphaX/process/focus-radar.md]
+  recurring_loop: [alphaX/loop-registry.md]
+  local_alphaX_needed:
+    init: bash scripts/init-local-alphaX.sh
+    verify: bash scripts/verify-local-alphaX.sh
+
+scope_guard:
+  source work:
+    meaning: change Alpha Partner Source or alphaX function
+    writes: tracked source only for accepted source change
+  source review:
+    meaning: review Alpha Partner Source and alphaX mechanisms
+    writes: report-first; no tracked edits unless switched to source work
+  project work:
+    meaning: help one external project/problem
+    writes: target project, target .alphaX/project-context.md, boundary-specific target .alphaX optional files, temp dir, or chat
+    alpha_partner: read-only
+  project review:
+    meaning: report-first evidence review for one target project
+    writes: target .alphaX/project-context.md, explicit target .alphaX/reviews/ artifact when useful and allowed, temp dir, or chat
+    fixing_requires_scope_switch: true
+  ambiguity:
+    alpha_partner_cwd_external_target: ask before writing here
+
+loop_router:
+  research: templates/research-loop-packet.md
+  project: templates/project-work/loop-packet.md
+  project_review: templates/project-review/report.md
+  source_review: templates/source-review/feedback-report.md or compact .alphaX/process note
+  thinking: templates/thinking-loop-packet.md
+  memory: templates/memory-candidate-packet.md
+  focus_risk: templates/reentry-risk-packet.md
+  manual_loop: templates/loop-report.md
+
+project_local_setup:
+  guide: templates/project-work/local-pointer.md
+  default: target .git/info/exclude
+  schema: docs/local-alphaX-schema.md
+  expansion_rule: start with index.md and project-context.md; split optional files only for evidence, decision, or durable-review boundaries
+  forbid:
+    - target tracked AGENTS.md alphaX pointer
+    - target versioned .gitignore edit
+    - copying Alpha Partner Source into target repo
+    - default reports directory
 ```
 
-Rules: record `unverified_claims` even when checks passed (passing checks ≠ human/product acceptance); state real `confidence`; when input came from another agent, keep only verifiable evidence and demote conclusions to `unverified_claims`. This block is a habit, not a new system—keep it inline, do not create a new file format or tracker.
+## Evidence Quality Rubric
 
-Do not mark the long-running goal complete unless the full collaboration system is demonstrably established.
+```yaml
+priority:
+  - current local files and command output
+  - exact user-provided sources
+  - memory entries when prior context matters
+  - external primary sources
+  - secondary trend sources as weak signals only
+
+strong_evidence:
+  directness: code, diff, test, build, artifact, explicit acceptance tied to claim
+  freshness: current branch/doc/command/user decision
+  verifiability: rerunnable command, readable file, URL, artifact, line or commit pointer
+  source_of_truth: contract, spec, test, release artifact, live git/source state
+
+weak_evidence:
+  - design intent as implementation proof
+  - passing checks as human/product acceptance
+  - chat or memory as current repo state
+  - stale .alphaX/ as current truth
+
+trace_shape:
+  evidence:
+    - source: file|command|url|artifact|user decision
+      claim_supported: claim
+      strength: strong|medium|weak|missing
+      freshness: current|stale|unknown
+      verified: yes|no
+```
+
+## Output Self-Check
+
+```yaml
+must_pass:
+  - intent and scope match docs/agent-invocation-contract.md
+  - write boundary respected
+  - required source and live project evidence read, or missing evidence stated
+  - material claims have evidence strength and freshness
+  - unverified_claims includes unsupported, stale, or agent-supplied claims
+  - next action is concrete and does not promote P1/P2 into P0
+  - known failures in docs/agent-failure-modes.md avoided or called out
+```
+
+## Close
+
+```yaml
+verify:
+  source_changed: bash scripts/verify-alpha-source.sh
+  local_alphaX_used: bash scripts/verify-local-alphaX.sh
+  always_report: [changed, verified, active_or_deferred]
+
+ledger:
+  source work: optional .alphaX/process/session-ledger.md
+  source review: optional actor=source-review kind=meta entry
+  project work: no alpha-partner ledger write
+  project review: no alpha-partner ledger write
+  exception: sanitized review-feedback only when mechanism feedback exists
+
+handoff_state:
+  p0: one-line current main line
+  active_surface: project path, repo, or conversation
+  branch: branch or n/a
+  last_verified: YYYY-MM-DD
+  next_block: one concrete next action
+  open_risks:
+    - id: short-id
+      level: P0|P1|P2|P3
+      evidence: file|command|note
+  confidence: high|medium|low
+  unverified_claims: []
+```

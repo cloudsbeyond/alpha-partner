@@ -1,0 +1,100 @@
+---
+type: "Agent Contract"
+title: "Agent Invocation Contract"
+description: "Machine-facing contract for mapping short alphaX triggers to scope, loops, evidence, and output."
+tags: ["alphax", "agent", "invocation"]
+---
+# Agent Invocation Contract
+
+```yaml
+p0_flow:
+  - short_trigger
+  - intent_and_scope_call
+  - required_source_read
+  - live_project_evidence_check
+  - evidence_backed_state_or_risk_call
+  - next_action
+
+default_rule: do not ask the user to restate project context until first source pass fails to identify target, write boundary, or source of truth
+
+intents:
+  engage:
+    triggers: ["alphaX engage", "@alphaX engage", "alphaX 介入一下"]
+    default_scope: infer from target
+    loop: Project loop
+    first_read: [AGENTS.md, alphaX/session-runbook.md, target instructions]
+    minimum_output: [P0, source of truth, loop, next action]
+
+  context_progress:
+    triggers: ["alphaX 现在项目进展到哪儿了", "restore this project context", "项目现在怎么样"]
+    default_scope: project work unless reviewing completion
+    loop: Focus/risk plus Context Reloader
+    first_read: [alphaX/project-work/context-reloader.md, target .alphaX/project-context.md when present, optional target .alphaX/evidence.md or .alphaX/decisions.md when referenced, live project source]
+    minimum_output: [current state, changed evidence, risks, next action]
+
+  risk_review:
+    triggers: ["@alphaX 帮我看看当前项目风险", "alphaX daily radar", "review risks"]
+    default_scope: focus/risk
+    loop: Focus/risk
+    first_read: [alphaX/operating-system.md Focus And Risk Loop, target instructions, live git/source state]
+    minimum_output: [top risks with evidence, confidence, next focus move]
+
+  project_review:
+    triggers: ["合入前审一下", "run project review", "检查声称完成是否真的实现"]
+    default_scope: project review
+    loop: Project review
+    first_read: [alphaX/project-review/README.md, target source of truth, diff, validation surface]
+    minimum_output: [findings, completion state, missing evidence, next action]
+
+  problem_decompose:
+    triggers: ["这件事真正要解决什么", "what are we actually trying to solve"]
+    default_scope: conversation or project work
+    loop: Thinking loop plus Problem Decomposer
+    first_read: [skills/problem-decomposer/SKILL.md, project source when project-bound]
+    minimum_output: [D0-D3 map, recommended focus, validation signal]
+
+  source_review:
+    triggers: ["alphaX self-critique", "检查 alphaX 本身", "source drift check"]
+    default_scope: source review
+    loop: Source review or self-critique
+    first_read: [alphaX/source-review/README.md, alphaX/loop-registry.md Loop 7]
+    minimum_output: [source risks, evidence, source-work candidates]
+
+  manual_loop:
+    triggers: ["alphaX nudge check", "alphaX PR CI watch", "alphaX research intake"]
+    default_scope: infer from loop target
+    loop: Manual loop layer
+    first_read: [alphaX/loop-registry.md, target source when applicable]
+    minimum_output: [loop report, boundary, approval needs]
+
+scope_rules:
+  - choose exactly one primary scope before writes
+  - completion/merge/release/handoff/claimed implementation judgment => project review
+  - current risk/progress/re-entry/focus without completion claim => Focus/risk or Context Reloader
+  - Alpha Partner Source change => source work only after owner acceptance
+  - alpha-partner cwd plus external target => ask before writing here
+  - ambiguous but read-only inspection can disambiguate => inspect first
+
+required_first_pass:
+  - identify target
+  - read relevant alpha-partner contract/SOP
+  - read target AGENTS.md/README/specs/contracts/tests/changelog/diff, target .alphaX/project-context.md when present, and boundary-specific target .alphaX optional files when referenced
+  - separate live facts, project-local objective data, memory/handoff claims, inference, missing evidence, user decisions
+  - produce minimum output before optional durable trace
+
+output_self_check:
+  - intent and scope named or clearly implied
+  - write boundary respected
+  - source of truth read or missing evidence stated
+  - material claims have evidence strength and freshness
+  - weak/stale claims listed under unverified_claims
+  - next action concrete and not P1/P2 expansion
+
+forbidden_shortcuts:
+  - treating .alphaX/project-context.md as current truth without rereading live source
+  - treating optional .alphaX/evidence.md, .alphaX/decisions.md, or .alphaX/reviews/ as control or source of truth
+  - treating passing checks as human/product acceptance
+  - using design docs as proof of implementation
+  - writing project facts into Alpha Partner Source
+  - expanding to runtime/scheduler/notification/connector design unless P0 depends on it
+```

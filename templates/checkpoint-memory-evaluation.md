@@ -1,73 +1,74 @@
+---
+type: "Template"
+title: "Checkpoint Memory Evaluation"
+description: "Template for checkpoint-bounded re-entry, update, evidence, and action memory evaluation."
+tags: ["alphax", "template", "memory"]
+---
 # Checkpoint Memory Evaluation
 
-Use this template when alphaX evaluates whether remembered state is current,
-evidence-backed, and action-guiding across a project or source checkpoint.
+## Generated Artifact Frontmatter
 
-## Scope
+```yaml
+---
+type: "Checkpoint Evaluation"
+title: "Checkpoint Memory Evaluation"
+description: "Evaluation of remembered state across a checkpoint."
+date: "<YYYY-MM-DD>"
+actor: "alphaX"
+kind: "checkpoint_memory_evaluation"
+tags: ["alphax", "memory", "checkpoint"]
+---
+```
 
-- surface:
-- checkpoint:
-- evidence cutoff:
-- loop:
-- actor:
-- kind:
+```yaml
+scope:
+  surface: "<project|source|conversation>"
+  checkpoint: "<re-entry|handoff|freeze|release|project-review|source-iteration>"
+  evidence_cutoff: "<time/commit/event>"
+  loop: checkpoint_memory_evaluation
 
-## P0
+p0:
+  current: "<one sentence>"
+  boundary: "<write/read decision boundary>"
+  next_action: "<one action or evidenced no-op>"
 
-- current P0:
-- boundary:
-- next action:
+evidence_used:
+  live_source: []
+  local_alphaX: []
+  external_source: []
+  user_decision: []
+  command_or_artifact: []
+  prior_memory_note: []
 
-## Evidence Used
-
-- live source:
-- local `.alphaX/`:
-- external source:
-- user decision:
-- memory substrate bundle:
-
-## Storage And Recall
-
-- substrate:
-- endpoint:
-- helper command:
-- namespace:
-- tableName:
-- source events appended:
-- claims stored or updated:
-- relations stored or updated:
-- `memory.context.retrieve`:
-- envelope status:
-
-## Evaluation
+remembered_evidence:
+  source: "<memory|handoff|.alphaX|chat|none>"
+  cutoff: "<declared cutoff>"
+  status: "<current|stale|conflicting|unknown>"
+  confidence: "<high|medium|low>"
+  provenance: "<pointer>"
+  conflict_with_live_source: "<none|describe>"
 
 Call rubric:
+  pass: evidence concrete and checkpoint-allowed
+  partial: evidence exists but state/boundary/owner/verification gap remains
+  fail: evidence missing, stale, post-cutoff without disclosure, or not action-supporting
 
-- `pass`: evidence is concrete and checkpoint-allowed; the gap is empty or only
-  a future validation item.
-- `partial`: evidence exists but a key boundary, state, owner, or verification
-  step is still missing.
-- `fail`: evidence is missing, stale, post-cutoff without disclosure, or does
-  not support action.
+evaluation:
+  re-entry memory: {call: "<pass|partial|fail>", evidence: [], gap: "<gap>"}
+  update memory: {call: "<pass|partial|fail>", evidence: [], gap: "<gap>"}
+  evidence memory: {call: "<pass|partial|fail>", evidence: [], gap: "<gap>"}
+  action memory: {call: "<pass|partial|fail>", evidence: [], gap: "<gap>"}
 
-| Dimension | Call | Evidence | Gap |
-| --- | --- | --- | --- |
-| re-entry memory | pass/partial/fail |  |  |
-| update memory | pass/partial/fail |  |  |
-| evidence memory | pass/partial/fail |  |  |
-| action memory | pass/partial/fail |  |  |
+result:
+  decision: "<decision or none>"
+  source_implication: "<source change candidate or none>"
+  parked: []
+  unverified_claims: []
+  next_checkpoint: "<checkpoint>"
 
-## Result
-
-- decision:
-- source implication:
-- parked:
-- `unverified_claims`:
-- next checkpoint:
-
-## Boundary
-
-- storage/recall used:
-- interpretation owner:
-- approvals needed:
-- do not do now:
+boundary:
+  runtime_backend_used: no
+  interpretation_owner: alphaX
+  approvals_needed: []
+  do_not_do_now: []
+```

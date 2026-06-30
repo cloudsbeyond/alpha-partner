@@ -1,204 +1,171 @@
+---
+type: "Template"
+title: "alphaX Project-Local Mapping"
+description: "Compact template for ignored project-local alphaX data."
+tags: ["alphax", "template", "project-work"]
+---
 # alphaX Project-Local Mapping
 
-Use this template only after a project repeatedly uses alphaX, or when the user explicitly asks alphaX to make the project able to sense alphaX.
+```yaml
+when_to_use: [repeated alphaX use, concrete re-entry pain, explicit user instruction]
 
-The injection has three surfaces:
+install:
+  default: target .git/info/exclude
+  rule: ".alphaX/"
+  commands:
+    - "grep -qxF '.alphaX/' .git/info/exclude || printf '\\n.alphaX/\\n' >> .git/info/exclude"
+    - "mkdir -p .alphaX"
+    - "git check-ignore -v .alphaX/index.md .alphaX/project-context.md .alphaX/evidence.md .alphaX/decisions.md .alphaX/reviews/example.md"
+  fallback: external local data directory when .git/info/exclude is unavailable
 
-1. Versioned project `AGENTS.md`: one local Agent-assisted project-management loader sentence only.
-2. Versioned project `.gitignore`: ignore `.alphaX/`.
-3. Local ignored `.alphaX/`: project objective state data, iteration events, evidence pointers, project review reports, and local report artifacts for the alphaX function.
+target_tracked_tree:
+  edit_versioned_AGENTS_md: false
+  edit_versioned_gitignore: false
+  copy_alpha_partner_source: false
 
-Do not put heavy alphaX context, private alpha-partner paths, old Context Reloader project paths, full project status, or active P0 details into the third-party project's versioned `AGENTS.md`.
+project_alphaX_shape:
+  minimum_files:
+    ".alphaX/index.md": stable local data contract
+    ".alphaX/project-context.md": current reload baseline
+  optional_extensions:
+    ".alphaX/evidence.md": split when evidence pointers bloat context
+    ".alphaX/decisions.md": split when durable owner decisions need authority
+    ".alphaX/reviews/": create only for explicit durable local review or handoff artifact
+  forbidden:
+    - AGENTS.md inside .alphaX
+    - reports directory as default catch-all
+    - copied Alpha Partner Source
 
-Only alphaX should inject or update local `.alphaX/` content. alphaX may inject and maintain `.alphaX/`, but the third-party project's versioned files should only expose the one-sentence local Agent-assisted project-management loader and ignore rule.
+data_boundary:
+  role: context not control
+  live_source_wins: true
+  write_rule: update project-context.md first; split only for evidence, decision, or durable-review boundaries
+  report_rule: conversation first; persist compact summaries and evidence pointers only
+  do_not_store: [secrets, private transcripts, source-of-truth replacements, hidden chain-of-thought, broad alphaX governance]
 
-Project-local instructions, source-of-truth files, validation commands, permissions, and risk boundaries in the third-party repository take precedence.
-
-Assume alphaX is a personified function, not a persistent entity inside the repository. A dedicated always-on runtime may host it and make it entity-like, but the interaction surface for this template remains local files, git state, ignored `.alphaX/` objective data, and non-sensitive reports.
-
-Before injection, inspect the project's existing conventions and validation scripts. Some projects scan every `*/AGENTS.md`, including ignored directories; if so, `.alphaX/AGENTS.md` must satisfy that project's minimal instruction anchors while staying local objective data.
-
-## Versioned `AGENTS.md` Section
-
-Add one sentence near the top of the project's existing `AGENTS.md`.
-
-To support local agent-assisted project management, first try loading rules
-under `.alphaX/`; skip this step if the directory does not exist.
-
-## Versioned `.gitignore` Rule
-
-Add:
-
-```text
-.alphaX/
+verification:
+  - git status --short before and after setup
+  - git check-ignore -v .alphaX/index.md .alphaX/project-context.md .alphaX/evidence.md .alphaX/decisions.md .alphaX/reviews/example.md
+  - private-path grep over .alphaX/
 ```
 
-Then verify:
+## `.alphaX/index.md`
 
-```bash
-git check-ignore -v .alphaX/AGENTS.md .alphaX/project-context.md
+````markdown
+---
+type: "alphaX Project Local Index"
+title: "alphaX Project Local Index"
+description: "Stable operation contract for ignored project-local alphaX data."
+tags: ["alphax", "project-local", "index"]
+---
+# alphaX Project-Local Operation
+
+```yaml
+schema_version: 1
+kind: target_project_alphaX_index
+default_install: .git/info/exclude
+
+files:
+  project-context.md: current reload baseline; update first
+  evidence.md: optional evidence pointer registry
+  decisions.md: optional durable decision ledger
+  reviews/: optional explicit local review artifacts
+
+read_order:
+  - target instructions, live source, git state, validation output
+  - .alphaX/project-context.md as context only
+  - optional files only when referenced or review depth requires them
+
+write_boundary:
+  context_not_control: true
+  live_source_wins: true
+  forbidden: [tracked AGENTS pointer, versioned .gitignore edit, .alphaX/AGENTS.md, default reports directory, copied Alpha Partner Source]
+
+compaction:
+  trigger: [handoff, merge, freeze, release, noisy history, conflicting state]
+  preserve: [current baseline, durable decisions, evidence pointers, open items, local-only warnings]
+  remove_or_summarize: [command transcripts, obsolete logs, duplicated source facts, stale paths, private data]
 ```
+````
 
-## Local `.alphaX/AGENTS.md` Shape
+## `.alphaX/project-context.md`
 
-Keep this file local and ignored. It explains production, consumption, read order, and boundaries.
-
-```text
-# alphaX Project Objective Data
-
-This directory is injected and maintained by alphaX as project-local objective
-data for this repository. It is similar in role to project-local `.codex/` or
-`.trae/` conventions: a small, optional place for objective collaboration data
-that helps the alphaX function re-enter a project without hardcoding a private
-Alpha Partner Source path.
-
-Production and consumption:
-
-- producer: alphaX function;
-- consumer: alphaX-capable agents re-entering this repository;
-- usage surface: root `AGENTS.md` tells agents when to read `.alphaX/`;
-- content shape: project key, source anchors, observed state snapshots, iteration events, evidence pointers, reload behavior, default output, and boundary;
-- prohibited content: secrets, private machine absolute paths, transcript content, project specs, project contracts, changelog entries, source-of-truth facts that belong in this repository's normal files, broad alphaX risk judgment assets, or raw hidden model chain-of-thought.
-
-Read `.alphaX/project-context.md` when alphaX is activated, or when the user asks about project progress, observed state, re-entry evidence, handoff state, or what objective data alphaX should inspect before making a judgment.
-
-Activation phrases such as `alphaX engage` are interpreted by local `.alphaX/`
-objective data instructions, not by expanding the third-party project's versioned
-`AGENTS.md`.
-
-Runtime model: alphaX is a function with personified behavior, not a persistent
-entity in this repository. Multiple runtime carrier sessions cooperate by
-reading local files, git state, ignored `.alphaX/` objective data, and by
-emitting report-first handoffs. A dedicated runtime may execute the same
-function continuously.
-
-Boundary:
-
-- context, not control;
-- not a project spec;
-- no automatic write-back;
-- live source of truth, contracts, tests, git state, and human approval win;
-- if alpha-partner context is unavailable, continue from live project evidence and report the missing context explicitly.
-```
-
-Add project-specific validation anchors only if the project's own scripts require them.
-
-## Local `.alphaX/project-context.md` Shape
-
-Keep this file local and ignored. This is the canonical persistence surface for
-project objective data used by the alphaX function. It should not store
-alphaX's broader risk judgment or goal-calibration assets.
-
-```text
+````markdown
+---
+type: "Project Context"
+title: "alphaX Project Context"
+description: "Project-local current reload baseline for alphaX."
+tags: ["alphax", "project-local", "context"]
+---
 # alphaX Project Context
 
-project: `<project-key>`
-relationship_to_alphaX: `<short relationship>`
-injection_owner: `alphaX`
-context_owner: `<project-local .alphaX>`
+```yaml
+schema_version: 1
+kind: target_project_alphaX_context
+boundary:
+  context_not_control: true
+  source_of_truth: live project source, instructions, specs, tests, git state, user decisions
+  optional_split_surfaces: [.alphaX/evidence.md, .alphaX/decisions.md, .alphaX/reviews/]
 
-## Purpose
+project_identity:
+  project_key: "<project-key>"
+  relationship_to_alphaX: "<short relationship>"
+  owner: "<user|team|unknown>"
 
-This file is injected by alphaX as project-local objective state and iteration
-data for this repository. It intentionally does not hardcode the alpha-partner
-source path.
+source_anchors:
+  instructions: []
+  specs_or_contracts: []
+  validation: []
 
-## Reload Recipe
+current:
+  last_reviewed_at: "<YYYY-MM-DD|unknown>"
+  focus: "<short hint; not source of truth>"
+  state: "<compact observed state>"
+  stale_if: [live source conflict, branch/diff/validation/owner decision changed]
 
-1. Read this file as alphaX context, not source of truth.
-2. Read local `AGENTS.md`, README, specs, contracts, tests, changelog, and live git state.
-3. Compare this context with live source. Live source wins on conflict.
-4. Separate observed facts, project-local objective data, alphaX process judgments, historical evidence, and unverified claims.
-5. Produce a report-first output before edits.
+evidence:
+  - id: "<E1>"
+    source: "<file|command|commit|artifact|url|user-decision>"
+    supports: "<claim or state>"
+    freshness: "<current|stale|unknown>"
 
-## Current Focus Signal
+decisions: []
+top_risks: []
+open_items: []
 
-<One short re-entry hint. Treat it as a hint, not source of truth.>
+review:
+  last_project_review: "<YYYY-MM-DD|none>"
+  completion_call: "<blocked|needs-owner-decision|handoffable|mergeable|publishable|insufficient-evidence|not-reviewed>"
+  summary: "<compact result or none>"
 
-## Source Of Truth Anchors
-
-- `<project-owned source file or directory>`
-
-## Iteration Events
-
-- `<dated non-sensitive observation or empty>`
-
-## Objective Data Snapshot Shape
-
-```text
-surface:
-branch:
-versioned_diff:
-ignored_context_present:
-live_source_read:
-observed_state:
-evidence_pointers:
-missing_input:
-```
-
-## Optional Completion/Lifecycle Snapshot
-
-Add this block when a project review, handoff, freeze, release, or
-open-source readiness check has exercised the completion and lifecycle fields.
-Keep the values evidence-backed and refresh them from live source before using
-them as a current handoff signal.
-
-```text
 completion_state:
-  implementation_state: `<not-found|partial|implemented|not-reviewed>`
-  validation_state: `<not-run|failed|partial|passed|not-applicable>`
-  integration_state: `<local-only|branch-only|merged|released|not-reviewed>`
-  completion_call: `<blocked|needs-owner-decision|handoffable|mergeable|publishable|insufficient-evidence>`
-  state_conflicts: `<none or conflicts that prevent a stronger call>`
+  implementation_state: "<not-found|partial|implemented|not-reviewed>"
+  validation_state: "<not-run|failed|partial|passed|not-applicable>"
+  integration_state: "<local-only|branch-only|merged|released|not-reviewed>"
+
 lifecycle_hygiene:
-  trigger: `<pr-or-merge|handoff|freeze|release|publication|open-source-readiness|stale-alphaX|noisy-alphaX|not checked>`
-  tracked_tree_state: `<clean|dirty|mixed|not checked>`
-  ignored_alphaX_state: `<absent|compact|append-only-noisy|contains-risk|not checked>`
-  compaction_needed: `<yes|no|not checked>`
-  evidence_pointer: `<target .alphaX report, command, commit, or artifact>`
+  trigger: "<pr-or-merge|handoff|freeze|release|publication|open-source-readiness|stale-alphaX|noisy-alphaX|not-checked>"
+  tracked_tree_state: "<clean|dirty|mixed|not checked>"
+  ignored_alphaX_state: "<absent|compact|append-only-noisy|contains-risk|not checked>"
+  compaction_needed: "<yes|no|not checked>"
+
+unverified_claims: []
 ```
+````
 
-## Default alphaX Output
+## Optional Extensions
 
-When alphaX uses this data, default to report-first in chat. If a non-sensitive
-local trace is useful, write it to the project's own ignored `.alphaX/`
-surface, such as `.alphaX/reports/` or a refreshed `.alphaX/project-context.md`.
-Do not write external project process data into the alpha-partner checkout's
-`.alphaX/process/` unless the task is explicitly `source work` for alphaX
-itself. The narrow alpha-partner-side exception is sanitized mechanism feedback
-under `.alphaX/process/review-feedback/`; do not copy project facts.
+```yaml
+.alphaX/evidence.md:
+  stores: [evidence ids, command names and outcomes, commits, artifacts, urls, freshness]
+  not: [raw logs, secrets, transcripts, copied source]
 
-- re-entry report;
-- source drift report;
-- project review report;
-- risk report;
-- next-action recommendation;
-- what not to do now.
+.alphaX/decisions.md:
+  stores: [decision, owner, date, evidence, supersedes]
+  not: [agent preference, unapproved private rationale]
 
-Do not store broad risk judgment or goal calibration in this project-local
-objective data file.
-
-## Boundary
-
-This file is context, not control. It is not a spec, contract, ADR, roadmap, changelog, checklist, or approval surface for this repository.
+.alphaX/reviews/:
+  create_only_when: user asks, handoff needs local packet, or repeated review snapshots need audit trail
+  project-context_pointer_required: true
+  not: [raw command transcripts, secrets, private paths, copied source]
 ```
-
-## Injection SOP
-
-1. Confirm the project has repeated alphaX use, a concrete re-entry pain, or explicit user instruction.
-2. Read the project's `AGENTS.md`, `.gitignore`, validation scripts, and current `git status`.
-3. Add only the one-sentence pointer to versioned `AGENTS.md`.
-4. Add `.alphaX/` to versioned `.gitignore`.
-5. Create or refresh local ignored `.alphaX/AGENTS.md` and `.alphaX/project-context.md`.
-6. Run `git diff --check`, `git check-ignore -v .alphaX/AGENTS.md .alphaX/project-context.md`, a private-path grep, and any project validation affected by `AGENTS.md`.
-7. Report the versioned diff separately from ignored local `.alphaX/` context.
-
-## Activation Behavior
-
-After activation, do a first pass before asking the user to restate context:
-
-- inspect cwd, git state, local `AGENTS.md`, `README`, specs, contracts, changelog, issues, attachments, links, and relevant memory;
-- infer the P0 main line, primary loop, source of truth, missing evidence, and next concrete move;
-- report the inference compactly, then proceed or ask only for ambiguity that cannot be resolved from available context.
-
-Do not update durable memory, external docs, publication targets, secrets, production state, or destructive state without explicit approval.

@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "fixtures": [
+    {
+      "id": "F01-risk-current-project",
+      "trigger": "@alphaX 帮我看看当前项目风险",
+      "expected_intent": "risk_review",
+      "scope": "focus/risk",
+      "loop": "Focus/risk",
+      "must_read": [
+        "target AGENTS.md",
+        "README/specs/contracts",
+        "git status/diff",
+        "target .alphaX/project-context.md when present",
+        "target .alphaX/evidence.md or .alphaX/decisions.md when referenced"
+      ],
+      "must_output": [
+        "P0",
+        "current state",
+        "top risks with evidence",
+        "confidence",
+        "next focus move"
+      ],
+      "forbidden": [
+        "code edits",
+        "source edits",
+        "scheduled nudge",
+        "completion call unless evidence review is explicitly requested"
+      ]
+    },
+    {
+      "id": "F02-progress-reentry",
+      "trigger": "alphaX 现在项目进展到哪儿了",
+      "expected_intent": "context_progress",
+      "scope": "project work unless the user asks for completion judgment",
+      "loop": "Focus/risk plus Context Reloader",
+      "must_read": [
+        "alphaX/project-work/context-reloader.md",
+        "target instructions",
+        "target .alphaX/project-context.md when present",
+        "target .alphaX/evidence.md or .alphaX/decisions.md when referenced",
+        "live source/diff"
+      ],
+      "must_output": [
+        "current progress",
+        "changed evidence",
+        "stale context if any",
+        "next action"
+      ],
+      "forbidden": [
+        "treating stale .alphaX/project-context.md as truth"
+      ]
+    },
+    {
+      "id": "F03-before-merge-review",
+      "trigger": "合入前审一下",
+      "expected_intent": "project_review",
+      "scope": "project review",
+      "loop": "Project review",
+      "must_read": [
+        "alphaX/project-review/README.md",
+        "target diff",
+        "tests",
+        "build output or missing validation evidence"
+      ],
+      "must_output": [
+        "findings first",
+        "completion state",
+        "missing evidence",
+        "unverified_claims",
+        "mergeability call"
+      ],
+      "forbidden": [
+        "implementing fixes without scope switch"
+      ]
+    },
+    {
+      "id": "F04-real-problem",
+      "trigger": "这件事真正要解决什么",
+      "expected_intent": "problem_decompose",
+      "scope": "conversation or project work",
+      "loop": "Thinking loop plus Problem Decomposer",
+      "must_read": [
+        "skills/problem-decomposer/SKILL.md",
+        "project source when project-bound"
+      ],
+      "must_output": [
+        "D0-D3 map",
+        "weak layer",
+        "recommended focus",
+        "validation signal"
+      ],
+      "forbidden": [
+        "invented business goals"
+      ]
+    },
+    {
+      "id": "F05-source-self-critique",
+      "trigger": "alphaX self-critique",
+      "expected_intent": "source_review",
+      "scope": "source review",
+      "loop": "Source review/self-critique",
+      "must_read": [
+        "alphaX/source-review/README.md",
+        "alphaX/loop-registry.md",
+        "relevant source files",
+        "verifier output"
+      ],
+      "must_output": [
+        "mechanism risks",
+        "evidence",
+        "cheapest falsification",
+        "source-work candidates"
+      ],
+      "forbidden": [
+        "tracked source edits"
+      ]
+    },
+    {
+      "id": "F06-source-drift",
+      "trigger": "alphaX source drift check",
+      "expected_intent": "source_review",
+      "scope": "source review or target project review, inferred from target",
+      "loop": "Source review or project review",
+      "must_read": [
+        "source contract for alphaX or target project source of truth"
+      ],
+      "must_output": [
+        "drift markers",
+        "evidence",
+        "confidence",
+        "next action"
+      ],
+      "forbidden": [
+        "mixing source-review and project-review outputs"
+      ]
+    },
+    {
+      "id": "F07-nudge-check",
+      "trigger": "alphaX nudge check",
+      "expected_intent": "manual_loop",
+      "scope": "inferred from nudge target",
+      "loop": "Manual loop layer",
+      "must_read": [
+        "alphaX/loop-registry.md",
+        "active invocation evidence",
+        "allowed local process data"
+      ],
+      "must_output": [
+        "candidate nudge",
+        "urgency",
+        "cooldown",
+        "approval boundary"
+      ],
+      "forbidden": [
+        "external push",
+        "schedule",
+        "cross-app observation"
+      ]
+    },
+    {
+      "id": "F08-engage",
+      "trigger": "alphaX engage",
+      "expected_intent": "engage",
+      "scope": "infer from target",
+      "loop": "Project loop",
+      "must_read": [
+        "AGENTS.md",
+        "alphaX/session-runbook.md",
+        "target instructions"
+      ],
+      "must_output": [
+        "P0",
+        "source of truth",
+        "loop",
+        "next action"
+      ],
+      "forbidden": [
+        "asking the user to restate context before first source pass"
+      ]
+    }
+  ]
+}
