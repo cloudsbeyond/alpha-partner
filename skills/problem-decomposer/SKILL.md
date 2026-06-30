@@ -1,187 +1,107 @@
 ---
-name: problem-decomposer
-description: Use when a user asks to decompose a problem, asks what a task is really solving, asks what the real problem is, asks for the essence, or appears stuck optimizing a local task without a clear higher objective, evaluation method, or feedback loop.
+type: "Skill"
+title: "Problem Decomposer"
+name: "problem-decomposer"
+description: "Use when a user asks to decompose a problem, asks what a task is really solving, asks what the real problem is, asks for the essence, or appears stuck optimizing a local task without a clear higher objective, evaluation method, or feedback loop."
+tags: ["alphax", "skill", "problem-decomposition"]
 ---
-
 # Problem Decomposer
 
-Use this skill to move a conversation from "complete the assigned task" toward "understand the real problem, redefine it if needed, and align on a higher objective with evaluation."
+```yaml
+skill: problem-decomposer
+purpose: move from assigned task to real problem, redefined problem, higher objective, and evaluation loop
+not: script or forced template when context is weak
 
-This is a reasoning skill, not a script. Do not force a template when context is weak. If a layer lacks evidence, say what is missing instead of inventing an answer.
+naming_boundary:
+  D0-D3: problem decomposition levels
+  L0-L4: requirements-to-code chain
+  rule: do not confuse D-level reasoning with L-level delivery ownership
 
-## Naming Boundary
+Interaction Language:
+  default: user's language
+  stable_identifiers: [D0, D1, D2, D3]
+  source_file_or_publication: follow target language requirement
 
-This skill uses **D0-D3 decomposition levels**.
+when_to_use:
+  - user asks to decompose task/problem
+  - user asks what task is really solving
+  - user asks real problem/objective
+  - user asks for first-principles challenge
+  - team is stuck in local optimization
+  - technical plan lacks business objective or evaluation
+  - current task may be means mistaken for end
 
-Do not confuse them with the user's requirements-to-code **L0-L4** chain:
+workflow:
+  D0:
+    label: Current Task
+    asks: [current task, local improvements, optimization ceiling, bottleneck type]
+    rule: acknowledge value, then state boundary
+  D1:
+    label: Real Problem
+    asks: [why do task, real problem behind it, alternate paths, hidden assumption]
+    rule: question whether assigned action is the right path
+  D2:
+    label: Redefined Problem
+    asks: [higher-goal effect, wrong framing, adjacent/upstream problem, new solution path]
+    rule: look for leverage unlocked by redefining the problem
+  D3:
+    label: Higher Objective And Loop
+    asks: [higher objective, metric/proxy/signal, next action, feedback loop]
+    rule: reduce abstraction until observable
 
-- Requirements-to-code L0-L4 is about problem definition, structured expression, contract, engineering organization, and generated evidence.
-- Problem decomposition D0-D3 is about moving from current task to real problem, redefined problem, and higher objective.
+output_shape:
+  D0 Current Task:
+    Task: ""
+    Possible improvement: ""
+    Current bottleneck: ""
+    Validation metric: ""
+  D1 Real Problem:
+    Upward question: ""
+    Real problem: ""
+    Ignored path: ""
+    Breakthrough direction: ""
+    Validation metric: ""
+  D2 Redefined Problem:
+    Upward question: ""
+    Redefinition: ""
+    New objective or question: ""
+    New solution direction: ""
+    Validation metric: ""
+  D3 Higher Objective And Loop:
+    Higher objective: ""
+    Evaluation method: ""
+    Improvement path: ""
+    Positive loop: ""
+  Recommended Focus:
+    Focus on D?: ""
+    Reason: ""
+    Next step: ""
 
-## Interaction Language
+focus_rule:
+  D0: task has clear low-cost upside and remains tied to objective
+  D1: repeated task optimization has shrinking returns
+  D2: original problem is likely wrongly framed
+  D3: shared objective, evaluation, or feedback loop is missing
 
-Render section labels and explanations in the user's language by default. Keep
-`D0-D3` identifiers stable across languages. If the output is being written into
-a source file, integration, or publication target with a required language,
-follow that target language instead.
+mousetrap_reference:
+  D0: improve mousetrap
+  D1: catch mice
+  D2: eliminate mice
+  D3: protect grain
+  key_move: understand objective -> define evaluation -> improve -> form feedback loop
 
-## When To Use
+missing_information:
+  rule: best supported decomposition; mark first weak layer; ask smallest missing question
+  useful_questions:
+    - what business or user outcome does this affect?
+    - how is success evaluated?
+    - what has already been tried?
+    - what constraint makes current task necessary?
+    - what failure would make current task irrelevant?
 
-Use this skill when:
-
-- the user asks to decompose a task or problem;
-- the user asks what the task is really solving;
-- the user asks what the real problem or objective is;
-- the user asks to challenge direction from first principles;
-- a team is stuck in local optimization;
-- a technical plan has no clear business objective or evaluation method;
-- the current task may be a means mistaken for an end.
-
-Users do not need to name this skill. Natural triggers include "What are we
-actually trying to solve?", "What is the real problem here?", and similar
-prompts in the user's language.
-
-## Workflow
-
-### D0: Current Task
-
-Clarify what is currently being done or requested.
-
-Answer:
-
-- What is the current task?
-- What local improvements are naturally available?
-- What is the upper bound of optimizing only this layer?
-- Is the bottleneck technical, resource-related, process-related, or problem-definition-related?
-
-Do not dismiss D0. Acknowledge its value, then state its boundary.
-
-### D1: Real Problem
-
-Ask why the task exists.
-
-Answer:
-
-- Why do this task?
-- What real problem is behind it?
-- If this task path were not available, what other paths might solve the same problem?
-- What did the D0 framing hide?
-
-D0 improves the assigned action. D1 asks whether the assigned action is the right way to solve the problem.
-
-### D2: Redefined Problem
-
-Ask whether the real problem is still too narrow or wrongly framed.
-
-Answer:
-
-- If D1 is solved, does the higher goal actually improve?
-- Is the problem itself defined incorrectly?
-- What adjacent or upstream problem would open more leverage?
-- What solution paths appear only after redefining the problem?
-
-D2 is where "improve the mousetrap" can become "do not require catching the mouse."
-
-### D3: Higher Objective And Loop
-
-Align on the higher objective and make it evaluable.
-
-Answer:
-
-- What higher objective should be protected or improved?
-- What metric, proxy metric, or observable signal proves progress?
-- What next action can improve that metric?
-- What feedback loop keeps the work from drifting back to local optimization?
-
-If the higher objective is too abstract, reduce it until it can be observed.
-
-## Output Shape
-
-Use this compact structure by default:
-
-```text
-Problem Decomposition Map
-
-D0 Current Task:
-- Task:
-- Possible improvement:
-- Current bottleneck:
-- Validation metric:
-
-D1 Real Problem:
-- Upward question:
-- Real problem:
-- Ignored path:
-- Breakthrough direction:
-- Validation metric:
-
-D2 Redefined Problem:
-- Upward question:
-- Redefinition:
-- New objective or question:
-- New solution direction:
-- Validation metric:
-
-D3 Higher Objective And Loop:
-- Higher objective:
-- Evaluation method:
-- Improvement path:
-- Positive loop:
-
-Recommended Focus:
-- Focus on D?:
-- Reason:
-- Next step:
+alpha_partner_use:
+  use_before: [locking P0, large architecture/product direction, Spec Checkpoint when P0 may be wrong level]
+  use_when: project stuck in implementation details
+  preserve_in: [thinking-loop packet, project-loop packet, local process decision entry]
+  durable_memory_update: explicit user approval only
 ```
-
-## Focus Rule
-
-Recommend the focus layer using this logic:
-
-- Focus D0 when the current task still has clear low-cost upside and remains directly tied to the objective.
-- Focus D1 when the team has optimized the task repeatedly but returns are shrinking.
-- Focus D2 when the original problem appears wrongly framed or a different problem definition unlocks much higher leverage.
-- Focus D3 when the team lacks a shared objective, evaluation method, or feedback loop.
-
-## Mousetrap Reference
-
-Use this story as the reference pattern:
-
-- D0: Improve the mousetrap.
-- D1: The real problem is catching mice.
-- D2: Catching mice may be unnecessary; eliminating mice may be enough.
-- D3: Eliminating mice is still not the highest goal; the real objective may be protecting grain.
-
-The key move is:
-
-```text
-understand the objective -> define evaluation -> improve -> form a feedback loop
-```
-
-## Information Gaps
-
-When information is missing:
-
-1. Give the best decomposition supported by current context.
-2. Mark the first weak layer clearly.
-3. Ask only the smallest missing question needed to continue.
-4. Do not fill the map with invented business goals or metrics.
-
-Useful missing-context questions:
-
-- What business or user outcome does this task affect?
-- How is success currently evaluated?
-- What has already been tried?
-- What constraint makes the current task look necessary?
-- What failure would make the current task irrelevant?
-
-## Alpha Partner Source Use
-
-Inside Alpha Partner Source, use this skill as a thinking-loop accelerator:
-
-- before locking a P0 main line;
-- when a project is stuck in implementation details;
-- before committing a large architecture or product direction;
-- during Spec Checkpoint if the current P0 may be at the wrong level.
-
-If the result should be preserved, write it into a thinking-loop packet, project-loop packet, or local process-data decision entry. Do not update durable memory without explicit user approval.

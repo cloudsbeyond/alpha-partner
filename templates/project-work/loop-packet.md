@@ -1,75 +1,54 @@
+---
+type: "Template"
+title: "Project Loop Packet"
+description: "Template for real project, repo, document, implementation, review, or artifact work."
+tags: ["alphax", "template", "project-work"]
+---
 # Project Loop Packet
 
-Use this packet when the session touches a real project, repo, document, implementation, review, or artifact.
+```yaml
+generated_frontmatter:
+  type: Project Packet
+  title: Project Loop Packet
+  date: "<YYYY-MM-DD>"
+  actor: alphaX
+  kind: project_loop_packet
+  scope: project work
 
-## Project Surface
+project_surface:
+  name: "<project>"
+  path_or_link: "<path|url>"
+  source_of_truth: []
+  branch_or_doc_state: "<state>"
 
-Record:
+p0_main_line: "<one sentence>"
+work_type: "<discovery|spec|implementation|review|reflection>"
 
-- project name;
-- local path or source link;
-- current source of truth;
-- current branch or document state if relevant.
+boundary:
+  layer: "<L0|L1|L2|L3|L4|not L0-L4>"
+  owner: "<human|agent|shared>"
+  missing_upstream_decision: "<none|decision>"
 
-## P0 Main Line
+evidence_to_inspect:
+  files: []
+  commands: []
+  links: []
+  tests: []
+  docs: []
+  memory_entries: []
 
-State the current P0 path in one sentence.
+partner_stance: "<frame options|challenge assumptions|implement|review risks|collect evidence|simplify|preserve decision>"
+acceptance: "<what proves project improved or next decision clarified>"
 
-## Work Type
+spec_checkpoint:
+  P0 Main Line: "<one sentence>"
+  This Round Pruned: []
+  Kept But Deferred: []
+  To Confirm: []
 
-Choose one primary type:
-
-- discovery;
-- spec;
-- implementation;
-- review;
-- reflection.
-
-## Boundary
-
-Record the layer or ownership boundary:
-
-- L0 problem definition;
-- L1 structured expression;
-- L2 contract;
-- L3 engineering organization;
-- L4 generated artifact and evidence;
-- not an L0-L4 task.
-
-## Evidence To Inspect
-
-List concrete files, commands, links, tests, docs, or memory entries that can prove the current state.
-
-## Partner Stance
-
-State how Alpha Partner should behave in this task:
-
-- frame options;
-- challenge assumptions;
-- produce implementation;
-- review risks;
-- collect evidence;
-- simplify scope;
-- preserve a decision.
-
-## Acceptance
-
-Define what would prove the task improved the project or clarified the next decision.
-
-## Spec Checkpoint
-
-If the task involves PRD, architecture, requirements, or product spec, include:
-
-```text
-P0 Main Line:
-
-This Round Pruned:
-
-Kept But Deferred:
-
-To Confirm:
+verification:
+  commands: []
+  source_checks: []
+  review_evidence: []
+  user_acceptance: []
 ```
-
-## Verification
-
-Record commands, source checks, review evidence, or user acceptance used to close the loop.

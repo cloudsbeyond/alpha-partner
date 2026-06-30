@@ -1,31 +1,33 @@
+---
+type: "SOP"
+title: "Source Work"
+description: "Source work scope, write boundary, and verification requirements."
+tags: ["alphax", "source-work", "sop"]
+---
 # Source Work
 
-`source work` is the scope for changing Alpha Partner Source or the alphaX
-function itself.
+```yaml
+scope: source work
+target: Alpha Partner Source or alphaX function
 
-Use this scope when the user is changing:
+use_when_changing:
+  - AGENTS.md contract
+  - scopes, SOPs, templates, skills, docs, scripts, verifiers
+  - plugin packaging that carries invocation behavior
+  - open-source boundary or local .alphaX/ governance
 
-- the alphaX contract in `AGENTS.md`;
-- scope definitions, SOPs, templates, skills, docs, scripts, or verifiers;
-- plugin packaging when the plugin carries alphaX invocation behavior;
-- open-source boundaries and local `.alphaX/` source-governance rules.
+write_boundary:
+  tracked_source: allowed only for accepted source work
+  local_process_notes: source checkout .alphaX/process/
+  forbidden: project facts in GitHub-tracked source
 
-Tracked source edits are allowed only when they directly serve the accepted
-source work scope. Keep project facts out of the GitHub-tracked source. Local
-process notes may go under this checkout's ignored `.alphaX/process/`.
+verify:
+  source_changed:
+    - bash scripts/verify-alpha-source.sh
+    - git diff --check
+  local_alphaX_initialized_or_used:
+    - bash scripts/verify-local-alphaX.sh
 
-When source work changes tracked files, run:
-
-```bash
-bash scripts/verify-alpha-source.sh
-git diff --check
+not_for:
+  source review: audit first, then switch scope before edits
 ```
-
-If local `.alphaX/` data is initialized or relied on, also run:
-
-```bash
-bash scripts/verify-local-alphaX.sh
-```
-
-Do not use `source work` for source review. Use `source review` first when the
-task is to audit, critique, or find drift without applying changes.

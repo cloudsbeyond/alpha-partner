@@ -21,22 +21,28 @@ shareable_function_assets:
     - alphaX/loop-registry.md
     - alphaX/pilot-playbook.md
     - alphaX/source-review/README.md
-    - alphaX/source-review/bootstrap.md
     - alphaX/project-review/README.md
     - assets/icon.png
     - docs/research-backlog.md
     - docs/evidence-index.md
+    - docs/agent-invocation-contract.md
+    - docs/agent-trigger-fixtures.json
+    - docs/agent-trigger-fixtures.md
+    - docs/agent-failure-modes.md
+    - docs/okf-markdown-profile.md
     - docs/asset-boundary.yaml
     - docs/local-alphaX-schema.md
+    - index.md
+    - "*/index.md"
     - templates/
     - templates/project-review/report.md
-    - templates/project-review/lifecycle-hygiene.md
     - templates/source-review/feedback-report.md
     - skills/problem-decomposer/SKILL.md
     - scripts/init-local-alphaX.sh
     - scripts/verify-local-alphaX.sh
     - scripts/context-snapshot.sh
     - scripts/verify-alpha-source.sh
+    - scripts/generate-alphaX-indexes.mjs
 
 alphaX_process_data_assets:
   description: Goal calibration, risk judgment, decision rationale, review summaries, and reusable lessons. These are reviewable reasoning summaries, not raw hidden model chain-of-thought.
@@ -108,22 +114,28 @@ local_meta_data_assets:
 external_project_local_objective_data:
   description: Concrete project alphaX mappings live with each project and are ignored local objective data by default.
   canonical_paths:
-    - "{project}/.alphaX/AGENTS.md"
+    - "{project}/.alphaX/index.md"
     - "{project}/.alphaX/project-context.md"
-    - "{project}/.alphaX/reports/"
+  optional_paths:
+    - "{project}/.alphaX/evidence.md"
+    - "{project}/.alphaX/decisions.md"
+    - "{project}/.alphaX/reviews/"
+  default_install: "{project}/.git/info/exclude"
   allowed_content:
     - project key and source anchors
-    - observed state snapshots
-    - iteration events
+    - current reload baseline
     - validation evidence pointers
-    - local report artifact paths
-    - project review reports
+    - durable user or project decisions
+    - compact project review summaries
+    - open items, active risks, and lifecycle hygiene state
   disallowed_content:
     - raw secrets
     - private transcript content
     - project source-of-truth replacements
     - broad alphaX risk judgment assets
     - raw hidden model chain-of-thought
+    - copied Alpha Partner Source
+    - catch-all reports directory
   sharing_rule: share with the project only when explicitly intended; do not bundle into generic alpha-partner distribution
 
 project_review_artifacts:
@@ -131,13 +143,12 @@ project_review_artifacts:
   alpha_partner_shareable_assets:
     - alphaX/project-review/README.md
     - templates/project-review/report.md
-    - templates/project-review/lifecycle-hygiene.md
     - templates/source-review/feedback-report.md
   target_project_local_outputs:
-    - "{project}/.alphaX/reports/project-review-*.md"
     - "{project}/.alphaX/project-context.md"
+    - "{project}/.alphaX/reviews/ when explicitly useful and allowed"
   default_output_rule: report in the conversation first
-  write_rule: write only non-sensitive summaries to the project's ignored .alphaX/ when useful and allowed
+  write_rule: write only non-sensitive summaries or evidence pointers to the project's ignored .alphaX/project-context.md; use .alphaX/reviews/ only for explicit durable local review artifacts
   prohibited_locations:
     - "{alpha-partner}/.alphaX/process/ except sanitized mechanism feedback under .alphaX/process/review-feedback/"
     - "{alpha-partner}/docs/"

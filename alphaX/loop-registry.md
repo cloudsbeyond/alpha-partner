@@ -1,60 +1,81 @@
+---
+type: "SOP"
+title: "Loop Registry"
+description: "Manual-trigger loop registry for alphaX recurring checks and reports."
+tags: ["alphax", "loops", "sop"]
+---
 # Loop Registry
 
-Adapts Boris-style Loop thinking to alphaX. Principle: **loops protect attention; they do not replace judgment**.
+```yaml
+principle: loops protect attention; they do not replace judgment
+default_boundary:
+  mode: manual-trigger
+  writes: read-only unless approved
+  forbid_without_approval: [schedule, hosted routine, private watcher, repo modification, external post, destructive operation]
 
-## Current Boundary
+source_inspiration:
+  - Claude Code /loop
+  - Claude Code Routines
+  - Boris-style report loops
+  - alphaX uses report-first loops before execution
 
-Current loops are manual-trigger and read-only by default. Do not schedule recurring tasks, create hosted routines, watch private systems, modify repos, post externally, or run destructive operations without explicit user approval.
+observation_boundary:
+  allowed_active_session_signals: [project state, recent diffs, failing checks, stale ledger entries, unresolved decisions, repeated interruptions, explicit user work surfaces]
+  forbidden_without_approval: [cross-app private data collection, centralized super-app scraping, private chat processing, background watchers]
 
-## Source Inspiration
+loops:
+  L1_daily_focus_radar:
+    trigger: alphaX daily radar
+    purpose: focus/risk view and next work block
+    inputs: [focus-radar, session-ledger, context-snapshot, target instructions, target .alphaX/project-context.md, optional target .alphaX/* when referenced]
+    output: compact focus/risk report
+    approval_needed_for: [writing project files, scheduling, publishing]
 
-Claude Code `/loop` (local scheduled prompts), Claude Code Routines (hosted scheduled/API/GitHub automations), Boris-style workflow (background agents produce reports, human consumes summaries). alphaX: prefer loops over sub-agent fanout; prefer report-first before execution; keep project source of truth visible; upgrade from manual to scheduled only after proven useful and safe.
+  L2_source_drift_watch:
+    trigger: alphaX source drift check
+    purpose: source-of-truth drift scan
+    route: project target => alphaX/project-review/README.md; alphaX target => alphaX/source-review/README.md
 
-## Observation Boundary
+  L3_false_completion_watch:
+    trigger: alphaX false completion check
+    purpose: separate proven claims, missing evidence, needed acceptance
+    route: project target => alphaX/project-review/README.md; alphaX target => alphaX/source-review/README.md
 
-alphaX may infer useful timing from local context during active session: project state, recent diffs, failing checks, stale ledger entries, unresolved decisions, repeated user interruptions, explicit user-provided work surfaces. Must not silently collect cross-app private data, scrape centralized super apps, process private chats, or create background watchers without approval.
+  L4_pr_ci_watch:
+    trigger: alphaX PR CI watch
+    purpose: read repo/PR CI, stale branch, flaky tests, rebase risk
+    required_input: explicit repo_or_pr_url
+    approval_needed_for: [push, rebase, CI modification, PR comment]
 
-## Loop 1: Daily Focus Radar
+  L5_research_intake:
+    trigger: alphaX research intake
+    purpose: map primary external signals to local collaboration mechanisms
+    default_sources: [official docs, papers, engineering blogs, primary product docs]
+    write_source_only_by_request: true
 
-Trigger: `alphaX daily radar`. Purpose: refresh or produce a focus/risk view; identify best next work block; expose stale branch, uncommitted state, false completion, wrong-layer work. Inputs: optional local `.alphaX/process/focus-radar.md`, optional `.alphaX/process/session-ledger.md`, context-snapshot output for active projects, project-local AGENTS.md/README/specs/contracts, and project-local `.alphaX/` objective data when present. Output: compact focus/risk report. Default: read files, run read-only status commands, recommend one next focus move. Requires approval: writing project files, scheduling, publishing/messaging reports.
+  L6_proactive_nudge_experiment:
+    trigger: alphaX nudge check
+    purpose: propose low-intrusion reminder/risk/focus candidate
+    allowed_signals: [unresolved high-risk decisions, stale next action, missing manual acceptance, explicit focus degradation]
+    output: candidate nudge with evidence, reason, urgency, channel
+    approval_needed_for: [cron, host automation, Slack, Feishu, email, app notification, cross-app data]
 
-## Loop 2: Source Drift Watch
+  L7_alphaX_self_critique:
+    trigger: alphaX self-critique
+    purpose: find internally consistent but unverified alphaX claims
+    allowed_signals: [contract claim without evidence, process claim without evidence, value claim without cross-day test, meta-only ledger, unused rules]
+    output: suspect claim, why unverified, cheapest confirm/falsify evidence
+    writes: none unless user switches to source work
 
-Trigger: `alphaX source drift check`. Purpose: lightweight entry for the shared
-risk scan vocabulary in `alphaX/operating-system.md`, focused on
-source-of-truth drift. Default: read-only report. If scoped to one target
-project, use `alphaX/project-review/README.md`; if scoped to alphaX source
-itself, use `alphaX/source-review/README.md`.
+upgrade_gate:
+  required_before_schedule_or_push: [manual value proven, explicit scope, source list, read/write boundary, observation signals, stop condition, destination, cooldown, cost/privacy review, human approval]
 
-## Loop 3: False Completion Watch
-
-Trigger: `alphaX false completion check`. Purpose: lightweight entry for the
-shared risk scan vocabulary in `alphaX/operating-system.md`, focused on false
-completion. Default: read-only report that separates proven claims, missing
-evidence, and needed acceptance. If scoped to one project, use
-`alphaX/project-review/README.md`; if scoped to alphaX source itself, use
-`alphaX/source-review/README.md`.
-
-## Loop 4: PR/CI Watch
-
-Trigger: `alphaX PR CI watch`. Purpose: watch a specific repo or PR for failing CI, stale branch state, flaky tests, rebase needs. Inputs: explicit repo/PR URL, permission boundary, allowed actions. Default: read status only; summarize failures and probable owner boundary. Requires approval: pushing commits, rebasing, modifying CI, commenting on PRs.
-
-## Loop 5: Research Intake
-
-Trigger: `alphaX research intake`. Purpose: periodically map external alphaX collaboration, agent-native product, context, memory, tool harness, governance, and evaluation signals back to current projects. Default sources: official docs, papers, engineering blogs, primary product docs. Output: mechanism, local implication, project candidate, evidence link. Default: update `docs/research-backlog.md` or `docs/evidence-index.md` only after user asks for source write; otherwise produce candidate note.
-
-## Loop 6: Proactive Nudge Experiment
-
-Trigger: `alphaX nudge check`. Purpose: infer whether alphaX should proactively push a low-intrusion reminder, risk note, or focus suggestion. Allowed current signals: unresolved high-risk decisions in local process data, uncommitted or stale project-local objective data, prior local ledger next action with no follow-through, automated checks passed but manual acceptance missing, user explicitly says attention/focus/risk is degraded. Output: compact candidate nudge with evidence, reason, urgency, recommended channel. Default: produce inside current session; do not create recurring automation or push notification. Requires approval: Codex heartbeat/cron, Slack/Feishu/email/app notification, cross-app data access, private chat/meeting transcript processing.
-
-## Loop 7: alphaX Self-Critique
-
-Trigger: `alphaX self-critique`. Purpose: institutionalize the dissenter role so it is a mechanism, not an accident of whoever is in the conversation. Have an agent with clean context read alphaX itself and hunt for internally consistent but never-verified claims. Allowed signals: contract claims with no evidence trace; local process-data claims with no evidence trace; value claims still treated as proven without cross-day/cross-machine test; run of `meta` ledger entries with no `applied`; contract rules no `applied` session has reported using. Output: compact critique list—each item names suspect claim, why unverified, cheapest evidence to confirm/falsify. Explicitly separate "proven by diff" from "asserted", applying Agent Intake Rule to alphaX's own files. Default: read-only; produce critique inside current session; do not edit contract or delete rules without user approval.
-
-## Upgrade Gate
-
-Before any loop becomes scheduled, hosted, or proactively pushed outside current session: proven manual-trigger value; explicit scope and source list; read/write boundary; allowed observation signals; failure and stop condition; reporting destination; interruption budget and cooldown; cost and privacy review; human approval for the schedule.
-
-## Parking Lot
-
-Hundreds of background agents. Hosted routines. Slack/Feishu report posting. Automatic PR repair. Autonomous rebase/merge. Private transcript processing on a schedule. Cross-app behavior learning without explicit local permission boundary.
+parking_lot:
+  - background-agent swarms
+  - hosted routines
+  - Slack/Feishu posting
+  - automatic PR repair
+  - autonomous rebase/merge
+  - scheduled private transcript processing
+  - cross-app behavior learning
+```

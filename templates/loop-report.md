@@ -1,48 +1,53 @@
+---
+type: "Template"
+title: "Loop Report"
+description: "Template for manual-trigger loops and proactive nudge candidates."
+tags: ["alphax", "template", "loop"]
+---
 # Loop Report
 
-Use this template when alphaX runs a manual-trigger loop.
+```yaml
+generated_frontmatter:
+  type: Loop Report
+  title: Loop Report
+  date: "<YYYY-MM-DD>"
+  actor: alphaX
+  kind: loop_report
 
-## Loop
+loop:
+  name: "<loop name>"
+  trigger: "<trigger>"
+  surface: "<project|source|conversation>"
 
-- name:
-- trigger:
-- date:
-- surface:
+p0:
+  loop_purpose: "<one sentence>"
+  project_main_line: "<one sentence or n/a>"
 
-## P0
+evidence:
+  files_inspected: []
+  commands_run: []
+  external_sources: []
 
-- loop purpose:
-- project main line:
+findings:
+  proven: []
+  not_proven: []
+  drift_or_risk: []
 
-## Evidence
+nudge_candidate:
+  should_push: "<yes|no>"
+  reason: "<evidence-backed reason>"
+  urgency: "<low|medium|high>"
+  channel: "<active invocation|proposed external channel>"
+  cooldown: "<cooldown>"
 
-- files inspected:
-- commands run:
-- external sources:
+recommendation:
+  next_focus_move: "<one action>"
+  needs_human_decision: "<yes|no + decision>"
+  do_not_do_now: []
 
-## Findings
-
-- proven:
-- not proven:
-- drift or risk:
-
-## Nudge Candidate
-
-- should push:
-- reason:
-- urgency:
-- channel:
-- cooldown:
-
-## Recommendation
-
-- next focus move:
-- needs human decision:
-- do not do now:
-
-## Boundary
-
-- read-only:
-- writes performed:
-- approvals needed:
-- stop condition:
+boundary:
+  read_only: "<yes|no>"
+  writes_performed: []
+  approvals_needed: []
+  stop_condition: "<condition>"
+```

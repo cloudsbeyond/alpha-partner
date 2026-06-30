@@ -34,15 +34,12 @@ check_dir ".alphaX/process/source-work-candidates"
 
 check_file ".alphaX/manifest.yaml"
 check_file ".alphaX/local/README.md"
-check_file ".alphaX/local/agent-runtime-services.json"
 check_file ".alphaX/process/README.md"
 
 check_pattern "^schema_version: 1$" ".alphaX/manifest.yaml"
 check_pattern "^kind: alphaX_local_data$" ".alphaX/manifest.yaml"
 check_pattern "directory: \\.alphaX/local" ".alphaX/manifest.yaml"
 check_pattern "directory: \\.alphaX/process" ".alphaX/manifest.yaml"
-check_pattern "agentRuntimeServices" ".alphaX/local/agent-runtime-services.json"
-check_pattern "baseUrl" ".alphaX/local/agent-runtime-services.json"
 
 if ! git -C "$ROOT" check-ignore -q ".alphaX/manifest.yaml"; then
   fail ".alphaX/ is not ignored by git"

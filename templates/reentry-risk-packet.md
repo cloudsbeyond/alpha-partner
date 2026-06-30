@@ -1,39 +1,45 @@
+---
+type: "Template"
+title: "Re-Entry Risk Packet"
+description: "Template for project re-entry, focus recovery, and risk review."
+tags: ["alphax", "template", "risk"]
+---
 # Re-Entry Risk Packet
 
-Use this packet when alphaX helps the user return to a project after interruption or reviews risk across parallel projects.
+```yaml
+generated_frontmatter:
+  type: Risk Packet
+  title: Re-Entry Risk Packet
+  date: "<YYYY-MM-DD>"
+  actor: alphaX
+  kind: reentry_risk_packet
 
-## Surface
+surface:
+  project_path_or_link: "<target>"
+  trigger: "<trigger>"
 
-- project/path/link:
-- date:
-- trigger:
+p0:
+  current_main_line: "<one sentence>"
+  source_of_truth: []
+  stop_condition: "<condition>"
 
-## P0
+current_state:
+  live_files_or_commands_inspected: []
+  latest_verified_evidence: []
+  changed_since_last_checkpoint: []
 
-- current main line:
-- current source of truth:
-- current stop condition:
+top_risks:
+  P1: []
+  P2: []
+  P3: []
 
-## Current State
+focus_move:
+  next_work_block_action: "<one action>"
+  validation_or_acceptance_evidence: "<command|artifact|decision>"
+  do_not_do_now: []
 
-- live files or commands inspected:
-- latest verified evidence:
-- changed since last checkpoint:
-
-## Top Risks
-
-- [ ] P1:
-- [ ] P2:
-- [ ] P3:
-
-## Focus Move
-
-- next work-block action:
-- validation command or acceptance evidence:
-- what not to do now:
-
-## Parking Lot
-
-- later:
-- waiting on user decision:
-- research only:
+parking_lot:
+  later: []
+  waiting_on_user_decision: []
+  research_only: []
+```

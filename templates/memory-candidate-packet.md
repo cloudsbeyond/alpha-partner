@@ -1,54 +1,28 @@
+---
+type: "Template"
+title: "Memory Candidate Packet"
+description: "Template for reviewable memory candidates before durable memory updates."
+tags: ["alphax", "template", "memory"]
+---
 # Memory Candidate Packet
 
-Use this packet when a repeated preference, project rule, workflow lesson, or durable collaboration pattern may deserve global memory later.
+```yaml
+generated_frontmatter:
+  type: Memory Candidate
+  title: Memory Candidate Packet
+  date: "<YYYY-MM-DD>"
+  actor: alphaX
+  kind: memory_candidate
 
-Do not update durable memory from this packet unless the user explicitly asks.
+rule: do not update durable memory unless user explicitly asks
 
-## Candidate
-
-State the memory candidate in one concise sentence.
-
-## Evidence
-
-Record the sources that support it:
-
-- current file path or source link;
-- command output or test evidence;
-- conversation decision;
-- repeated project pattern.
-
-## Scope
-
-State where the memory should apply:
-
-- global;
-- a specific repo;
-- a project family;
-- a workflow type;
-- only Alpha Partner Source.
-
-## Stability
-
-Classify:
-
-- stable default;
-- likely to drift;
-- needs re-check before use;
-- one-off note, not memory.
-
-## Risk Of Remembering
-
-State what could go wrong if future agents over-apply this memory.
-
-## Proposed Action
-
-Choose one:
-
-- keep as local note;
-- add to local process data;
-- ask the user whether to update durable memory;
-- discard because it is too narrow.
-
-## User Approval
-
-Record explicit approval before any durable memory update.
+candidate:
+  statement: "<one concise sentence>"
+  evidence:
+    - "<file|source link|command|test|conversation decision|repeated pattern>"
+  scope: "<global|repo|project-family|workflow-type|Alpha Partner Source>"
+  stability: "<stable default|likely drift|re-check before use|one-off not memory>"
+  risk_of_remembering: "<over-application failure mode>"
+  proposed_action: "<keep local|add process data|ask user for durable memory|discard>"
+  user_approval: "<explicit approval pointer or none>"
+```
