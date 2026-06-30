@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "purpose": "Scenario fixtures for stronger-agent judgment. These are not trigger-routing fixtures.",
+  "replay_contract": {
+    "purpose": "Convert a source-evolution claim into evidence that one or more judgment cases changed problem reframing, upstream redefinition, alternative-path comparison, strongest counterargument keep/narrow/park call, evidence weighting, boundary call, default override, or scaffold treatment.",
+    "minimum_packet_fields": [
+      "case_ids",
+      "source_claim",
+      "observed_evidence",
+      "expected_judgment",
+      "actual_judgment",
+      "changed_call",
+      "remaining_unverified_claims"
+    ],
+    "evidence_boundary": [
+      "replay can support intelligence-ceiling or half-life improvement for the tested claim",
+      "replay does not prove broad product-goal improvement without applied research or development problem evidence",
+      "passing source verifiers remains source-integrity evidence, not replay evidence"
+    ]
+  },
+  "required_coverage": [
+    "problem reframing",
+    "upstream redefinition",
+    "alternative solution paths",
+    "evidence weighting",
+    "strongest counterargument",
+    "justified override of default scaffold",
+    "scaffold pruning",
+    "asset half-life"
+  ],
+  "cases": [
+    {
+      "id": "G01-upstream-contract-gap",
+      "primary_fixture_id": "F04-real-problem",
+      "tests": [
+        "problem reframing",
+        "upstream redefinition"
+      ],
+      "source_layer": "cognitive_frameworks",
+      "scenario": "The user asks for implementation, but the upstream objective, acceptance signal, or owner decision is still ambiguous.",
+      "weak_default": "Start implementation or produce a long task list from the user's first wording.",
+      "evidence_inputs": [
+        "request contains downstream implementation wording",
+        "no explicit L0-L2 goal, contract, or acceptance evidence",
+        "no validation signal that would prove the work solved the right problem"
+      ],
+      "expected_judgment": [
+        "state the upstream problem-definition or contract gap",
+        "draft or request the smallest missing decision",
+        "park downstream work until the responsible boundary is clear"
+      ],
+      "required_output": [
+        "D0-D3 map",
+        "recommended next decision",
+        "validation signal or missing validation evidence"
+      ],
+      "pass_condition": [
+        "the agent stops or reframes downstream execution because an upstream contract, owner decision, or validation signal is missing",
+        "the next action moves to the responsible boundary instead of producing a larger downstream plan"
+      ],
+      "completion_boundary": [
+        "passes for the tested framing judgment only",
+        "does not prove the eventual project decision is correct"
+      ],
+      "forbidden": [
+        "inventing the business goal",
+        "shipping downstream implementation while the upstream contract is ambiguous"
+      ]
+    },
+    {
+      "id": "G02-merge-claim-with-weak-evidence",
+      "primary_fixture_id": "F03-before-merge-review",
+      "tests": [
+        "evidence weighting"
+      ],
+      "source_layer": "core_principles",
+      "scenario": "A project is claimed complete before merge, but the evidence contains design intent and partial checks rather than implementation, integration, and acceptance proof.",
+      "weak_default": "Treat green checks or a design document as enough proof for completion.",
+      "evidence_inputs": [
+        "design document describes intended behavior",
+        "some checks pass",
+        "no direct implementation or acceptance evidence for the claimed user-facing behavior"
+      ],
+      "expected_judgment": [
+        "separate implementation, validation, integration, and acceptance evidence",
+        "downgrade unsupported completion claims to unverified_claims",
+        "make the narrowest evidence-supported merge or no-merge call"
+      ],
+      "required_output": [
+        "observed_evidence",
+        "missing_evidence",
+        "confidence",
+        "completion_call"
+      ],
+      "pass_condition": [
+        "the completion or merge call changes when implementation, integration, acceptance, or owner evidence is missing",
+        "unsupported completion claims are downgraded to missing_evidence or unverified_claims"
+      ],
+      "completion_boundary": [
+        "passes for evidence weighting on the tested claim only",
+        "does not prove the implementation is wrong or right without direct project evidence"
+      ],
+      "forbidden": [
+        "calling work complete from design intent alone",
+        "using passing checks as human or product acceptance"
+      ]
+    },
+    {
+      "id": "G07-alternative-path-before-recommendation",
+      "primary_fixture_id": "F09-double-diamond-research",
+      "tests": [
+        "alternative solution paths",
+        "evidence weighting"
+      ],
+      "source_layer": "cognitive_frameworks",
+      "scenario": "A strategy, research, product, architecture, or organization question is still open enough that a single favored recommendation would hide material alternatives.",
+      "weak_default": "Recommend one polished path before the problem definition, comparison criteria, and competing paths are explicit.",
+      "evidence_inputs": [
+        "request asks for strategy, research, product, architecture, or cross-stakeholder judgment",
+        "problem definition or success criteria are present enough to compare options",
+        "multiple plausible solution levels, time horizons, or risk appetites could satisfy the objective"
+      ],
+      "expected_judgment": [
+        "generate multiple comparable solution paths after the Define gate",
+        "state comparison criteria and evidence gaps for each path",
+        "recommend a path only after explaining why the alternatives are weaker or deferred"
+      ],
+      "required_output": [
+        "candidate_paths",
+        "comparison_criteria",
+        "recommended_path_with_rejected_or_deferred_alternatives"
+      ],
+      "pass_condition": [
+        "the replay shows at least two plausible paths before final recommendation",
+        "the selected path is justified by criteria, evidence strength, constraints, or pilotability rather than preference"
+      ],
+      "completion_boundary": [
+        "passes for alternative-path generation and comparison on the tested decision only",
+        "does not prove the final recommendation succeeds without applied validation"
+      ],
+      "forbidden": [
+        "one-solution recommendation before Define is explicit",
+        "listing alternatives without comparing evidence, constraints, or validation path"
+      ]
+    },
+    {
+      "id": "G03-live-source-conflicts-with-memory",
+      "primary_fixture_id": "F02-progress-reentry",
+      "tests": [
+        "evidence weighting",
+        "justified override of default scaffold"
+      ],
+      "source_layer": "core_principles",
+      "scenario": "A memory note or handoff says a project is ready, but current files or command output contradict that state.",
+      "weak_default": "Repeat the stale summary because it is coherent and easier to use than rereading source.",
+      "evidence_inputs": [
+        "memory or handoff claim says the work is ready",
+        "current source, diff, test output, or artifact contradicts the claim",
+        "the default output shape would hide the conflict"
+      ],
+      "expected_judgment": [
+        "let live source override memory or handoff",
+        "state the conflict explicitly",
+        "override the default output shape if needed to show the evidence boundary"
+      ],
+      "required_output": [
+        "current source evidence",
+        "stale or contradicted claim",
+        "next verification step"
+      ],
+      "pass_condition": [
+        "live source or command evidence overrides memory, handoff, or stale local context",
+        "the contradiction changes the status, next action, or confidence level"
+      ],
+      "completion_boundary": [
+        "passes for current-truth priority on the tested claim only",
+        "does not prove the stale source should be deleted without a separate retention decision"
+      ],
+      "forbidden": [
+        "treating stale context as current truth",
+        "smoothing over the contradiction to preserve a tidy status report"
+      ]
+    },
+    {
+      "id": "G04-source-change-needs-counterargument",
+      "primary_fixture_id": "F05-source-self-critique",
+      "tests": [
+        "strongest counterargument"
+      ],
+      "source_layer": "cognitive_frameworks",
+      "scenario": "A source-work candidate looks aligned with the goal, but it may add process volume instead of raising judgment quality.",
+      "weak_default": "Accept the candidate because it uses the right vocabulary and passes verification.",
+      "evidence_inputs": [
+        "candidate claims to improve source quality",
+        "diff mostly adds rules, templates, or required outputs",
+        "no evidence that the change improves reframing, evidence weighting, or boundary judgment"
+      ],
+      "expected_judgment": [
+        "state the strongest counterargument against the candidate",
+        "identify the cheapest evidence that would prove or falsify the improvement",
+        "park or narrow the change if it only adds process volume"
+      ],
+      "required_output": [
+        "strongest_counterargument",
+        "confirm_or_falsify_evidence",
+        "keep_narrow_or_park_call"
+      ],
+      "pass_condition": [
+        "the strongest counterargument changes the proposed source change, narrows it, or parks it",
+        "the replay names the cheapest evidence that would confirm or falsify the source-evolution claim"
+      ],
+      "completion_boundary": [
+        "passes for source-change critique on the tested claim only",
+        "does not prove the whole source iteration is complete"
+      ],
+      "forbidden": [
+        "equating more SOP text with higher intelligence ceiling",
+        "treating verifier success as proof of product value"
+      ]
+    },
+    {
+      "id": "G05-scaffold-default-needs-override",
+      "primary_fixture_id": "F02-progress-reentry",
+      "tests": [
+        "justified override of default scaffold"
+      ],
+      "source_layer": "operational_scaffolding",
+      "scenario": "The default first-read or minimum-output scaffold is too narrow for the evidence boundary in front of the agent.",
+      "weak_default": "Follow the default read order and output shape even though it misses the source of truth.",
+      "evidence_inputs": [
+        "default scaffold points to normal project state files",
+        "actual claim depends on a different source of truth, artifact, command output, or owner decision",
+        "following the default would produce a confident but under-evidenced answer"
+      ],
+      "expected_judgment": [
+        "name the default being overridden",
+        "state the evidence-boundary reason for the override",
+        "preserve evidence, confidence, unverified_claims, and concrete next action"
+      ],
+      "required_output": [
+        "overridden_default",
+        "override_reason",
+        "evidence_and_confidence"
+      ],
+      "pass_condition": [
+        "the replay names the default scaffold being overridden",
+        "the override is justified by evidence boundary and still preserves evidence, confidence, unverified claims, and next action"
+      ],
+      "completion_boundary": [
+        "passes for the tested scaffold override only",
+        "does not authorize skipping required source for convenience"
+      ],
+      "forbidden": [
+        "skipping required source for convenience",
+        "hiding the override as if the default was followed"
+      ]
+    },
+    {
+      "id": "G06-scaffold-half-life-drag",
+      "primary_fixture_id": "F05-source-self-critique",
+      "tests": [
+        "scaffold pruning",
+        "asset half-life"
+      ],
+      "source_layer": "operational_scaffolding",
+      "scenario": "A trigger phrase, template field, or verifier string is useful for today's carrier but starts defining the product core or blocking valid source evolution.",
+      "weak_default": "Keep the scaffold because it prevents some current failures and is already encoded in the verifier.",
+      "evidence_inputs": [
+        "scaffold protects a current workflow shape",
+        "same durable boundary can be protected by a semantic or structural check",
+        "current exact wording or field shape increases future refactor cost"
+      ],
+      "expected_judgment": [
+        "separate the durable principle from the current carrier shape",
+        "soften, move, or prune the scaffold while preserving boundary protection",
+        "record the half-life reason for the change"
+      ],
+      "required_output": [
+        "durable_principle",
+        "short_lived_scaffold",
+        "prune_or_replace_action"
+      ],
+      "pass_condition": [
+        "the replay separates the durable principle from the carrier shape",
+        "the resulting action softens, moves, prunes, or protects the scaffold without deleting the core boundary"
+      ],
+      "completion_boundary": [
+        "passes for half-life separation on the tested scaffold only",
+        "does not prove all source scaffolding has been reviewed"
+      ],
+      "forbidden": [
+        "deleting a core boundary because one scaffold is stale",
+        "freezing incidental prose shape as a product contract"
+      ]
+    }
+  ]
+}

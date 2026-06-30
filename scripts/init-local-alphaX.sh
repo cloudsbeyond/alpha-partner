@@ -5,10 +5,14 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 
 mkdir -p \
   "$ROOT/.alphaX/local" \
+  "$ROOT/.alphaX/process/applied-runs" \
+  "$ROOT/.alphaX/process/judgment-replays" \
   "$ROOT/.alphaX/process/loop-reports" \
   "$ROOT/.alphaX/process/pilots" \
   "$ROOT/.alphaX/process/review-feedback" \
-  "$ROOT/.alphaX/process/source-work-candidates"
+  "$ROOT/.alphaX/process/source-evolution-candidates" \
+  "$ROOT/.alphaX/process/source-work-candidates" \
+  "$ROOT/.alphaX/process/thinking-notes"
 
 write_if_missing() {
   local path="$1"
@@ -99,6 +103,10 @@ Allowed:
 - source review backlog;
 - review feedback;
 - source work candidates;
+- source evolution candidates;
+- applied runs;
+- judgment replays;
+- thinking notes;
 - loop reports;
 - pilot evidence.
 
@@ -117,6 +125,17 @@ write_if_missing "$ROOT/.alphaX/process/index.md" <<'EOF'
 - [Local Focus Radar](focus-radar.md) - Local focus and risk snapshots.
 - [Local Session Ledger](session-ledger.md) - Local alphaX session ledger.
 - [Local Source Review Backlog](source-review-backlog.md) - Local source review todos and unsettled consensus.
+
+# Process Directories
+
+- [Applied Runs](applied-runs/) - Applied source/project/research traces that calibrate alphaX mechanisms.
+- [Judgment Replays](judgment-replays/) - Replay packets for source-evolution claims.
+- [Loop Reports](loop-reports/) - Manual loop reports.
+- [Pilots](pilots/) - Pilot evidence.
+- [Review Feedback](review-feedback/) - Sanitized mechanism feedback.
+- [Source Evolution Candidates](source-evolution-candidates/) - PDCA and owner-review source evolution candidates.
+- [Source Work Candidates](source-work-candidates/) - Candidate source edits before acceptance.
+- [Thinking Notes](thinking-notes/) - Review thinking notes and freeze inputs.
 EOF
 
 write_if_missing "$ROOT/.alphaX/local/project-paths.md" <<'EOF'

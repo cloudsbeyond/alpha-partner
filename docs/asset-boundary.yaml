@@ -20,8 +20,8 @@ shareable_function_assets:
     - alphaX/session-runbook.md
     - alphaX/loop-registry.md
     - alphaX/pilot-playbook.md
-    - alphaX/source-review/README.md
-    - alphaX/project-review/README.md
+    - alphaX/source-review/agent-workflow.md
+    - alphaX/project-review/agent-workflow.md
     - assets/icon.png
     - docs/research-backlog.md
     - docs/evidence-index.md
@@ -37,6 +37,7 @@ shareable_function_assets:
     - templates/
     - templates/project-review/report.md
     - templates/source-review/feedback-report.md
+    - skills/double-diamond-research/SKILL.md
     - skills/problem-decomposer/SKILL.md
     - scripts/init-local-alphaX.sh
     - scripts/verify-local-alphaX.sh
@@ -69,6 +70,17 @@ alphaX_process_data_assets:
       coupling: project-specific pilots and validation notes
       sharing_rule: local only; not required for alphaX function execution
 
+    - path: .alphaX/process/applied-runs/
+      kind: applied_judgment_trace
+      coupling: source, project, or research runs used to calibrate alphaX mechanisms
+      sharing_rule: local only; extract only generic mechanism lessons
+      current_state_rule: evidence pointers only; live source still wins
+
+    - path: .alphaX/process/judgment-replays/
+      kind: source_evolution_replay_evidence
+      coupling: replay packets for source-evolution claims
+      sharing_rule: local only; do not promote replay evidence into product-goal proof
+
     - path: .alphaX/process/loop-reports/
       kind: applied_risk_and_goal_alignment_reports
       coupling: project-specific manual runs, review reports, and closure packets
@@ -89,6 +101,16 @@ alphaX_process_data_assets:
       kind: source_work_candidate_material
       coupling: owner-review material before tracked alphaX source changes
       sharing_rule: local only; promote only accepted generic source changes
+
+    - path: .alphaX/process/source-evolution-candidates/
+      kind: source_evolution_pdca_material
+      coupling: PDCA and owner-review source evolution candidates
+      sharing_rule: local only; promote only accepted generic source changes
+
+    - path: .alphaX/process/thinking-notes/
+      kind: source_review_thinking_notes
+      coupling: review thinking notes and freeze inputs
+      sharing_rule: local only; extract only compact decisions or generic mechanisms
 
 local_meta_data_assets:
   - path: .alphaX/local/project-paths.md
@@ -141,7 +163,7 @@ external_project_local_objective_data:
 project_review_artifacts:
   description: Review outputs for one concrete project. They verify claims, changed files, drift, and validation evidence; they are not alphaX source governance records.
   alpha_partner_shareable_assets:
-    - alphaX/project-review/README.md
+    - alphaX/project-review/agent-workflow.md
     - templates/project-review/report.md
     - templates/source-review/feedback-report.md
   target_project_local_outputs:

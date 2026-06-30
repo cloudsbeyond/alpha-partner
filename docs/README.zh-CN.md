@@ -10,6 +10,21 @@ tags: ["alphax", "guide", "zh-cn"]
 
 英文公开源码是 canonical source；本文件是中文使用入口。正式合约、运行边界和 SOP 以根目录 `AGENTS.md` 为准。
 
+## Source 叙事
+
+产品目标：帮助 agent 在明确的证据、scope、数据和人类主权边界下，自主解决更多高价值研究和开发问题。
+
+Source 自我迭代目标：让 alphaX 自己更好地服务这个产品目标。它是源项目的内部优化目标，不是产品目标本身；它不是堆更多提示词或流程，而是两个优化轴：
+
+- 提升未来 agent 的智能上限；
+- 延长可信协作资产的半衰期。
+
+提升智能上限，指让更强的 agent 能提出更好的问题框定、权衡证据、提出最强反驳、识别 wrong-layer work，并在有证据边界理由时覆盖默认流程。延长资产半衰期，指把长期有效的协作原则和短期载体脚手架分开治理，让 trigger phrase、模板、must-read、verifier 字符串和当前文件形态可以替换，而不伤害产品核心。
+
+证据边界也按这两层分开：产品目标是否推进，要看真实研究或开发问题中的 applied evidence；Source 自我迭代是否推进，要看 judgment replay、applied run，或与 source mechanism 绑定的半衰期证据。
+
+底层核心是智能放大器：证据字段、scope/write boundary、data/decision boundary、live source priority、wrong-layer guard。外层脚手架是下限稳定器：路由默认、读取顺序、fixtures、模板和当前 verifier 机制。Source work 的方向是让核心层更薄更硬，让脚手架显式可折旧、可替换、可剪枝。
+
 ## 它是什么
 
 alphaX 是一个可复用的协作函数，用来辅助 AI 产品和软件工程工作。它可以被交付成 Skill、MCP surface、subagent 或 supervisor-agent action；这个仓库是 Markdown-first source。
@@ -17,6 +32,7 @@ alphaX 是一个可复用的协作函数，用来辅助 AI 产品和软件工程
 它关注：
 
 - 降低项目重新进入成本；
+- 在 alphaX 流程中显式触发问题拆解和双菱形思考法这类 source skill；
 - 识别并复查项目风险；
 - 在 handoff、合入、freeze 或发布前做项目复查；
 - 维护项目 lifecycle hygiene 和本地 `.alphaX/` 压缩信号；
@@ -73,6 +89,7 @@ alphaX 介入一下
 review 一下我现在几个项目的风险
 合入前审一下这个项目声称的功能是否真的实现
 这件事真正要解决的问题是什么？
+双菱形思考法
 ```
 
 默认交互语言跟随用户：用户用中文，alphaX 应使用中文反馈；`D0-D3`、`P0/P1/P2`、`confidence`、`unverified_claims` 这类稳定结构字段保持不翻译。
@@ -91,8 +108,8 @@ review 一下我现在几个项目的风险
 
 Review 有两个 contract，目标不同：
 
-- `alphaX/source-review/README.md`：改进 alphaX source 和机制，发现 contract drift、过期过程状态、未证实机制声明和 scaffolding-to-use imbalance。
-- `alphaX/project-review/README.md`：判断一个目标项目的交付证据是否支持 handoff、合入、freeze、release、publication 或 claimed completion。
+- `alphaX/source-review/agent-workflow.md`：改进 alphaX source 和机制，发现 contract drift、过期过程状态、未证实机制声明和 scaffolding-to-use imbalance。
+- `alphaX/project-review/agent-workflow.md`：判断一个目标项目的交付证据是否支持 handoff、合入、freeze、release、publication 或 claimed completion。
 
 Project review 默认 report-first；如果需要落本地证据，只写入被复查项目 ignored `.alphaX/` schema 允许的文件。如果本次 review 对 alphaX 机制本身有学习价值，可以另写一份脱敏机制反馈到 source checkout ignored `.alphaX/process/review-feedback/`，但不能复制项目事实。
 

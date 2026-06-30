@@ -18,6 +18,39 @@ reading this source; they are not the product boundary. A dedicated always-on
 runtime could make alphaX entity-like, but this repository's product boundary is
 the function contract and project-local `.alphaX/` mappings.
 
+## Product Goal And Source Self-Iteration
+
+Product goal: help agents autonomously solve more high-value research and
+development problems under explicit evidence, scope, data, and human authority
+boundaries.
+
+Source self-iteration goal: make alphaX itself better at serving that product
+goal. This is an internal source optimization target, not the product goal
+itself. It has two axes:
+
+- raising the intelligence ceiling of future agents;
+- extending the half-life of the source assets that make collaboration
+  trustworthy.
+
+Raising the intelligence ceiling means helping stronger agents do better work:
+reframe problems, weigh evidence, surface stronger counterarguments, identify
+wrong-layer work, and know when a default process should be overridden. Extending
+asset half-life means separating durable collaboration principles from
+short-lived carrier scaffolding, so prompts, templates, trigger phrases, and
+verifier strings can change without weakening the product core.
+
+The evidence boundary follows the same split: product-goal progress needs
+applied research or development problem evidence; source self-iteration progress
+needs judgment replay, applied runs, or half-life evidence tied to source
+mechanisms.
+
+The core layer is the intelligence amplifier: evidence fields, scope and write
+boundaries, data and decision boundaries, live-source priority, and wrong-layer
+guards. The outer layer is a lower-bound stabilizer: routing defaults, read
+orders, fixtures, templates, and current verification mechanics. Source work
+keeps the core thin and hard while making scaffolding explicit, depreciable, and
+replaceable.
+
 ## What It Is
 
 alphaX is a reusable collaboration function for AI product and software
@@ -27,6 +60,7 @@ supervisor-agent action, but this repository is the Markdown-first source.
 It focuses on:
 
 - project re-entry and risk review;
+- explicit source-skill triggering for problem decomposition and 双菱形思考法;
 - project review before handoff, merge, freeze, or release;
 - project lifecycle hygiene and local `.alphaX/` compaction signals;
 - source review for alphaX contract and mechanism drift;
@@ -113,6 +147,12 @@ For stepping back from a task to the real problem:
 What are we actually trying to solve?
 ```
 
+For open-ended complex research:
+
+```text
+Use 双菱形思考法 / Double Diamond Research for this problem.
+```
+
 For portfolio focus and risk:
 
 ```text
@@ -143,10 +183,10 @@ Generated `index.md` files provide the detailed navigation.
 
 Review has two contracts with different goals:
 
-- `alphaX/source-review/README.md`: improve alphaX source and mechanisms by
+- `alphaX/source-review/agent-workflow.md`: improve alphaX source and mechanisms by
   finding contract drift, stale process state, unsupported claims, and
   scaffolding-to-use imbalance.
-- `alphaX/project-review/README.md`: judge one target project's delivery
+- `alphaX/project-review/agent-workflow.md`: judge one target project's delivery
   evidence before handoff, merge, freeze, release, publication, or claimed
   completion.
 

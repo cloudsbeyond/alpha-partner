@@ -13,9 +13,14 @@ fixture_contract:
   proves:
     - trigger maps to one primary intent and loop
     - required source is read before decision
+    - matching skills/*/SKILL.md is read when a source skill trigger is present
     - live target source wins over .alphaX/, memory, or handoff
     - output contains evidence, unverified_claims when needed, and one next action
     - forbidden writes or product expansions do not happen
+
+judgment_fixtures:
+  source: agent-judgment-fixtures.json
+  boundary: trigger fixtures test routing; judgment fixtures test intelligence-ceiling behavior
 
 fixtures:
   F01-risk-current-project:
@@ -40,7 +45,7 @@ fixtures:
     expected_intent: project_review
     scope: project review
     loop: Project review
-    must_read: [alphaX/project-review/README.md, target diff, tests, build output or missing validation evidence]
+    must_read: [alphaX/project-review/agent-workflow.md, target diff, tests, build output or missing validation evidence]
     forbidden: [implementing fixes without scope switch]
 
   F04-real-problem:
@@ -48,9 +53,16 @@ fixtures:
     must_read: [skills/problem-decomposer/SKILL.md, project source when project-bound]
     forbidden: [invented business goals]
 
+  F09-double-diamond-research:
+    trigger: "双菱形思考法"
+    expected_intent: double_diamond_research
+    must_read: [skills/double-diamond-research/SKILL.md, project source when project-bound]
+    must_output: [P0 main line, Discover Define Develop Deliver map, evidence gaps, next decision]
+    forbidden: [McKinsey-owned framework claim, one-solution recommendation before Define, P1/P2 promotion]
+
   F05-source-self-critique:
     expected_intent: source_review
-    must_read: [alphaX/source-review/README.md, alphaX/loop-registry.md, relevant source files, verifier output]
+    must_read: [alphaX/source-review/agent-workflow.md, alphaX/loop-registry.md, relevant source files, verifier output]
     forbidden: [tracked source edits]
 
   F06-source-drift:
@@ -64,7 +76,7 @@ fixtures:
 
   F08-engage:
     expected_intent: engage
-    must_read: [AGENTS.md, alphaX/session-runbook.md, target instructions]
+    must_read: [AGENTS.md, alphaX/session-runbook.md, target instructions, skill router check]
     forbidden: [asking user to restate context before first source pass]
 
 pass_criteria:

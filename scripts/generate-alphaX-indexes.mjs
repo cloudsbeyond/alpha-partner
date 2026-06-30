@@ -57,6 +57,11 @@ function gitVisibleIndexFiles() {
     .sort();
 }
 
+function firstHeading(text) {
+  const match = text.match(/^#\s+(.+)$/m);
+  return match ? match[1].trim() : '';
+}
+
 function parseFrontmatter(path, text) {
   if (!text.startsWith('---\n')) {
     return { error: 'missing YAML frontmatter' };
@@ -80,6 +85,22 @@ function parseFrontmatter(path, text) {
     }
     frontmatter[key] = value;
   }
+  if (basename(path) === 'SKILL.md') {
+    if (!frontmatter.name) {
+      return { error: 'missing skill frontmatter field: name' };
+    }
+    if (!frontmatter.description) {
+      return { error: 'missing skill frontmatter field: description' };
+    }
+    return {
+      frontmatter: {
+        ...frontmatter,
+        type: frontmatter.type || 'Skill',
+        title: frontmatter.title || firstHeading(text) || frontmatter.name,
+      },
+    };
+  }
+
   for (const field of requiredFields) {
     if (!frontmatter[field]) {
       return { error: `missing frontmatter field: ${field}` };

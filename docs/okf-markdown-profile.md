@@ -22,6 +22,11 @@ YAML frontmatter:
     type: descriptive document role
     title: display title, usually H1
     description: one sentence consumed by generated indexes
+  skill_exception:
+    files: "skills/*/SKILL.md"
+    required: [name, description]
+    reason: Codex skill discovery and validation read the standard Skill frontmatter shape
+    generated_index_derives: [type=Skill, title from H1 or name]
   optional:
     tags: lowercase grouping terms
   known_type_examples:

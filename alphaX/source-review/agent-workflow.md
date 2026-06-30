@@ -20,9 +20,13 @@ checks:
   - scaffolding-to-use imbalance
   - weak assumptions
   - source governance risk
+  - intelligence-ceiling suppression
+  - asset half-life drag
+  - source-integrity proof mistaken for intelligence-ceiling or product-goal proof
 
 read:
   - AGENTS.md
+  - alphaX/source-work/intelligence-ceiling-half-life.md
   - relevant Alpha Partner Source files
   - .alphaX/process/focus-radar.md when present
   - .alphaX/process/session-ledger.md when present
@@ -36,6 +40,9 @@ run:
 output:
   - verifier result
   - source/mechanism risks with evidence and confidence
+  - layer call when a mechanism mixes durable principle, cognitive framework, operational scaffold, or implementation carrier
+  - intelligence-ceiling and half-life impact when relevant
+  - proof boundary when a claimed improvement is supported only by docs or passing checks
   - drift markers
   - source-work candidates or review-feedback notes when useful
   - handoff update when applicable
@@ -45,6 +52,7 @@ candidate_outputs:
   - source-work candidate
   - verifier or boundary fix
   - contract simplification
+  - judgment fixture or pruning candidate
   - stale-process correction
   - evidence-backed objection to claimed source readiness
 

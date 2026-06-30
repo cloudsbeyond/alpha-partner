@@ -31,13 +31,17 @@ source_checkout_shape:
       focus-radar.md: focus/risk
       session-ledger.md: session trace
       source-review-backlog.md: source review queue
+      applied-runs/: applied source/project/research traces
+      judgment-replays/: source-evolution judgment replay packets
       loop-reports/: manual loop reports
       pilots/: pilot evidence
       review-feedback/: sanitized mechanism feedback
+      source-evolution-candidates/: PDCA and owner-review source evolution candidates
       source-work-candidates/: candidate source edits
+      thinking-notes/: review thinking notes and freeze inputs
 
 minimum_verified_shape:
-  required: [manifest.yaml, local/README.md, process/README.md, process/loop-reports/, process/pilots/, process/review-feedback/, process/source-work-candidates/]
+  required: [manifest.yaml, local/README.md, process/README.md, process/applied-runs/, process/judgment-replays/, process/loop-reports/, process/pilots/, process/review-feedback/, process/source-evolution-candidates/, process/source-work-candidates/, process/thinking-notes/]
   existing_local_data_rewrite_required: false
 
 manifest.yaml:
@@ -55,7 +59,7 @@ local_data:
   must_remain_ignored: true
 
 process_data:
-  stores: [focus radar, session ledger, decisions, source review backlog, review feedback, source work candidates, loop reports, pilot evidence]
+  stores: [focus radar, session ledger, decisions, source review backlog, review feedback, source work candidates, source evolution candidates, applied runs, judgment replays, thinking notes, loop reports, pilot evidence]
   not: raw hidden model chain-of-thought
 ```
 

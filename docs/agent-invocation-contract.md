@@ -11,6 +11,7 @@ p0_flow:
   - short_trigger
   - intent_and_scope_call
   - required_source_read
+  - skill_trigger_check
   - live_project_evidence_check
   - evidence_backed_state_or_risk_call
   - next_action
@@ -43,7 +44,7 @@ intents:
     triggers: ["合入前审一下", "run project review", "检查声称完成是否真的实现"]
     default_scope: project review
     loop: Project review
-    first_read: [alphaX/project-review/README.md, target source of truth, diff, validation surface]
+    first_read: [alphaX/project-review/agent-workflow.md, target source of truth, diff, validation surface]
     minimum_output: [findings, completion state, missing evidence, next action]
 
   problem_decompose:
@@ -53,11 +54,18 @@ intents:
     first_read: [skills/problem-decomposer/SKILL.md, project source when project-bound]
     minimum_output: [D0-D3 map, recommended focus, validation signal]
 
+  double_diamond_research:
+    triggers: ["双菱形思考法", "双菱形", "Double Diamond", "Double Diamond Research", "开放复杂问题研究结构"]
+    default_scope: conversation or project work
+    loop: Research loop plus 双菱形思考法 / Double Diamond Research
+    first_read: [skills/double-diamond-research/SKILL.md, project source when project-bound]
+    minimum_output: [P0 main line, Discover Define Develop Deliver map, evidence gaps, next decision]
+
   source_review:
     triggers: ["alphaX self-critique", "检查 alphaX 本身", "source drift check"]
     default_scope: source review
     loop: Source review or self-critique
-    first_read: [alphaX/source-review/README.md, alphaX/loop-registry.md Loop 7]
+    first_read: [alphaX/source-review/agent-workflow.md, alphaX/loop-registry.md Loop 7]
     minimum_output: [source risks, evidence, source-work candidates]
 
   manual_loop:
@@ -66,6 +74,24 @@ intents:
     loop: Manual loop layer
     first_read: [alphaX/loop-registry.md, target source when applicable]
     minimum_output: [loop report, boundary, approval needs]
+
+skill_trigger_layer:
+  role: source skills are cognitive tools applied inside the chosen scope and loop
+  timing: after intent_and_scope_call and required_source_read; before final framing, recommendation, or project action
+  rule: read and apply the smallest matching skill; do not treat a skill as a new scope or runtime
+  minimal_set:
+    problem_decomposer:
+      source: skills/problem-decomposer/SKILL.md
+      use_when: the task may be solving the wrong problem, asks for real problem, essence, first-principles decomposition, or D0-D3 framing
+      output: D0-D3 map, recommended focus, validation signal
+    double_diamond_research:
+      source: skills/double-diamond-research/SKILL.md
+      use_when: the user says 双菱形思考法, 双菱形, Double Diamond, Double Diamond Research, or asks for open complex research to become decision options
+      output: Stage 0, Discover, Define, Develop, Deliver, evidence gaps, next decision
+  composition:
+    - use problem_decomposer first when the P0 problem level is unclear
+    - use double_diamond_research when the problem is open, multi-stakeholder, strategic, or research-heavy
+    - if both match, run problem_decomposer to locate the problem level, then double_diamond_research to structure research and solution convergence
 
 scope_rules:
   - choose exactly one primary scope before writes

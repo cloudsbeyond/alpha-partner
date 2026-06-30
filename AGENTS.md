@@ -18,7 +18,27 @@ product:
     - knowledge base
     - runtime
     - centralized project context store
+  product_goal: enable agents to autonomously solve more high-value research and development problems under explicit evidence, scope, data, and human authority boundaries
   p0: agent-native source for trigger recognition, scope guard, evidence-backed judgment, project re-entry, risk/progress reporting, project review, source review, and checkpoint memory evaluation
+  source_evolution_goal: raise alphaX intelligence ceiling and extend Alpha Partner Source asset half-life
+
+source_layers:
+  core_principles: thin, hard, long-lived judgment and governance boundaries
+  cognitive_frameworks: reusable thinking shapes for framing, evidence weighting, and review judgment
+  operational_scaffolding: current carrier defaults that stay replaceable and pruneable
+  implementation_carriers: current file formats, scripts, parsers, and generated-index mechanisms
+  governance_contract: alphaX/source-work/intelligence-ceiling-half-life.md
+  rule: the core must stay thinner and harder than the scaffolding; scaffolding can stabilize today's carriers but must not define the product core
+
+organization_level_pipeline:
+  role: product-level frame for source work and review, not a runtime or control plane
+  flow:
+    - organization behavior signals
+    - context representation
+    - agent collaboration and navigation
+    - human confirmation and authority audit
+    - memory and feedback optimization
+  rule: optimize signal quality, representation fidelity, navigation judgment, authority clarity, and feedback learning without turning alphaX into an app or always-on service
 
 project_local_data:
   default_install: ".git/info/exclude + ignored .alphaX/"
@@ -56,10 +76,10 @@ scopes:
 review_contracts:
   source review:
     goal: improve alphaX source and mechanisms
-    contract: alphaX/source-review/README.md
+    contract: alphaX/source-review/agent-workflow.md
   project review:
     goal: judge target project delivery evidence
-    contract: alphaX/project-review/README.md
+    contract: alphaX/project-review/agent-workflow.md
   shared_output_fields:
     - observed_evidence
     - inference
@@ -116,18 +136,22 @@ cold_start:
 source_map:
   root: [README.md, docs/README.zh-CN.md, index.md]
   trigger_contract: [docs/agent-invocation-contract.md, docs/agent-trigger-fixtures.json, docs/agent-trigger-fixtures.md, docs/agent-failure-modes.md]
+  judgment_contract: [docs/agent-judgment-fixtures.json, docs/agent-judgment-fixtures.md]
   core_sops: [alphaX/session-runbook.md, alphaX/activation-guide.md, alphaX/operating-system.md, alphaX/persona.md]
-  work_sops: [alphaX/source-work/README.md, alphaX/source-review/README.md, alphaX/project-work/README.md, alphaX/project-work/context-reloader.md, alphaX/project-review/README.md]
+  work_sops: [alphaX/source-work/agent-workflow.md, alphaX/source-work/intelligence-ceiling-half-life.md, alphaX/source-review/agent-workflow.md, alphaX/project-work/agent-workflow.md, alphaX/project-work/context-reloader.md, alphaX/project-review/agent-workflow.md]
   docs: [docs/evidence-index.md, docs/research-backlog.md, docs/okf-markdown-profile.md, docs/asset-boundary.yaml, docs/local-alphaX-schema.md, docs/checkpoint-memory-evaluation-prd.md]
   templates: [templates/]
+  skills: [skills/problem-decomposer/SKILL.md, skills/double-diamond-research/SKILL.md]
   scripts: [scripts/init-local-alphaX.sh, scripts/verify-local-alphaX.sh, scripts/verify-alpha-source.sh, scripts/context-snapshot.sh, scripts/generate-alphaX-indexes.mjs]
 ```
 
 ## Operating Rules
 
 - Classify one scope before writes.
+- After scope and loop selection, check matching source skills before final framing or action.
 - Live source beats `.alphaX/`, memory, handoff, and summaries.
 - Passing checks do not prove human/product acceptance.
+- Keep core principles thin and hard; evolve cognitive frameworks from evidence; keep scaffolding depreciable and implementation carriers replaceable.
 - Do not promote P1/P2 runtime, scheduler, connector, or adapter work into P0.
 - Durable memory updates, external publication, risky operations, destructive commands, and secrets require explicit approval.
 
