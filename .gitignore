@@ -1,6 +1,7 @@
 *.DS_Store
 .alphaX/
 .agents/
+.trae/
 *.log
 tmp/
 temp/
