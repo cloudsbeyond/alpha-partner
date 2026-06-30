@@ -34,12 +34,12 @@ loops:
   L2_source_drift_watch:
     trigger: alphaX source drift check
     purpose: source-of-truth drift scan
-    route: project target => alphaX/project-review/README.md; alphaX target => alphaX/source-review/README.md
+    route: project target => alphaX/project-review/agent-workflow.md; alphaX target => alphaX/source-review/agent-workflow.md
 
   L3_false_completion_watch:
     trigger: alphaX false completion check
     purpose: separate proven claims, missing evidence, needed acceptance
-    route: project target => alphaX/project-review/README.md; alphaX target => alphaX/source-review/README.md
+    route: project target => alphaX/project-review/agent-workflow.md; alphaX target => alphaX/source-review/agent-workflow.md
 
   L4_pr_ci_watch:
     trigger: alphaX PR CI watch

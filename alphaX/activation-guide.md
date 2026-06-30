@@ -43,7 +43,7 @@ agent_responsibility:
 
 helpers:
   context_snapshot: scripts/context-snapshot.sh [/path/to/project]
-  target_project_review: alphaX/project-review/README.md
+  target_project_review: alphaX/project-review/agent-workflow.md
 
 project_local_data:
   create_after: repeated project use

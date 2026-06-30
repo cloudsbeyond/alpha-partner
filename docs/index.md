@@ -32,4 +32,5 @@
 
 # Verification Fixtures
 
+- [Agent Judgment Fixtures](agent-judgment-fixtures.md) - Scenario fixtures for testing stronger-agent judgment beyond trigger routing.
 - [Agent Trigger Fixtures](agent-trigger-fixtures.md) - Regression fixtures for validating alphaX trigger-to-loop behavior.

@@ -29,8 +29,8 @@ conditional_reads:
   activated_from_project: [alphaX/activation-guide.md]
   short_trigger: [docs/agent-invocation-contract.md, docs/agent-trigger-fixtures.json]
   project_reentry: [alphaX/project-work/context-reloader.md, target .alphaX/project-context.md when present]
-  source_review: [alphaX/source-review/README.md]
-  project_review: [alphaX/project-review/README.md]
+  source_review: [alphaX/source-review/agent-workflow.md]
+  project_review: [alphaX/project-review/agent-workflow.md]
   pilot: [alphaX/pilot-playbook.md]
   focus_or_risk: [alphaX/operating-system.md, optional .alphaX/process/focus-radar.md]
   recurring_loop: [alphaX/loop-registry.md]
@@ -65,6 +65,23 @@ loop_router:
   memory: templates/memory-candidate-packet.md
   focus_risk: templates/reentry-risk-packet.md
   manual_loop: templates/loop-report.md
+
+skill_router:
+  timing: after scope_guard and loop_router; before final framing, recommendation, or write action
+  boundary: skills are cognitive tools inside the selected scope, not new scopes or runtimes
+  rule: read the smallest matching skills/*/SKILL.md and apply it explicitly
+  skills:
+    problem_decomposer:
+      file: skills/problem-decomposer/SKILL.md
+      triggers: [real problem, essence, first-principles decomposition, D0-D3, wrong-level task]
+      pairs_with: [thinking, project, spec_checkpoint]
+    double_diamond_research:
+      file: skills/double-diamond-research/SKILL.md
+      triggers: [双菱形思考法, 双菱形, Double Diamond, open complex research, decision options]
+      pairs_with: [research, thinking, project]
+  composition:
+    - if problem level is unclear, apply problem_decomposer before double_diamond_research
+    - if the problem is already defined but solution space is open, apply double_diamond_research directly
 
 project_local_setup:
   guide: templates/project-work/local-pointer.md

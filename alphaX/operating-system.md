@@ -80,6 +80,21 @@ loops:
     output: [P0 main line, pruned points, deferred points, confirmation points]
     boundary: no new framework, no P1/P2 promotion
 
+source_skills:
+  role: reusable cognitive tools that strengthen selected loops
+  boundary: apply inside current scope; do not create runtime, scheduler, connector, or autonomous control
+  problem_decomposer:
+    source: skills/problem-decomposer/SKILL.md
+    strengthens: [thinking, project, spec_checkpoint]
+    use_when: assigned task may be wrong-level or the real problem, objective, evaluation method, or feedback loop is unclear
+    expected_effect: move from current task to real problem, redefined problem, higher objective, and validation loop
+  double_diamond_research:
+    source: skills/double-diamond-research/SKILL.md
+    strengthens: [research, thinking, project]
+    use_when: open complex problem needs problem-space divergence, problem definition, solution-path divergence, and decision convergence
+    expected_effect: turn unclear problem space into evidence-backed decision options
+  composition_rule: if both match, use Problem Decomposer for problem level first, then 双菱形思考法 for research and solution convergence
+
 agent_intake_rule:
   principle: between agents there is no shared runtime and no mutual presence; only file trace
   steps:

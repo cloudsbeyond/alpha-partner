@@ -1,11 +1,9 @@
 ---
-type: "Skill"
-title: "Problem Decomposer"
 name: "problem-decomposer"
 description: "Use when a user asks to decompose a problem, asks what a task is really solving, asks what the real problem is, asks for the essence, or appears stuck optimizing a local task without a clear higher objective, evaluation method, or feedback loop."
-tags: ["alphax", "skill", "problem-decomposition"]
 ---
-# Problem Decomposer
+
+# 问题拆解器
 
 ```yaml
 skill: problem-decomposer
@@ -34,15 +32,23 @@ when_to_use:
 workflow:
   D0:
     label: Current Task
-    asks: [current task, local improvements, optimization ceiling, bottleneck type]
+    asks:
+      [current task, local improvements, optimization ceiling, bottleneck type]
     rule: acknowledge value, then state boundary
   D1:
     label: Real Problem
-    asks: [why do task, real problem behind it, alternate paths, hidden assumption]
+    asks:
+      [why do task, real problem behind it, alternate paths, hidden assumption]
     rule: question whether assigned action is the right path
   D2:
     label: Redefined Problem
-    asks: [higher-goal effect, wrong framing, adjacent/upstream problem, new solution path]
+    asks:
+      [
+        higher-goal effect,
+        wrong framing,
+        adjacent/upstream problem,
+        new solution path,
+      ]
     rule: look for leverage unlocked by redefining the problem
   D3:
     label: Higher Objective And Loop
@@ -100,8 +106,14 @@ missing_information:
     - what failure would make current task irrelevant?
 
 alpha_partner_use:
-  use_before: [locking P0, large architecture/product direction, Spec Checkpoint when P0 may be wrong level]
+  use_before:
+    [
+      locking P0,
+      large architecture/product direction,
+      Spec Checkpoint when P0 may be wrong level,
+    ]
   use_when: project stuck in implementation details
-  preserve_in: [thinking-loop packet, project-loop packet, local process decision entry]
+  preserve_in:
+    [thinking-loop packet, project-loop packet, local process decision entry]
   durable_memory_update: explicit user approval only
 ```

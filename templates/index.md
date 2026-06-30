@@ -11,4 +11,5 @@
 - [Re-Entry Risk Packet](reentry-risk-packet.md) - Template for project re-entry, focus recovery, and risk review.
 - [Research Loop Packet](research-loop-packet.md) - Template for evidence work that improves decisions or collaboration methods.
 - [Review Feedback Report](source-review/feedback-report.md) - Template for sanitized source-review or project-review mechanism feedback.
+- [Source Work Judgment Replay](source-work/judgment-replay.md) - Evidence packet for replaying a source-evolution claim against one or more agent judgment fixtures.
 - [Thinking Loop Packet](thinking-loop-packet.md) - Template for synthesis, framing, judgment formation, critique, or strategy.
