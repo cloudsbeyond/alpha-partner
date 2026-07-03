@@ -23,6 +23,13 @@ p0:
   loop_purpose: "<one sentence>"
   project_main_line: "<one sentence or n/a>"
 
+verification_loop:
+  clear_goal: "<yes|no + goal>"
+  scoped_authority: "<read-only|write-approved|publish-approved|missing>"
+  independent_sensor: "<command|artifact|user decision|metric|missing>"
+  feedback_to_next_action: "<how evidence changes action>"
+  cost_or_stop_boundary: "<cost limit or stop condition>"
+
 evidence:
   files_inspected: []
   commands_run: []

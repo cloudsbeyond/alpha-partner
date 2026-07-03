@@ -42,6 +42,7 @@ verify:
     - bash scripts/verify-alpha-source.sh
     - git diff --check
     - check alphaX/source-work/intelligence-ceiling-half-life.md improvement signals when the change affects source evolution
+    - for insight catcher, check templates/source-work/insight-catcher.md candidate ledger before relying on tracked diffs
     - use templates/source-work/judgment-replay.md for any claim that the change raises intelligence ceiling or asset half-life
     - do not treat passing checks as proof of intelligence-ceiling, half-life, or product-goal improvement
   local_alphaX_initialized_or_used:

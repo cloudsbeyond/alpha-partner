@@ -96,28 +96,6 @@
       ]
     },
     {
-      "id": "F09-double-diamond-research",
-      "trigger": "双菱形思考法",
-      "expected_intent": "double_diamond_research",
-      "scope": "conversation or project work",
-      "loop": "Research loop plus 双菱形思考法 / Double Diamond Research",
-      "must_read": [
-        "skills/double-diamond-research/SKILL.md",
-        "project source when project-bound"
-      ],
-      "must_output": [
-        "P0 main line",
-        "Discover Define Develop Deliver map",
-        "evidence gaps",
-        "next decision"
-      ],
-      "forbidden": [
-        "McKinsey-owned framework claim",
-        "one-solution recommendation before Define",
-        "P1/P2 promotion"
-      ]
-    },
-    {
       "id": "F05-source-self-critique",
       "trigger": "alphaX self-critique",
       "expected_intent": "source_review",
@@ -201,6 +179,54 @@
       ],
       "forbidden": [
         "asking the user to restate context before first source pass"
+      ]
+    },
+    {
+      "id": "F09-double-diamond-research",
+      "trigger": "双菱形思考法",
+      "expected_intent": "double_diamond_research",
+      "scope": "conversation or project work",
+      "loop": "Research loop plus 双菱形思考法 / Double Diamond Research",
+      "must_read": [
+        "skills/double-diamond-research/SKILL.md",
+        "project source when project-bound"
+      ],
+      "must_output": [
+        "P0 main line",
+        "Discover Define Develop Deliver map",
+        "evidence gaps",
+        "next decision"
+      ],
+      "forbidden": [
+        "McKinsey-owned framework claim",
+        "one-solution recommendation before Define",
+        "P1/P2 promotion"
+      ]
+    },
+    {
+      "id": "F10-loop-verification-gate",
+      "trigger": "alphaX 设计一个自迭代 loop",
+      "expected_intent": "manual_loop",
+      "scope": "source work or project work inferred from loop target",
+      "loop": "Manual loop layer plus loop verification gate",
+      "must_read": [
+        "alphaX/operating-system.md",
+        "alphaX/loop-registry.md",
+        "target source when target-bound",
+        "current evidence for goal, authority, independent sensor, feedback path, and cost or stop boundary"
+      ],
+      "must_output": [
+        "loop goal",
+        "authority boundary",
+        "independent sensor",
+        "feedback-to-next-action path",
+        "cost or stop boundary",
+        "manual-or-upgrade call"
+      ],
+      "forbidden": [
+        "treating repeated activity as improvement",
+        "scheduling without approval",
+        "hidden authority upgrade"
       ]
     }
   ]

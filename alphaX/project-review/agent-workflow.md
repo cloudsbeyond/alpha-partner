@@ -57,7 +57,13 @@ completion_fields:
   implementation_state: [not-found, partial, implemented, not-reviewed]
   validation_state: [not-run, failed, partial, passed, not-applicable]
   integration_state: [local-only, branch-only, merged, released, not-reviewed]
+  acceptance_state: [not-reviewed, missing, partial, owner-accepted, user-validated, not-applicable]
   completion_call: [blocked, needs-owner-decision, handoffable, mergeable, publishable, insufficient-evidence]
+
+delivery_flow_boundary:
+  use_when: productivity, AI-native, handoff, merge, release, or claimed-completion evidence is being judged
+  distinguish: [personal_execution_speed, project_delivery_cycle, rework_or_regression_risk, review_consensus, handoff_readiness]
+  rule: faster local execution or generated output is not project delivery progress without validation, review, handoff, and acceptance evidence
 
 Escalation Gate:
   default_review_mode: compact

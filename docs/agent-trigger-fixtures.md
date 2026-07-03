@@ -53,13 +53,6 @@ fixtures:
     must_read: [skills/problem-decomposer/SKILL.md, project source when project-bound]
     forbidden: [invented business goals]
 
-  F09-double-diamond-research:
-    trigger: "双菱形思考法"
-    expected_intent: double_diamond_research
-    must_read: [skills/double-diamond-research/SKILL.md, project source when project-bound]
-    must_output: [P0 main line, Discover Define Develop Deliver map, evidence gaps, next decision]
-    forbidden: [McKinsey-owned framework claim, one-solution recommendation before Define, P1/P2 promotion]
-
   F05-source-self-critique:
     expected_intent: source_review
     must_read: [alphaX/source-review/agent-workflow.md, alphaX/loop-registry.md, relevant source files, verifier output]
@@ -78,6 +71,21 @@ fixtures:
     expected_intent: engage
     must_read: [AGENTS.md, alphaX/session-runbook.md, target instructions, skill router check]
     forbidden: [asking user to restate context before first source pass]
+
+  F09-double-diamond-research:
+    trigger: "双菱形思考法"
+    expected_intent: double_diamond_research
+    must_read: [skills/double-diamond-research/SKILL.md, project source when project-bound]
+    must_output: [P0 main line, Discover Define Develop Deliver map, evidence gaps, next decision]
+    forbidden: [McKinsey-owned framework claim, one-solution recommendation before Define, P1/P2 promotion]
+
+  F10-loop-verification-gate:
+    trigger: "alphaX 设计一个自迭代 loop"
+    expected_intent: manual_loop
+    loop: Manual loop layer plus loop verification gate
+    must_read: [alphaX/operating-system.md, alphaX/loop-registry.md, target source when target-bound, current loop gate evidence]
+    must_output: [loop goal, authority boundary, independent sensor, feedback-to-next-action path, cost or stop boundary, manual-or-upgrade call]
+    forbidden: [treating repeated activity as improvement, scheduling without approval, hidden authority upgrade]
 
 pass_criteria:
   - expected intent/scope named or implied

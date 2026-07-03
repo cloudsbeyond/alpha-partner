@@ -39,6 +39,13 @@ dimensions:
   update memory: downgrade or replace superseded direction, terms, conclusions
   evidence memory: trace judgments to files, commands, URLs, artifacts, user decisions
   action memory: turn current state into useful next action
+
+memory_lifecycle:
+  representation: state the claim, evidence pointer, action use, and confidence
+  extraction_reason: map every candidate to re-entry, update, evidence, or action continuity
+  retrieval_path: name where a future agent should find it and what trigger should retrieve it
+  update_or_expiry_rule: state what newer evidence, decision, command, or time boundary makes it stale
+  verification_method: require live source, command output, artifact, URL, or explicit user decision before reuse
 ```
 
 ## DynamicMem Reference And Borrowed Ideas
@@ -99,6 +106,7 @@ acceptance_signals:
   - AGENTS.md states checkpoint evaluation executable without runtime dependency
   - alphaX/operating-system.md defines evidence-input loop
   - template records evidence, calls, gaps, next action
+  - template records memory lifecycle, retrieval, expiry, and verification path
   - verifier requires PRD and template
   - local process report can evaluate source iterations when local data is used
 
