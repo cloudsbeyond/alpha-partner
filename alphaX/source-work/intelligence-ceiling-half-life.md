@@ -96,12 +96,13 @@ source_work_pdca:
       no_narrowing_as_complete: partial implementation must stay partial until the stated gap is closed by source evidence or replay
       parking_honesty: covered requires real current-source evidence; otherwise use partial or parked-with-reason
       data_boundary: tracked source must stay decoupled from external article facts, private paths, ignored process records, and local plugin or runtime assets
-      vision_value_gate: a patch-candidate requires alignment to at least one intelligence_ceiling_signals or half_life_signals entry; record source_value high|medium|low from that alignment; a candidate that aligns to no vision signal must be parked or marked no-change instead of becoming a patch-candidate
-      source_value_tiers:
-        rule: grade source_value by what judgment call the candidate changes, not by how reusable or novel it sounds
-        high: changes a material judgment call in replay, for example the keep/park/patch decision, an evidence-weight-driven action or completion call, a boundary or authority call, the landing_layer or smallest_source_surface, or a default scaffold overridden with an evidence-boundary reason
-        medium: strengthens an existing judgment or reduces drift risk without changing the core call, for example making an existing signal easier to apply, clarifying an already accepted boundary, or improving traceability for future replay
-        low: local clarity only and cannot alone justify a patch-candidate, for example wording polish, index or router readability, or cosmetic fixture phrasing
+      vision_value_gate:
+        rule: a patch-candidate requires alignment to at least one intelligence_ceiling_signals or half_life_signals entry; record source_value high|medium|low from that alignment; a candidate that aligns to no vision signal must be parked or marked no-change instead of becoming a patch-candidate
+        source_value_tiers:
+          rule: grade source_value by what judgment call the candidate changes, not by how reusable or novel it sounds
+          high: changes a material judgment call in replay, for example the keep/park/patch decision, an evidence-weight-driven action or completion call, a boundary or authority call, the landing_layer or smallest_source_surface, or a default scaffold overridden with an evidence-boundary reason
+          medium: strengthens an existing judgment or reduces drift risk without changing the core call, for example making an existing signal easier to apply, clarifying an already accepted boundary, or improving traceability for future replay
+          low: local clarity only and cannot alone justify a patch-candidate, for example wording polish, index or router readability, or cosmetic fixture phrasing
       landing_rule: every keep names the target source layer (core_principles, cognitive_frameworks, operational_scaffolding, implementation_carriers) and the smallest source surface before a tracked patch, so a durable rule does not land on the wrong layer
       exit_gates:
         hard_stop_owner_gate:

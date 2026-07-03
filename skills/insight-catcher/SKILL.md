@@ -20,7 +20,7 @@ before any tracked source change.
 四步主链路（拆解 → 处置分级 → 价值对齐 → 落地）：
 1. 拆解：把一条输入切成原子的、可迁移的机制候选；切不动就先用 problem-decomposer，别拿原始输入直接打分。
 2. 处置分级：逐候选落到唯一处置状态 covered/partial/absent/parked-with-reason，covered 引真实源证据；park/no-change 是一等结果，不是失败。
-3. 价值对齐：想进 patch-candidate 的候选，必须对齐至少一条 alphaX 愿景信号（intelligence-ceiling 或 half-life），据此按 SOP 的 high/medium/low 判据给 source_value；对不齐愿景的一律 park 或 no-change。
+3. 价值对齐：想进 patch-candidate 的候选，必须对齐至少一条 alphaX 愿景信号（intelligence-ceiling 或 half-life），据此按 SOP 的 source_value_tiers 判据给 source_value；对不齐愿景的一律 park 或 no-change。
 4. 落地：每个保留决定命名目标源层 + 最小源面，防落错层；再要 judgment-replay 案例才允许 tracked 补丁。
 
 权威定义：验收标准、价值门、落地规则、退出闸门的权威定义在
@@ -107,8 +107,8 @@ vision_value_gate:
   canonical: alphaX/source-work/intelligence-ceiling-half-life.md insight_catcher.vision_value_gate
   rule: a candidate may become source_decision=patch-candidate only if it aligns to at least one intelligence_ceiling_signals or half_life_signals entry; record source_value high|medium|low from that alignment
   rule_zh: 候选只有对齐至少一条 intelligence-ceiling 或 half-life 愿景信号才可成为 patch-candidate；据此给 source_value 高|中|低
-  source_value_tiers: grade high|medium|low by the SOP insight_catcher.vision_value_gate.source_value_tiers rubric (what judgment call the candidate changes), not by surface appeal; low alone cannot justify a patch-candidate
-  source_value_tiers_zh: 按 SOP source_value_tiers 判据（候选改变了什么判断）给 high|medium|low，不按表面吸引力；low 不能单独 justify patch-candidate
+  source_value_tiers: grade source_value by the SOP insight_catcher.vision_value_gate.source_value_tiers rubric; do not re-expand the tier definitions here
+  source_value_tiers_zh: 用 SOP insight_catcher.vision_value_gate.source_value_tiers 判据给 source_value；此处不复述分级细则
   signal_source: reuse the intelligence_ceiling_signals and half_life_signals lists in the SOP; do not create a parallel signal list
   signal_source_zh: 复用 SOP 里的 intelligence_ceiling_signals 与 half_life_signals 清单，不新造平行清单
   no_alignment_action: park or mark no-change; a candidate aligned to no vision signal must not be presented as worth becoming a patch-candidate

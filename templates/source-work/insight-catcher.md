@@ -28,7 +28,7 @@ candidate_mechanisms:
   - mechanism: "<durable mechanism candidate name>"
     vision_value_alignment:
       aligned_signal: "<intelligence_ceiling_signals or half_life_signals entry, or none>"
-      source_value: "<high|medium|low; graded by source_value_rubric from the changed judgment call, not surface appeal>"
+      source_value: "<high|medium|low; graded by source_value_rubric>"
       why_aligned: "<which judgment call this candidate changes and why that maps to the named signal, or why none applies>"
     disposition_status: "<covered|partial|absent|parked-with-reason>"
     status_reason: "<why this status is honest>"
