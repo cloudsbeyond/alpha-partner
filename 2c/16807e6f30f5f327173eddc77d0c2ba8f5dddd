@@ -1,0 +1,53 @@
+skills/insight-catcher/SKILL.md
+  s_998534ca0dea03::t_5e8e45a4cb00d5 147
+  s_998534ca0dea03::t_412296a5292447 20,22-23
+  s_998534ca0dea03::t_3861a07afacaae 12
+  s_998534ca0dea03::t_b569f466b326cb 110-111
+  s_998534ca0dea03::t_5fdbdebf014f59 31,121-127
+  s_998534ca0dea03::t_5a12cdd6799f2e 8-10,13,18-19,21,24-30,32-33,39-40,42-45,56-57,71-72,75-76,80-90,92-109,112-113,116-120,128-129,132-134,140,142,146,148-150,152-153,159-160,167,169,173-176
+  s_998534ca0dea03::t_4087348b332438 69-70
+  s_998534ca0dea03::t_fc6bb8b6e749b8 114-115
+  s_998534ca0dea03::t_1dbefd82571226 11
+docs/agent-judgment-fixtures.md
+  s_998534ca0dea03::t_4ed0aa86cc80d0 96-98
+  s_998534ca0dea03::t_4d63d55108c105 99-104
+  s_998534ca0dea03::t_1a78a4c58241c5 82-87
+  s_998534ca0dea03::t_f4a84a9404e8ab 24
+  s_998534ca0dea03::t_4e7792a6717bf2 93-95
+templates/source-work/insight-catcher.md
+  s_998534ca0dea03::t_273b56b4b5d617 24-25,31-32,39-40
+  s_998534ca0dea03::t_7a5295e50e4e73 29-30
+  s_998534ca0dea03::t_f0f9e0f3cdbdc8 55
+docs/agent-judgment-fixtures.json
+  s_998534ca0dea03::t_2c456c9d31020d 352
+  s_998534ca0dea03::t_c0ae2194f5c43e 300,343-351,353-379,417
+  s_998534ca0dea03::t_9a88fd260a30fa 265-299
+  s_998534ca0dea03::t_b513cb291120b9 264,301,380-416
+  s_998534ca0dea03::t_b1b459468e3593 31-32
+alphaX/source-work/intelligence-ceiling-half-life.md
+  s_998534ca0dea03::t_69a9c32b2fdc2f 92-93,99,105
+  s_998534ca0dea03::t_723150041915e1 100-104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "2c16807e6f30f5f327173eddc77d0c2ba8f5dddd",
+  "prompts": {},
+  "humans": {
+    "h_85a812cb030dae": {
+      "author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_998534ca0dea03": {
+      "agent_id": {
+        "tool": "trae",
+        "id": "6a4767f31c38435a401f9841",
+        "model": "openrouter-3o__dev"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
