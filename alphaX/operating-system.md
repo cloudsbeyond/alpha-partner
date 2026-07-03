@@ -16,6 +16,12 @@ artifact_rule:
     - reflection
 
 loops:
+  loop_verification_gate:
+    purpose: prevent loop-shaped work from becoming unverified activity
+    applies_to: [research, project, manual_loop, recurring_loop, automation_advice]
+    required_before_execution_or_upgrade: [clear_goal, scoped_authority, independent_sensor, feedback_to_next_action, cost_or_stop_boundary]
+    rule: if any item is missing, stay report-first or define the missing evidence before running or scheduling the loop
+
   research:
     purpose: frontier evidence without trend drift
     flow: [define project-linked question, collect primary sources, extract mechanisms, map to local practice, record implication]
@@ -39,7 +45,7 @@ loops:
   memory:
     purpose: continuity without global-memory pollution
     flow: [use current files first, search memory when prior context matters, write candidate if durable, update global memory only by user request, cite memory when material]
-    accept: memory improves continuity without overriding current evidence
+    accept: memory improves continuity without overriding current evidence and has explicit source, retrieval path, update or expiry rule, and verification method
 
   checkpoint_memory_evaluation:
     purpose: test remembered/project-local state before adding memory infrastructure
@@ -93,6 +99,11 @@ source_skills:
     strengthens: [research, thinking, project]
     use_when: open complex problem needs problem-space divergence, problem definition, solution-path divergence, and decision convergence
     expected_effect: turn unclear problem space into evidence-backed decision options
+  insight_catcher:
+    source: skills/insight-catcher/SKILL.md
+    strengthens: [source_work, source_review]
+    use_when: creative inputs must be graded as alphaX mechanism candidates before any tracked change
+    expected_effect: produce a disposition-tracked candidate ledger and judgment trace so no candidate is silently lost or narrowed into a single patch
   composition_rule: if both match, use Problem Decomposer for problem level first, then 双菱形思考法 for research and solution convergence
 
 agent_intake_rule:

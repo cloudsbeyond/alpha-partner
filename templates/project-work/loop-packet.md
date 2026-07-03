@@ -40,6 +40,13 @@ evidence_to_inspect:
 partner_stance: "<frame options|challenge assumptions|implement|review risks|collect evidence|simplify|preserve decision>"
 acceptance: "<what proves project improved or next decision clarified>"
 
+loop_verification:
+  clear_goal: "<yes|no + goal>"
+  scoped_authority: "<human|agent|shared|missing>"
+  independent_sensor: "<test|command|artifact|user decision|metric|missing>"
+  feedback_to_next_action: "<what changes after evidence>"
+  cost_or_stop_boundary: "<cost limit or stop condition>"
+
 spec_checkpoint:
   P0 Main Line: "<one sentence>"
   This Round Pruned: []

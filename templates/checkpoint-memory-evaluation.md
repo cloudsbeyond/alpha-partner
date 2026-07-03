@@ -48,6 +48,13 @@ remembered_evidence:
   provenance: "<pointer>"
   conflict_with_live_source: "<none|describe>"
 
+memory_lifecycle:
+  representation: "<claim + evidence pointer + action use>"
+  extraction_reason: "<re-entry|update|evidence|action continuity>"
+  retrieval_path: "<future trigger/path>"
+  update_or_expiry_rule: "<newer evidence, decision, command, artifact, or time boundary>"
+  verification_method: "<live source|command|artifact|URL|user decision>"
+
 Call rubric:
   pass: evidence concrete and checkpoint-allowed
   partial: evidence exists but state/boundary/owner/verification gap remains

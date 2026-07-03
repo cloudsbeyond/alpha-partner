@@ -141,7 +141,7 @@ source_map:
   work_sops: [alphaX/source-work/agent-workflow.md, alphaX/source-work/intelligence-ceiling-half-life.md, alphaX/source-review/agent-workflow.md, alphaX/project-work/agent-workflow.md, alphaX/project-work/context-reloader.md, alphaX/project-review/agent-workflow.md]
   docs: [docs/evidence-index.md, docs/research-backlog.md, docs/okf-markdown-profile.md, docs/asset-boundary.yaml, docs/local-alphaX-schema.md, docs/checkpoint-memory-evaluation-prd.md]
   templates: [templates/]
-  skills: [skills/problem-decomposer/SKILL.md, skills/double-diamond-research/SKILL.md]
+  skills: [skills/problem-decomposer/SKILL.md, skills/double-diamond-research/SKILL.md, skills/insight-catcher/SKILL.md]
   scripts: [scripts/init-local-alphaX.sh, scripts/verify-local-alphaX.sh, scripts/verify-alpha-source.sh, scripts/context-snapshot.sh, scripts/generate-alphaX-indexes.mjs]
 ```
 

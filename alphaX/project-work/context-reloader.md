@@ -35,6 +35,11 @@ project_local_objective_data:
   must_not_replace: versioned source of truth
   should_avoid: broader alphaX risk judgment, goal calibration, raw logs, or project-source copies
 
+callable_truth_source_rule:
+  usable_when: claim has a source, command, artifact, URL, or explicit decision pointer that can drive a next action or review call
+  downgrade_when: pointer is stale, narrative-only, copied source, private dump, or lacks a verification path
+  live_source_priority: target versioned source and current command output still win
+
 source_process_data_boundary:
   belongs_to: alpha-partner ignored .alphaX/process/
   project_work_read: false

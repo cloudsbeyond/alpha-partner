@@ -74,6 +74,14 @@ fixtures:
     must_read: [alphaX/loop-registry.md, active invocation evidence]
     forbidden: [external push, schedule, cross-app observation]
 
+  F10-loop-verification-gate:
+    trigger: "alphaX 设计一个自迭代 loop"
+    expected_intent: manual_loop
+    loop: Manual loop layer plus loop verification gate
+    must_read: [alphaX/operating-system.md, alphaX/loop-registry.md, target source when target-bound, current loop gate evidence]
+    must_output: [loop goal, authority boundary, independent sensor, feedback-to-next-action path, cost or stop boundary, manual-or-upgrade call]
+    forbidden: [treating repeated activity as improvement, scheduling without approval, hidden authority upgrade]
+
   F08-engage:
     expected_intent: engage
     must_read: [AGENTS.md, alphaX/session-runbook.md, target instructions, skill router check]

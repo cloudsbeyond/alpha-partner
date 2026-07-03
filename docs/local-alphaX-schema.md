@@ -107,6 +107,16 @@ extension_file_boundaries:
     read: through project-context.md pointer first
     not: unbounded report directory
 
+callable_truth_source_contract:
+  usable_when:
+    - a claim maps to a current source, command, artifact, URL, or explicit decision pointer
+    - the pointer supports a concrete next action, review call, or verification step
+    - live source priority and staleness are stated
+  not_usable_when:
+    - it is a narrative archive, copied source, raw transcript, or private project dump
+    - it asserts current truth without a verification path
+    - it becomes a control surface or approval flow
+
 compaction_triggers:
   - PR/merge/handoff/freeze/release/publication/open-source readiness
   - stale project-context rewrite

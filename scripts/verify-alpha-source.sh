@@ -38,10 +38,12 @@ required_paths=(
   templates/project-work/loop-packet.md templates/thinking-loop-packet.md
   templates/memory-candidate-packet.md templates/checkpoint-memory-evaluation.md
   templates/reentry-risk-packet.md templates/loop-report.md templates/project-review/report.md
-  templates/source-review/feedback-report.md templates/source-work/judgment-replay.md
+  templates/source-review/feedback-report.md templates/source-work/index.md
+  templates/source-work/judgment-replay.md templates/source-work/insight-catcher.md
   templates/project-work/local-pointer.md
   skills/double-diamond-research/SKILL.md
   skills/problem-decomposer/SKILL.md
+  skills/insight-catcher/SKILL.md
   scripts/init-local-alphaX.sh scripts/verify-local-alphaX.sh scripts/verify-alpha-source.sh
   scripts/context-snapshot.sh scripts/generate-alphaX-indexes.mjs
 )
@@ -78,15 +80,19 @@ AGENTS.md	governance_contract:
 AGENTS.md	skills:
 AGENTS.md	skills/problem-decomposer/SKILL.md
 AGENTS.md	skills/double-diamond-research/SKILL.md
+AGENTS.md	skills/insight-catcher/SKILL.md
 alphaX/source-work/agent-workflow.md	intelligence-ceiling-half-life.md
 alphaX/source-work/agent-workflow.md	product_goal:
 alphaX/source-work/agent-workflow.md	source_evolution_goal:
 alphaX/source-work/agent-workflow.md	templates/source-work/judgment-replay.md
+alphaX/source-work/agent-workflow.md	templates/source-work/insight-catcher.md
 alphaX/source-work/intelligence-ceiling-half-life.md	product_goal:
 alphaX/source-work/intelligence-ceiling-half-life.md	source_evolution_goal:
 alphaX/source-work/intelligence-ceiling-half-life.md	root_contract_rule:
 alphaX/source-work/intelligence-ceiling-half-life.md	proof_boundary:
 alphaX/source-work/intelligence-ceiling-half-life.md	judgment_replay:
+alphaX/source-work/intelligence-ceiling-half-life.md	insight_catcher:
+alphaX/source-work/intelligence-ceiling-half-life.md	diminishing_return_stop:
 alphaX/source-work/intelligence-ceiling-half-life.md	intelligence_ceiling_signals:
 alphaX/source-work/intelligence-ceiling-half-life.md	half_life_signals:
 alphaX/source-work/intelligence-ceiling-half-life.md	docs/agent-judgment-fixtures.json
@@ -96,13 +102,20 @@ alphaX/session-runbook.md	skill_router:
 alphaX/session-runbook.md	double_diamond_research
 alphaX/operating-system.md	source_skills:
 alphaX/operating-system.md	problem_decomposer:
+alphaX/operating-system.md	loop_verification_gate:
+alphaX/operating-system.md	independent_sensor
+alphaX/loop-registry.md	loop_quality_gate:
+alphaX/loop-registry.md	independent verification sensor
 docs/agent-invocation-contract.md	p0_flow:
 docs/agent-invocation-contract.md	intents:
 docs/agent-invocation-contract.md	skill_trigger_layer:
+docs/agent-invocation-contract.md	insight_catcher
 docs/agent-invocation-contract.md	scope_rules:
 docs/agent-invocation-contract.md	required_first_pass:
 docs/agent-invocation-contract.md	output_self_check:
 docs/agent-invocation-contract.md	forbidden_shortcuts:
+docs/agent-trigger-fixtures.md	F10-loop-verification-gate
+docs/agent-trigger-fixtures.json	F10-loop-verification-gate
 templates/project-work/local-pointer.md	default: target .git/info/exclude
 templates/project-work/local-pointer.md	target_tracked_tree:
 templates/project-work/local-pointer.md	edit_versioned_AGENTS_md: false
@@ -116,21 +129,31 @@ docs/local-alphaX-schema.md	minimum_files:
 docs/local-alphaX-schema.md	optional_extensions:
 docs/local-alphaX-schema.md	current reload baseline
 docs/local-alphaX-schema.md	git ls-files '.alphaX/\*' returns no paths
+docs/local-alphaX-schema.md	callable_truth_source_contract:
+alphaX/project-work/context-reloader.md	callable_truth_source_rule:
 alphaX/project-review/agent-workflow.md	^scope: project review$
 alphaX/project-review/agent-workflow.md	not: alphaX source governance review
 alphaX/project-review/agent-workflow.md	completion_fields:
+alphaX/project-review/agent-workflow.md	acceptance_state:
+alphaX/project-review/agent-workflow.md	delivery_flow_boundary:
 alphaX/project-review/agent-workflow.md	Escalation Gate:
 templates/project-review/report.md	review_mode:
 templates/project-review/report.md	completion_state:
+templates/project-review/report.md	acceptance_state:
+templates/project-review/report.md	delivery_flow_state:
 templates/project-review/report.md	completion_call:
 templates/project-review/report.md	Project Lifecycle Hygiene:
 templates/project-review/report.md	lifecycle_hygiene_trigger:
 templates/project-review/report.md	unfrozen evidence
 docs/checkpoint-memory-evaluation-prd.md	evidence_inputs:
 docs/checkpoint-memory-evaluation-prd.md	dimensions:
+docs/checkpoint-memory-evaluation-prd.md	memory_lifecycle:
 docs/checkpoint-memory-evaluation-prd.md	Rubric
 templates/checkpoint-memory-evaluation.md	Call rubric:
+templates/checkpoint-memory-evaluation.md	memory_lifecycle:
 templates/checkpoint-memory-evaluation.md	unverified_claims:
+templates/loop-report.md	verification_loop:
+templates/project-work/loop-packet.md	loop_verification:
 docs/asset-boundary.yaml	shareable_function_assets:
 docs/asset-boundary.yaml	external_project_local_objective_data:
 docs/asset-boundary.yaml	canonical_paths:
@@ -140,7 +163,12 @@ docs/asset-boundary.yaml	tracked_tree_must_not_contain:
 docs/agent-judgment-fixtures.md	source_of_truth: agent-judgment-fixtures.json
 docs/agent-judgment-fixtures.md	replay_contract:
 docs/agent-judgment-fixtures.md	G06-scaffold-half-life-drag
+docs/agent-judgment-fixtures.md	G08-loop-without-independent-sensor
 templates/source-work/judgment-replay.md	judgment_replay_packet:
+templates/source-work/insight-catcher.md	disposition_status_values: \[covered, partial, absent, parked-with-reason\]
+templates/source-work/insight-catcher.md	do_not_convert_boundary:
+templates/source-work/insight-catcher.md	trace_is_asset_check:
+templates/source-work/insight-catcher.md	diminishing_return_stop:
 README.md	generate-alphaX-indexes.mjs
 docs/okf-markdown-profile.md	YAML frontmatter
 docs/okf-markdown-profile.md	generated index.md
@@ -151,6 +179,11 @@ skills/double-diamond-research/SKILL.md	Deliver
 skills/problem-decomposer/SKILL.md	problem-decomposer
 skills/problem-decomposer/SKILL.md	Interaction Language
 skills/problem-decomposer/SKILL.md	D0-D3
+skills/insight-catcher/SKILL.md	insight-catcher
+skills/insight-catcher/SKILL.md	创意捕手
+skills/insight-catcher/SKILL.md	templates/source-work/insight-catcher.md
+skills/insight-catcher/SKILL.md	self_iteration_exit_gates:
+skills/insight-catcher/SKILL.md	diminishing_return_stop:
 scripts/init-local-alphaX.sh	source-work-candidates
 scripts/init-local-alphaX.sh	applied-runs
 scripts/init-local-alphaX.sh	judgment-replays

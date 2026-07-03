@@ -13,6 +13,11 @@ default_boundary:
   writes: read-only unless approved
   forbid_without_approval: [schedule, hosted routine, private watcher, repo modification, external post, destructive operation]
 
+loop_quality_gate:
+  required: [clear_goal, scoped_authority, independent_sensor, feedback_to_next_action, cost_or_stop_boundary]
+  fail_call: keep report-first, define missing evidence, or park the loop
+  rule: repeated execution is not improvement unless an independent sensor can change the next action
+
 source_inspiration:
   - Claude Code /loop
   - Claude Code Routines
@@ -68,7 +73,7 @@ loops:
     writes: none unless user switches to source work
 
 upgrade_gate:
-  required_before_schedule_or_push: [manual value proven, explicit scope, source list, read/write boundary, observation signals, stop condition, destination, cooldown, cost/privacy review, human approval]
+  required_before_schedule_or_push: [manual value proven, explicit scope, source list, read/write boundary, independent verification sensor, observation signals, feedback-to-next-action path, stop condition, destination, cooldown, cost/privacy review, human approval]
 
 parking_lot:
   - background-agent swarms

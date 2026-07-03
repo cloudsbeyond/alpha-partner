@@ -79,9 +79,14 @@ skill_router:
       file: skills/double-diamond-research/SKILL.md
       triggers: [双菱形思考法, 双菱形, Double Diamond, open complex research, decision options]
       pairs_with: [research, thinking, project]
+    insight_catcher:
+      file: skills/insight-catcher/SKILL.md
+      triggers: [创意捕手, insight catcher, creative input, mechanism candidate, keep/narrow/park ideas, batch of readings for alphaX]
+      pairs_with: [source_work, source_review]
   composition:
     - if problem level is unclear, apply problem_decomposer before double_diamond_research
     - if the problem is already defined but solution space is open, apply double_diamond_research directly
+    - for creative inputs evaluated as alphaX mechanism candidates, apply insight_catcher to grade dispositions before any tracked change
 
 project_local_setup:
   guide: templates/project-work/local-pointer.md

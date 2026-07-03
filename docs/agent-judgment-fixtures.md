@@ -17,6 +17,8 @@ required_coverage:
   - evidence weighting
   - strongest counterargument
   - justified override of default scaffold
+  - loop verification
+  - authority boundary
   - scaffold pruning
   - asset half-life
 
@@ -48,8 +50,8 @@ cases:
 
   G02-merge-claim-with-weak-evidence:
     tests: [evidence weighting]
-    expected_judgment: [separate implementation/validation/integration/acceptance evidence, downgrade unsupported completion claims]
-    pass_condition: [completion or merge call changes when required evidence is missing]
+    expected_judgment: [separate implementation/validation/integration/acceptance evidence, make acceptance_state explicit, downgrade unsupported completion claims]
+    pass_condition: [completion or merge call changes when required evidence or acceptance_state is missing]
     forbidden: [completion from design intent, checks as acceptance]
 
   G07-alternative-path-before-recommendation:
@@ -81,4 +83,10 @@ cases:
     expected_judgment: [separate durable principle from carrier shape, soften or prune scaffold, record half-life reason]
     pass_condition: [durable principle is protected while the carrier is softened, moved, pruned, or replaced]
     forbidden: [delete core boundary with stale scaffold, freeze incidental prose as product contract]
+
+  G08-loop-without-independent-sensor:
+    tests: [loop verification, authority boundary, evidence weighting]
+    expected_judgment: [require goal, authority, independent sensor, feedback path, and cost or stop boundary before execution or scheduling]
+    pass_condition: [missing loop gate evidence parks automation or keeps the loop report-first]
+    forbidden: [activity as improvement, automation without sensor, hidden authority upgrade]
 ```

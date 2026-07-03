@@ -88,9 +88,14 @@ skill_trigger_layer:
       source: skills/double-diamond-research/SKILL.md
       use_when: the user says 双菱形思考法, 双菱形, Double Diamond, Double Diamond Research, or asks for open complex research to become decision options
       output: Stage 0, Discover, Define, Develop, Deliver, evidence gaps, next decision
+    insight_catcher:
+      source: skills/insight-catcher/SKILL.md
+      use_when: creative inputs, readings, talks, notes, or research signals must be evaluated as alphaX mechanism candidates before tracked source changes
+      output: disposition-tracked candidate ledger, judgment trace, exit-gate call, and next owner decision
   composition:
     - use problem_decomposer first when the P0 problem level is unclear
     - use double_diamond_research when the problem is open, multi-stakeholder, strategic, or research-heavy
+    - use insight_catcher before source changes triggered by creative input batches
     - if both match, run problem_decomposer to locate the problem level, then double_diamond_research to structure research and solution convergence
 
 scope_rules:

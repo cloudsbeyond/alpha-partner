@@ -59,6 +59,7 @@ source_work_pdca:
     - classify the affected mechanism layer before editing
     - pick the responsible source boundary; do not patch downstream scaffolding when the core contract is ambiguous
     - choose the smallest source surface that can carry the durable rule
+    - for creative input batches, create an insight catcher candidate ledger before tracked source changes
   do:
     - prefer clarifying source contracts, cognitive examples, or judgment fixtures over adding process volume
     - keep operational scaffolding explicit as defaults, not product identity
@@ -84,6 +85,26 @@ source_work_pdca:
       - stop the PDCA loop at owner review when three consecutive cycles recommend no tracked source change, add no new materially different external or project-bound evidence, and expose no concrete source-mechanism blocker
       - do not restart by switching to another internal alignment surface; restart only for owner review, new materially different high-value research or development evidence, an uncovered judgment case, a repeated source-mechanism gap, or a concrete verifier/source-map blockage
       - if an active goal keeps prompting after the gate is met, report the stop decision and pending owner decision instead of adding tracked source or more local process notes
+    insight_catcher:
+      first_deliverable: templates/source-work/insight-catcher.md
+      deliverable_kind: disposition-tracked candidate ledger plus judgment trace
+      required_status_values: [covered, partial, absent, parked-with-reason]
+      evidence_before_source: tracked source changes require disposition_status, source_decision reason, and at least one judgment replay case
+      trace_is_asset: preserve omissions, narrowing corrections, parking reasons, and why the classification changed in ignored .alphaX/process/
+      no_silent_loss: every identified mechanism candidate must appear in the trace with an explicit status
+      no_narrowing_as_complete: partial implementation must stay partial until the stated gap is closed by source evidence or replay
+      parking_honesty: covered requires real current-source evidence; otherwise use partial or parked-with-reason
+      data_boundary: tracked source must stay decoupled from external article facts, private paths, ignored process records, and local plugin or runtime assets
+      exit_gates:
+        hard_stop_owner_gate:
+          when: tracked source write, external publication, risky operation, durable memory update, or source-of-truth change needs approval
+          action: stop at owner review with per-mechanism decision
+        convergence_stop:
+          when: three consecutive rounds have no new external evidence, no tracked change, and no new owner instruction
+          action: stop at owner review; scope switching does not count as progress
+        diminishing_return_stop:
+          when: a new round produces no disposition-state transition
+          action: stop as no_state_transition and ask owner whether further polish is worth it
     intelligence_ceiling_signals:
       - better problem reframing
       - alternative solution paths are generated and compared before recommendation

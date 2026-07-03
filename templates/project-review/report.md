@@ -55,8 +55,16 @@ completion_state:
   implementation_state: "<not-found|partial|implemented|not-reviewed>"
   validation_state: "<not-run|failed|partial|passed|not-applicable>"
   integration_state: "<local-only|branch-only|merged|released|not-reviewed>"
+  acceptance_state: "<not-reviewed|missing|partial|owner-accepted|user-validated|not-applicable>"
   completion_call: "<blocked|needs-owner-decision|handoffable|mergeable|publishable|insufficient-evidence>"
   state_conflicts: []
+
+delivery_flow_state:
+  personal_execution_speed: "<not claimed|claimed|evidenced|not-reviewed>"
+  project_delivery_cycle: "<not claimed|blocked|improved|not-reviewed>"
+  rework_or_regression_risk: "<none found|risk|not-reviewed>"
+  review_consensus: "<missing|partial|owner-aligned|not-applicable|not-reviewed>"
+  handoff_readiness: "<blocked|handoffable|not-reviewed>"
 
 Project Lifecycle Hygiene:
   required_when: review_mode == full-lifecycle
