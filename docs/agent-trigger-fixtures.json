@@ -96,28 +96,6 @@
       ]
     },
     {
-      "id": "F09-double-diamond-research",
-      "trigger": "双菱形思考法",
-      "expected_intent": "double_diamond_research",
-      "scope": "conversation or project work",
-      "loop": "Research loop plus 双菱形思考法 / Double Diamond Research",
-      "must_read": [
-        "skills/double-diamond-research/SKILL.md",
-        "project source when project-bound"
-      ],
-      "must_output": [
-        "P0 main line",
-        "Discover Define Develop Deliver map",
-        "evidence gaps",
-        "next decision"
-      ],
-      "forbidden": [
-        "McKinsey-owned framework claim",
-        "one-solution recommendation before Define",
-        "P1/P2 promotion"
-      ]
-    },
-    {
       "id": "F05-source-self-critique",
       "trigger": "alphaX self-critique",
       "expected_intent": "source_review",
@@ -182,6 +160,50 @@
       ]
     },
     {
+      "id": "F08-engage",
+      "trigger": "alphaX engage",
+      "expected_intent": "engage",
+      "scope": "infer from target",
+      "loop": "Project loop",
+      "must_read": [
+        "AGENTS.md",
+        "alphaX/session-runbook.md",
+        "target instructions",
+        "skill router check"
+      ],
+      "must_output": [
+        "P0",
+        "source of truth",
+        "loop",
+        "next action"
+      ],
+      "forbidden": [
+        "asking the user to restate context before first source pass"
+      ]
+    },
+    {
+      "id": "F09-double-diamond-research",
+      "trigger": "双菱形思考法",
+      "expected_intent": "double_diamond_research",
+      "scope": "conversation or project work",
+      "loop": "Research loop plus 双菱形思考法 / Double Diamond Research",
+      "must_read": [
+        "skills/double-diamond-research/SKILL.md",
+        "project source when project-bound"
+      ],
+      "must_output": [
+        "P0 main line",
+        "Discover Define Develop Deliver map",
+        "evidence gaps",
+        "next decision"
+      ],
+      "forbidden": [
+        "McKinsey-owned framework claim",
+        "one-solution recommendation before Define",
+        "P1/P2 promotion"
+      ]
+    },
+    {
       "id": "F10-loop-verification-gate",
       "trigger": "alphaX 设计一个自迭代 loop",
       "expected_intent": "manual_loop",
@@ -205,28 +227,6 @@
         "treating repeated activity as improvement",
         "scheduling without approval",
         "hidden authority upgrade"
-      ]
-    },
-    {
-      "id": "F08-engage",
-      "trigger": "alphaX engage",
-      "expected_intent": "engage",
-      "scope": "infer from target",
-      "loop": "Project loop",
-      "must_read": [
-        "AGENTS.md",
-        "alphaX/session-runbook.md",
-        "target instructions",
-        "skill router check"
-      ],
-      "must_output": [
-        "P0",
-        "source of truth",
-        "loop",
-        "next action"
-      ],
-      "forbidden": [
-        "asking the user to restate context before first source pass"
       ]
     }
   ]
