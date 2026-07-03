@@ -21,6 +21,7 @@ required_coverage:
   - authority boundary
   - scaffold pruning
   - asset half-life
+  - vision value alignment
 
 replay_contract:
   purpose: convert a source-evolution claim into evidence that one or more judgment cases changed problem reframing, upstream redefinition, alternative-path comparison, strongest counterargument keep/narrow/park call, evidence weighting, boundary call, default override, or scaffold treatment
@@ -54,12 +55,6 @@ cases:
     pass_condition: [completion or merge call changes when required evidence or acceptance_state is missing]
     forbidden: [completion from design intent, checks as acceptance]
 
-  G07-alternative-path-before-recommendation:
-    tests: [alternative solution paths, evidence weighting]
-    expected_judgment: [generate comparable paths after Define, state comparison criteria and evidence gaps, recommend only after explaining weaker or deferred alternatives]
-    pass_condition: [at least two plausible paths are compared before final recommendation]
-    forbidden: [one-solution recommendation before Define, alternatives without evidence or validation comparison]
-
   G03-live-source-conflicts-with-memory:
     tests: [evidence weighting, justified override of default scaffold]
     expected_judgment: [live source wins, conflict is explicit, output shape can change to show evidence boundary]
@@ -84,9 +79,27 @@ cases:
     pass_condition: [durable principle is protected while the carrier is softened, moved, pruned, or replaced]
     forbidden: [delete core boundary with stale scaffold, freeze incidental prose as product contract]
 
+  G07-alternative-path-before-recommendation:
+    tests: [alternative solution paths, evidence weighting]
+    expected_judgment: [generate comparable paths after Define, state comparison criteria and evidence gaps, recommend only after explaining weaker or deferred alternatives]
+    pass_condition: [at least two plausible paths are compared before final recommendation]
+    forbidden: [one-solution recommendation before Define, alternatives without evidence or validation comparison]
+
   G08-loop-without-independent-sensor:
     tests: [loop verification, authority boundary, evidence weighting]
     expected_judgment: [require goal, authority, independent sensor, feedback path, and cost or stop boundary before execution or scheduling]
     pass_condition: [missing loop gate evidence parks automation or keeps the loop report-first]
     forbidden: [activity as improvement, automation without sensor, hidden authority upgrade]
+
+  G09-insight-without-vision-value:
+    tests: [vision value alignment]
+    expected_judgment: [name whether any vision signal aligns before grading, set source_value from the named signal, park or no-change when none aligns]
+    pass_condition: [call changes to park or no-change when no vision signal aligns, source_value justified by a named signal]
+    forbidden: [patch-candidate with no aligned vision signal, surface novelty as vision value]
+
+  G10-insight-with-vision-value-landing:
+    tests: [vision value alignment]
+    expected_judgment: [grade source_value from the changed judgment call not surface appeal, name changed call and choose landing_layer and smallest_source_surface, require replay support and owner gate before a tracked patch]
+    pass_condition: [source_value justified by a named changed judgment call, keep names landing_layer and smallest_source_surface and still defers the tracked patch to replay and owner gate]
+    forbidden: [grade source_value from reusability or novelty, advance to a tracked patch without landing_layer replay support or owner gate]
 ```

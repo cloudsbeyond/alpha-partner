@@ -28,7 +28,8 @@
     "loop verification",
     "authority boundary",
     "scaffold pruning",
-    "asset half-life"
+    "asset half-life",
+    "vision value alignment"
   ],
   "cases": [
     {
@@ -108,44 +109,6 @@
       "forbidden": [
         "calling work complete from design intent alone",
         "using passing checks as human or product acceptance"
-      ]
-    },
-    {
-      "id": "G07-alternative-path-before-recommendation",
-      "primary_fixture_id": "F09-double-diamond-research",
-      "tests": [
-        "alternative solution paths",
-        "evidence weighting"
-      ],
-      "source_layer": "cognitive_frameworks",
-      "scenario": "A strategy, research, product, architecture, or organization question is still open enough that a single favored recommendation would hide material alternatives.",
-      "weak_default": "Recommend one polished path before the problem definition, comparison criteria, and competing paths are explicit.",
-      "evidence_inputs": [
-        "request asks for strategy, research, product, architecture, or cross-stakeholder judgment",
-        "problem definition or success criteria are present enough to compare options",
-        "multiple plausible solution levels, time horizons, or risk appetites could satisfy the objective"
-      ],
-      "expected_judgment": [
-        "generate multiple comparable solution paths after the Define gate",
-        "state comparison criteria and evidence gaps for each path",
-        "recommend a path only after explaining why the alternatives are weaker or deferred"
-      ],
-      "required_output": [
-        "candidate_paths",
-        "comparison_criteria",
-        "recommended_path_with_rejected_or_deferred_alternatives"
-      ],
-      "pass_condition": [
-        "the replay shows at least two plausible paths before final recommendation",
-        "the selected path is justified by criteria, evidence strength, constraints, or pilotability rather than preference"
-      ],
-      "completion_boundary": [
-        "passes for alternative-path generation and comparison on the tested decision only",
-        "does not prove the final recommendation succeeds without applied validation"
-      ],
-      "forbidden": [
-        "one-solution recommendation before Define is explicit",
-        "listing alternatives without comparing evidence, constraints, or validation path"
       ]
     },
     {
@@ -299,6 +262,44 @@
       ]
     },
     {
+      "id": "G07-alternative-path-before-recommendation",
+      "primary_fixture_id": "F09-double-diamond-research",
+      "tests": [
+        "alternative solution paths",
+        "evidence weighting"
+      ],
+      "source_layer": "cognitive_frameworks",
+      "scenario": "A strategy, research, product, architecture, or organization question is still open enough that a single favored recommendation would hide material alternatives.",
+      "weak_default": "Recommend one polished path before the problem definition, comparison criteria, and competing paths are explicit.",
+      "evidence_inputs": [
+        "request asks for strategy, research, product, architecture, or cross-stakeholder judgment",
+        "problem definition or success criteria are present enough to compare options",
+        "multiple plausible solution levels, time horizons, or risk appetites could satisfy the objective"
+      ],
+      "expected_judgment": [
+        "generate multiple comparable solution paths after the Define gate",
+        "state comparison criteria and evidence gaps for each path",
+        "recommend a path only after explaining why the alternatives are weaker or deferred"
+      ],
+      "required_output": [
+        "candidate_paths",
+        "comparison_criteria",
+        "recommended_path_with_rejected_or_deferred_alternatives"
+      ],
+      "pass_condition": [
+        "the replay shows at least two plausible paths before final recommendation",
+        "the selected path is justified by criteria, evidence strength, constraints, or pilotability rather than preference"
+      ],
+      "completion_boundary": [
+        "passes for alternative-path generation and comparison on the tested decision only",
+        "does not prove the final recommendation succeeds without applied validation"
+      ],
+      "forbidden": [
+        "one-solution recommendation before Define is explicit",
+        "listing alternatives without comparing evidence, constraints, or validation path"
+      ]
+    },
+    {
       "id": "G08-loop-without-independent-sensor",
       "primary_fixture_id": "F10-loop-verification-gate",
       "tests": [
@@ -338,6 +339,81 @@
         "treating repeated agent activity as improvement",
         "scheduling or running automation without an independent sensor",
         "upgrading authority without explicit human approval"
+      ]
+    },
+    {
+      "id": "G09-insight-without-vision-value",
+      "primary_fixture_id": "F05-source-self-critique",
+      "tests": [
+        "vision value alignment"
+      ],
+      "source_layer": "cognitive_frameworks",
+      "scenario": "A decomposed insight candidate looks reusable, but it aligns to no intelligence-ceiling or half-life signal and is being pushed toward a tracked patch.",
+      "weak_default": "Grade the candidate as worth landing and open a patch-candidate because it sounds like a good idea.",
+      "evidence_inputs": [
+        "candidate is a clean, transferable mechanism",
+        "no intelligence_ceiling_signals or half_life_signals entry actually applies",
+        "the round is under pressure to produce a tracked source change"
+      ],
+      "expected_judgment": [
+        "name whether any vision signal aligns before grading source_value",
+        "assign source_value from the aligned signal, not from surface appeal",
+        "park or mark no-change when no vision signal aligns instead of opening a patch-candidate"
+      ],
+      "required_output": [
+        "aligned_vision_signal",
+        "source_value",
+        "keep_park_or_no_change_call"
+      ],
+      "pass_condition": [
+        "the call changes to park or no-change when no vision signal aligns",
+        "source_value is justified by a named signal rather than preference"
+      ],
+      "completion_boundary": [
+        "passes for vision-value alignment on the tested candidate only",
+        "does not prove an aligned keep actually raises the ceiling or half-life without an applied run"
+      ],
+      "forbidden": [
+        "opening a patch-candidate with no aligned vision signal",
+        "treating surface novelty as vision value"
+      ]
+    },
+    {
+      "id": "G10-insight-with-vision-value-landing",
+      "primary_fixture_id": "F05-source-self-critique",
+      "tests": [
+        "vision value alignment"
+      ],
+      "source_layer": "cognitive_frameworks",
+      "scenario": "A decomposed insight candidate does align to an intelligence-ceiling or half-life signal and is being proposed as a patch-candidate.",
+      "weak_default": "Accept the aligned candidate as a patch-candidate without grading source_value, naming the changed judgment call, or choosing where and how small it lands.",
+      "evidence_inputs": [
+        "candidate aligns to a named intelligence_ceiling_signals or half_life_signals entry",
+        "the round can point to which judgment call the candidate would change",
+        "a target source layer and a smallest source surface are available to carry the rule"
+      ],
+      "expected_judgment": [
+        "grade source_value high|medium|low from what judgment call the candidate changes, not from surface appeal",
+        "name the changed judgment call and choose the landing_layer and smallest_source_surface",
+        "require replay support and the owner gate before the patch-candidate becomes a tracked patch"
+      ],
+      "required_output": [
+        "aligned_vision_signal",
+        "source_value_with_changed_judgment_call",
+        "landing_layer_and_smallest_source_surface",
+        "replay_support_and_owner_gate"
+      ],
+      "pass_condition": [
+        "source_value is justified by a named changed judgment call rather than novelty",
+        "the keep names both a landing_layer and a smallest_source_surface and still defers the tracked patch to replay and owner gate"
+      ],
+      "completion_boundary": [
+        "passes for vision-value grading and landing judgment on the tested candidate only",
+        "does not prove the aligned keep actually raises the ceiling or half-life without an applied run"
+      ],
+      "forbidden": [
+        "grading source_value from reusability or novelty instead of a changed judgment call",
+        "advancing to a tracked patch without a landing_layer, replay support, or owner gate"
       ]
     }
   ]
