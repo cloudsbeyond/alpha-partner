@@ -199,6 +199,8 @@ skills/formal-development/SKILL.md	state_intake:
 skills/formal-development/SKILL.md	decision_route:
 skills/formal-development/SKILL.md	artifact_landing:
 skills/formal-development/SKILL.md	evidence_feedback:
+skills/formal-development/SKILL.md	Artifact Placement
+skills/formal-development/SKILL.md	artifact_placement:
 skills/formal-development/SKILL.md	Re-entry Router
 skills/formal-development/SKILL.md	formal_development_phase
 skills/formal-development/SKILL.md	formalize_existing
