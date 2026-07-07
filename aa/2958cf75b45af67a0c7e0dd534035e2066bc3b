@@ -1,0 +1,32 @@
+docs/agent-failure-modes.md
+  s_a270229389c381::t_4055768b14ea48 44-53
+scripts/verify-alpha-source.sh
+  s_a270229389c381::t_156a84a0fb4002 175-178,201-207,235-236
+skills/formal-development/SKILL.md
+  s_a270229389c381::t_06c2ebc3f9ba31 44-79,392,413-427,437-438,442-446
+skills/formal-development/references/coding-l0-l4.md
+  s_a270229389c381::t_75df40f8109a61 17,69-81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "aa2958cf75b45af67a0c7e0dd534035e2066bc3b",
+  "prompts": {},
+  "humans": {
+    "h_85a812cb030dae": {
+      "author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_a270229389c381": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3bb3-262c-7372-b0e8-e2e0f0911fad",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
