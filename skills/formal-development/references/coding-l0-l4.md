@@ -14,6 +14,7 @@ coverage:
   examples: [product, tool, plugin, script, service, frontend app, data pipeline, agent workflow]
   rule: product intent must pass through architecture narrative and contracts before code claims completion
   non_goal: do not turn every local code edit into a full L0-L4 redesign
+  naming_rule: use L0-L4 to reason about responsibility; keep coding-native field names when they make the requirement-to-code chain clearer
 ```
 
 Minimum coding shape:
@@ -63,6 +64,19 @@ evidence:
   artifact: test-results/import-request.json
 result: pass
 residual_risk: manual product acceptance not yet complete
+```
+
+Coding traceability field names:
+
+```yaml
+preferred_when_clear:
+  prd_refs: product narrative, PRD, or requirement refs
+  yaml_refs: YAML, schema, Concept Registry, or contract refs
+  code_refs: implementation refs
+  validation: tests, harness, review gate, or validation evidence
+avoid:
+  - mechanically renaming prd_refs/yaml_refs/code_refs/validation to l0_refs/l1_l2_refs/l3_refs/l4_validation
+  - adding current execution context, tool host, or selected workflow names as target runtime requirements
 ```
 
 Coding few-shot:
