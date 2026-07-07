@@ -44,6 +44,10 @@ required_paths=(
   skills/double-diamond-research/SKILL.md
   skills/problem-decomposer/SKILL.md
   skills/insight-catcher/SKILL.md
+  skills/formal-development/SKILL.md
+  skills/formal-development/references/layer-glossary.md
+  skills/formal-development/references/coding-l0-l4.md
+  skills/formal-development/references/non-coding-l0-l4.md
   scripts/init-local-alphaX.sh scripts/verify-local-alphaX.sh scripts/verify-alpha-source.sh
   scripts/context-snapshot.sh scripts/generate-alphaX-indexes.mjs
 )
@@ -81,6 +85,7 @@ AGENTS.md	skills:
 AGENTS.md	skills/problem-decomposer/SKILL.md
 AGENTS.md	skills/double-diamond-research/SKILL.md
 AGENTS.md	skills/insight-catcher/SKILL.md
+AGENTS.md	skills/formal-development/SKILL.md
 alphaX/source-work/agent-workflow.md	intelligence-ceiling-half-life.md
 alphaX/source-work/agent-workflow.md	product_goal:
 alphaX/source-work/agent-workflow.md	source_evolution_goal:
@@ -100,8 +105,10 @@ alphaX/source-work/intelligence-ceiling-half-life.md	offline_semantic_verifier_b
 alphaX/source-review/agent-workflow.md	intelligence-ceiling-half-life.md
 alphaX/session-runbook.md	skill_router:
 alphaX/session-runbook.md	double_diamond_research
+alphaX/session-runbook.md	formal_development
 alphaX/operating-system.md	source_skills:
 alphaX/operating-system.md	problem_decomposer:
+alphaX/operating-system.md	formal_development:
 alphaX/operating-system.md	loop_verification_gate:
 alphaX/operating-system.md	independent_sensor
 alphaX/loop-registry.md	loop_quality_gate:
@@ -110,6 +117,7 @@ docs/agent-invocation-contract.md	p0_flow:
 docs/agent-invocation-contract.md	intents:
 docs/agent-invocation-contract.md	skill_trigger_layer:
 docs/agent-invocation-contract.md	insight_catcher
+docs/agent-invocation-contract.md	formal_development
 docs/agent-invocation-contract.md	scope_rules:
 docs/agent-invocation-contract.md	required_first_pass:
 docs/agent-invocation-contract.md	output_self_check:
@@ -184,6 +192,35 @@ skills/insight-catcher/SKILL.md	创意捕手
 skills/insight-catcher/SKILL.md	templates/source-work/insight-catcher.md
 skills/insight-catcher/SKILL.md	self_iteration_exit_gates:
 skills/insight-catcher/SKILL.md	diminishing_return_stop:
+skills/formal-development/SKILL.md	formal-development
+skills/formal-development/SKILL.md	Project Operating Loop
+skills/formal-development/SKILL.md	development_operating_loop:
+skills/formal-development/SKILL.md	state_intake:
+skills/formal-development/SKILL.md	decision_route:
+skills/formal-development/SKILL.md	artifact_landing:
+skills/formal-development/SKILL.md	evidence_feedback:
+skills/formal-development/SKILL.md	Re-entry Router
+skills/formal-development/SKILL.md	formal_development_phase
+skills/formal-development/SKILL.md	formalize_existing
+skills/formal-development/SKILL.md	Formal Development Review
+skills/formal-development/SKILL.md	formal_projection: PRD.md
+skills/formal-development/SKILL.md	architecture/project-traceability.yaml
+skills/formal-development/SKILL.md	formal L0-L4 project assets
+skills/formal-development/SKILL.md	L3 execution artifact when execution is in scope
+skills/formal-development/SKILL.md	L3 execution refs -> L4 validation evidence
+skills/formal-development/SKILL.md	l2_contract_artifacts_and_validators
+skills/formal-development/SKILL.md	changelog_and_residual_risk
+skills/formal-development/SKILL.md	passing checks.*acceptance
+skills/formal-development/SKILL.md	references/layer-glossary.md
+skills/formal-development/SKILL.md	references/coding-l0-l4.md
+skills/formal-development/SKILL.md	references/non-coding-l0-l4.md
+skills/formal-development/SKILL.md	l4_validation:
+skills/formal-development/references/layer-glossary.md	Layer Glossary
+skills/formal-development/references/layer-glossary.md	Few-shot classification
+skills/formal-development/references/coding-l0-l4.md	coding_minimum_shape:
+skills/formal-development/references/coding-l0-l4.md	coding_l4_carriers:
+skills/formal-development/references/non-coding-l0-l4.md	non_coding_minimum_shape:
+skills/formal-development/references/non-coding-l0-l4.md	non_coding_l4_carriers:
 scripts/init-local-alphaX.sh	source-work-candidates
 scripts/init-local-alphaX.sh	applied-runs
 scripts/init-local-alphaX.sh	judgment-replays

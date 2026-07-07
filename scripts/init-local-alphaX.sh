@@ -9,6 +9,7 @@ mkdir -p \
   "$ROOT/.alphaX/process/judgment-replays" \
   "$ROOT/.alphaX/process/loop-reports" \
   "$ROOT/.alphaX/process/pilots" \
+  "$ROOT/.alphaX/process/publication-packets" \
   "$ROOT/.alphaX/process/review-feedback" \
   "$ROOT/.alphaX/process/source-evolution-candidates" \
   "$ROOT/.alphaX/process/source-work-candidates" \
@@ -108,10 +109,16 @@ Allowed:
 - judgment replays;
 - thinking notes;
 - loop reports;
-- pilot evidence.
+- pilot evidence;
+- owner-gated publication packets.
 
 Do not store raw hidden model chain-of-thought, secrets, or private transcript
 content here. Do not commit this directory.
+
+Publication packets belong under
+`.alphaX/process/publication-packets/<date>-<surface>/`. A packet that contains
+side-effecting command plans must be closed with `do_not_execute: true` after
+the publication action is completed, superseded, or parked.
 EOF
 
 write_if_missing "$ROOT/.alphaX/process/index.md" <<'EOF'
@@ -132,10 +139,31 @@ write_if_missing "$ROOT/.alphaX/process/index.md" <<'EOF'
 - [Judgment Replays](judgment-replays/) - Replay packets for source-evolution claims.
 - [Loop Reports](loop-reports/) - Manual loop reports.
 - [Pilots](pilots/) - Pilot evidence.
+- [Publication Packets](publication-packets/) - Owner-gated publication decision packets, execution runbooks, review-packaging rationale, and closeouts.
 - [Review Feedback](review-feedback/) - Sanitized mechanism feedback.
 - [Source Evolution Candidates](source-evolution-candidates/) - PDCA and owner-review source evolution candidates.
 - [Source Work Candidates](source-work-candidates/) - Candidate source edits before acceptance.
 - [Thinking Notes](thinking-notes/) - Review thinking notes and freeze inputs.
+EOF
+
+write_if_missing "$ROOT/.alphaX/process/publication-packets/README.md" <<'EOF'
+# Publication Packets
+
+Owner-gated publication packets for the local source workspace.
+
+Use this directory for local-only publication decision packets, prepared
+execution runbooks, review-packaging rationale, preflight evidence, and closeout
+records when a publication or PR operation spans multiple project surfaces.
+
+Rules:
+
+- keep packets ignored under `.alphaX/process/`;
+- do not treat command plans as authorization;
+- after completion, supersession, or parking, close the packet with a
+  `closeout.md`;
+- any packet containing side-effecting commands must mark the runbook
+  `do_not_execute: true` after closeout;
+- live Git/GitHub state and target project source win before any future action.
 EOF
 
 write_if_missing "$ROOT/.alphaX/local/project-paths.md" <<'EOF'

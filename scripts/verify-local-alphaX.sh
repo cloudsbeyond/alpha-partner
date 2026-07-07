@@ -31,6 +31,7 @@ check_dir ".alphaX/process/applied-runs"
 check_dir ".alphaX/process/judgment-replays"
 check_dir ".alphaX/process/loop-reports"
 check_dir ".alphaX/process/pilots"
+check_dir ".alphaX/process/publication-packets"
 check_dir ".alphaX/process/review-feedback"
 check_dir ".alphaX/process/source-evolution-candidates"
 check_dir ".alphaX/process/source-work-candidates"
@@ -39,6 +40,7 @@ check_dir ".alphaX/process/thinking-notes"
 check_file ".alphaX/manifest.yaml"
 check_file ".alphaX/local/README.md"
 check_file ".alphaX/process/README.md"
+check_file ".alphaX/process/publication-packets/README.md"
 
 check_pattern "^schema_version: 1$" ".alphaX/manifest.yaml"
 check_pattern "^kind: alphaX_local_data$" ".alphaX/manifest.yaml"
@@ -46,6 +48,7 @@ check_pattern "directory: \\.alphaX/local" ".alphaX/manifest.yaml"
 check_pattern "directory: \\.alphaX/process" ".alphaX/manifest.yaml"
 check_pattern "Applied Runs" ".alphaX/process/index.md"
 check_pattern "Judgment Replays" ".alphaX/process/index.md"
+check_pattern "Publication Packets" ".alphaX/process/index.md"
 check_pattern "Source Evolution Candidates" ".alphaX/process/index.md"
 check_pattern "Thinking Notes" ".alphaX/process/index.md"
 
@@ -62,6 +65,22 @@ if rg -n "BEGIN (RSA |OPENSSH |EC )?PRIVATE KEY|OPENAI_API_KEY|ANTHROPIC_API_KEY
   rg -n "BEGIN (RSA |OPENSSH |EC )?PRIVATE KEY|OPENAI_API_KEY|ANTHROPIC_API_KEY" "$ROOT/.alphaX" >&2
   fail ".alphaX contains a forbidden secret marker"
 fi
+
+while IFS= read -r process_file; do
+  rel="${process_file#$ROOT/}"
+  case "$rel" in
+    .alphaX/process/README.md|\
+    .alphaX/process/index.md|\
+    .alphaX/process/decision-log.md|\
+    .alphaX/process/focus-radar.md|\
+    .alphaX/process/session-ledger.md|\
+    .alphaX/process/source-review-backlog.md)
+      ;;
+    *)
+      fail "$rel is not an allowed .alphaX/process root file; move dated packets into a process subdirectory"
+      ;;
+  esac
+done < <(find "$ROOT/.alphaX/process" -maxdepth 1 -type f -name '*.md' -print)
 
 while IFS= read -r replay_file; do
   rel="${replay_file#$ROOT/}"

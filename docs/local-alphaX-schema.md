@@ -35,13 +35,14 @@ source_checkout_shape:
       judgment-replays/: source-evolution judgment replay packets
       loop-reports/: manual loop reports
       pilots/: pilot evidence
+      publication-packets/: owner-gated publication decision packets and closeouts
       review-feedback/: sanitized mechanism feedback
       source-evolution-candidates/: PDCA and owner-review source evolution candidates
       source-work-candidates/: candidate source edits
       thinking-notes/: review thinking notes and freeze inputs
 
 minimum_verified_shape:
-  required: [manifest.yaml, local/README.md, process/README.md, process/applied-runs/, process/judgment-replays/, process/loop-reports/, process/pilots/, process/review-feedback/, process/source-evolution-candidates/, process/source-work-candidates/, process/thinking-notes/]
+  required: [manifest.yaml, local/README.md, process/README.md, process/applied-runs/, process/judgment-replays/, process/loop-reports/, process/pilots/, process/publication-packets/, process/publication-packets/README.md, process/review-feedback/, process/source-evolution-candidates/, process/source-work-candidates/, process/thinking-notes/]
   existing_local_data_rewrite_required: false
 
 manifest.yaml:
@@ -59,8 +60,13 @@ local_data:
   must_remain_ignored: true
 
 process_data:
-  stores: [focus radar, session ledger, decisions, source review backlog, review feedback, source work candidates, source evolution candidates, applied runs, judgment replays, thinking notes, loop reports, pilot evidence]
+  stores: [focus radar, session ledger, decisions, source review backlog, review feedback, source work candidates, source evolution candidates, applied runs, judgment replays, thinking notes, loop reports, pilot evidence, owner-gated publication packets]
   not: raw hidden model chain-of-thought
+  root_files_allowed: [README.md, index.md, decision-log.md, focus-radar.md, session-ledger.md, source-review-backlog.md]
+  publication_packets:
+    path: .alphaX/process/publication-packets/<date>-<surface>/
+    stores: [decision packet, execution runbook, review-packaging rationale, closeout]
+    rule: side-effecting command plans must be marked closed/historical with do_not_execute after completion, supersession, or parking
 ```
 
 ## Target Project Shape
