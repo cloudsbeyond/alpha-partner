@@ -1,0 +1,52 @@
+AGENTS.md
+  s_08e40d6021af2c::t_04533b41a8c89d 144
+alphaX/operating-system.md
+  s_08e40d6021af2c::t_fbe0482f7fb859 107-112
+alphaX/session-runbook.md
+  s_08e40d6021af2c::t_167ea36123a424 86-89,94
+docs/agent-invocation-contract.md
+  s_08e40d6021af2c::t_5439419e6edf5e 95-98,101
+docs/local-alphaX-schema.md
+  s_08e40d6021af2c::t_2e19454ac9ecb1 38,45,63,65-69
+scripts/init-local-alphaX.sh
+  s_08e40d6021af2c::t_413b24fb49d889 12,112-113,117-121,142,149-168
+scripts/verify-local-alphaX.sh
+  s_08e40d6021af2c::t_ebc7e0b5f73311 34,43,51,69-84
+skills/formal-development/references/coding-l0-l4.md
+  s_a12eb38fd93c5b::t_a7b9c3b2d3e87d 1-85
+skills/formal-development/references/layer-glossary.md
+  s_a12eb38fd93c5b::t_6f1a7a6a3d2afc 1-89
+skills/formal-development/references/non-coding-l0-l4.md
+  s_a12eb38fd93c5b::t_2c52cb54947cc0 1-87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "b813c7fa3ffc1d5bc12a85c917d3bc4ae26f196e",
+  "prompts": {},
+  "humans": {
+    "h_85a812cb030dae": {
+      "author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_08e40d6021af2c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3aab-6993-79d3-aeaf-81b69be8460d",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    },
+    "s_a12eb38fd93c5b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3b4b-7d78-77a0-acee-339d4c73bb8d",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
