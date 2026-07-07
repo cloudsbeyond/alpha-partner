@@ -172,6 +172,10 @@ docs/agent-judgment-fixtures.md	source_of_truth: agent-judgment-fixtures.json
 docs/agent-judgment-fixtures.md	replay_contract:
 docs/agent-judgment-fixtures.md	G06-scaffold-half-life-drag
 docs/agent-judgment-fixtures.md	G08-loop-without-independent-sensor
+docs/agent-failure-modes.md	FD-001:
+docs/agent-failure-modes.md	formal-development terminology overfit
+docs/agent-failure-modes.md	FD-002:
+docs/agent-failure-modes.md	execution-context leakage
 templates/source-work/judgment-replay.md	judgment_replay_packet:
 templates/source-work/insight-catcher.md	disposition_status_values: \[covered, partial, absent, parked-with-reason\]
 templates/source-work/insight-catcher.md	do_not_convert_boundary:
@@ -194,6 +198,14 @@ skills/insight-catcher/SKILL.md	self_iteration_exit_gates:
 skills/insight-catcher/SKILL.md	diminishing_return_stop:
 skills/formal-development/SKILL.md	formal-development
 skills/formal-development/SKILL.md	Project Operating Loop
+skills/formal-development/SKILL.md	Semantic Preservation
+skills/formal-development/SKILL.md	L0-L4 is a judgment lens, not a mandatory target-project field schema
+skills/formal-development/SKILL.md	prd_refs
+skills/formal-development/SKILL.md	yaml_refs
+skills/formal-development/SKILL.md	code_refs
+skills/formal-development/SKILL.md	source_context_boundary:
+skills/formal-development/SKILL.md	scan_literals:
+skills/formal-development/SKILL.md	Negative scans must also stay semantic
 skills/formal-development/SKILL.md	development_operating_loop:
 skills/formal-development/SKILL.md	state_intake:
 skills/formal-development/SKILL.md	decision_route:
@@ -221,6 +233,8 @@ skills/formal-development/references/layer-glossary.md	Layer Glossary
 skills/formal-development/references/layer-glossary.md	Few-shot classification
 skills/formal-development/references/coding-l0-l4.md	coding_minimum_shape:
 skills/formal-development/references/coding-l0-l4.md	coding_l4_carriers:
+skills/formal-development/references/coding-l0-l4.md	Coding traceability field names
+skills/formal-development/references/coding-l0-l4.md	prd_refs/yaml_refs/code_refs/validation
 skills/formal-development/references/non-coding-l0-l4.md	non_coding_minimum_shape:
 skills/formal-development/references/non-coding-l0-l4.md	non_coding_l4_carriers:
 scripts/init-local-alphaX.sh	source-work-candidates
@@ -327,6 +341,29 @@ for (const [label, tokens] of [
   ['AGENTS.md organization pipeline frame', ['organization_level_pipeline:', 'behavior', 'context representation', 'agent collaboration', 'human', 'authority', 'memory', 'feedback', 'not a runtime']],
 ]) {
   requireTokenGroup(label, rootContract, tokens);
+}
+
+const formalDevelopmentSkill = read('skills/formal-development/SKILL.md');
+const residualScanLines = formalDevelopmentSkill
+  .split('\n')
+  .map((line, index) => ({ line: line.trim(), lineNumber: index + 1 }))
+  .filter(({ line }) => line.startsWith('rg -n '));
+const allowedResidualScanTerms = new Set([
+  'acceptance', 'architecture', 'asset', 'changing', 'checks', 'context', 'detail', 'depend',
+  'devops', 'driven', 'execution', 'function', 'host', 'is', 'l0_refs', 'l1_l2_refs',
+  'l3_refs', 'l4_validation', 'md', 'merge', 'method', 'n', 'notes', 'owns', 'passing',
+  'product', 'product_narrative', 'project', 'publication', 'readiness', 'review', 'rg',
+  'runtime', 'selected', 'single', 'source', 'source_order', 'spec', 'target', 'tests',
+  'the', 'traceability', 'validation', 'workflow', 'yaml',
+  'AI', 'CI', 'L0', 'L1', 'L2', 'L3', 'L4', 'P0', 'P1', 'P2', 'PRD', 'SDD', 'YAML',
+]);
+for (const { line, lineNumber } of residualScanLines) {
+  for (const match of line.matchAll(/\b[A-Za-z][A-Za-z0-9_]*\b/g)) {
+    const token = match[0].replace(/\\\./g, '.');
+    if (!allowedResidualScanTerms.has(token)) {
+      fail.push(`skills/formal-development/SKILL.md:${lineNumber}: residual scan contains non-semantic or concrete-looking token ${token}; use role-level semantics`);
+    }
+  }
 }
 
 const sourceGovernance = read('alphaX/source-work/intelligence-ceiling-half-life.md');

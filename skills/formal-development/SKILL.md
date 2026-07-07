@@ -41,6 +41,52 @@ l0_assets:
 `README.zh-CN.md`, product docs, or a project-specific combination.
 `formal_projection` is fixed as root `PRD.md`.
 
+## Semantic Preservation / 语义保真
+
+L0-L4 is a judgment lens, not a mandatory target-project field schema. Preserve
+clear project-native terms when they already express the responsible chain.
+
+```yaml
+semantic_preservation:
+  rule: do not mechanically rename existing clear fields, headings, or tracker schemas into L0/L1/L2/L3/L4 labels
+  coding_preferred_when_clear:
+    - prd_refs
+    - yaml_refs
+    - code_refs
+    - validation
+  interpretation:
+    prd_refs: product narrative, PRD, or architecture requirement refs
+    yaml_refs: YAML, schema, Concept Registry, or formal contract refs
+    code_refs: implementation or execution artifact refs
+    validation: tests, harness, review gate, or validation evidence
+  rename_only_when:
+    - the existing term is ambiguous or misleading
+    - the project already owns the L0-L4 vocabulary as product/domain language
+    - the user explicitly asks for a terminology migration
+  user_correction_rule: if the user flags terminology loss, revert to project-native semantics first, then update the reusable rule that caused the drift
+```
+
+Do not leak execution context into target project assets. In `project work`
+or `project review`, the current tool host, source function, selected workflow,
+and maintainer context are execution context, not target runtime dependencies
+or product assets. Target tracked docs may mention that context only when the
+target product itself is explicitly about it; otherwise describe the target
+repository's own portable chain.
+
+```yaml
+source_context_boundary:
+  target_asset_rule: describe the target repository's own portable chain, not the current execution context
+  allowed_exception: the target product domain explicitly owns the host, workflow, or function name
+  scan_literals:
+    rule: scan for role-level leak classes only
+    forbidden: concrete host names, source-function call signs, current tool names, or maintainer workflow labels
+    examples: [execution-context detail, runtime depends on workflow, devops depends on source function]
+```
+
+Negative scans must also stay semantic. Do not add concrete host, source
+function, tool, or workflow names as tracked-source grep anchors just to forbid
+leakage. Use role-level phrases that describe the leak class instead.
+
 For layer terminology, goals, non-goals, carriers, anti-examples, and few-shot
 classification, read `references/layer-glossary.md` only when needed.
 
@@ -353,7 +399,7 @@ matching reference file under `references/`.
 Add or update `architecture/project-traceability.md` and `.yaml` when work spans
 multiple long-lived slices, modules, profiles, or future agent iterations.
 
-Minimum machine-readable shape:
+Default neutral machine-readable shape:
 
 ```yaml
 l0_assets:
@@ -374,8 +420,21 @@ authority:
     - changelog_and_residual_risk
 ```
 
-Each verified expectation must include actual L0 refs, L1/L2 refs, L3 execution
-refs, L4 validation evidence, and residual risk.
+Use this neutral shape only when it improves clarity. For coding trackers, keep
+or choose clearer coding-native fields when they already communicate the chain:
+
+```yaml
+coding_traceability_alias:
+  prd_refs: L0 product and requirement refs
+  yaml_refs: L1/L2 architecture, YAML, schema, registry, or contract refs
+  code_refs: L3 implementation refs
+  validation: L4 validation evidence
+```
+
+Each verified expectation must include actual requirement/product refs,
+formal-contract refs, implementation refs, validation evidence, and residual
+risk. The field names should serve the project semantics; they must not be
+renamed merely to display the L0-L4 framework.
 
 ### 8. Verify And Close / 验证与收口
 
@@ -385,8 +444,15 @@ residual scan for wrong entrypoints:
 ```bash
 rg -n '(single L0|单一 L0|唯一 L0|the L0 product asset|PRD\.md is the L0|owns L0|SDD ->|spec-driven|source_order: \[PRD.md|source_order: \[product_narrative)'
 rg -n '(passing checks.*acceptance|validation.*product acceptance|L4.*(acceptance|merge readiness|publication readiness)|tests?.*product acceptance|review notes.*changing L0)'
+rg -n '(execution-context detail|selected workflow|target.*runtime.*(method|workflow|host|source function)|runtime.*depend.*(method|workflow|host|source function)|devops.*depend.*(method|workflow|host|source function))'
+rg -n '(l0_refs|l1_l2_refs|l3_refs|l4_validation)' architecture/project-traceability.yaml
 git diff --check
 ```
+
+Interpret the last scan before acting: `l0_refs`-style fields are acceptable
+only when they are already project-native or clearer than the existing schema.
+If the project already has coding-native `prd_refs` / `yaml_refs` / `code_refs`
+/ `validation`, do not migrate them to layer labels.
 
 Completion state vocabulary:
 

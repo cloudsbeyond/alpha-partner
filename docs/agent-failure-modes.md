@@ -41,6 +41,16 @@ modes:
     signal: downstream patch while upstream problem, structured expression, or contract is ambiguous
     mitigation: stop at responsible boundary; return missing L0-L2 decision or contract gap
 
+  FD-001:
+    mode: formal-development terminology overfit
+    signal: clear project-native tracker fields, headings, or schemas are mechanically renamed to L0/L1/L2/L3/L4 labels and lose domain meaning
+    mitigation: preserve or restore project-native semantics; keep L0-L4 as the review lens; update reusable rules if the overfit came from source guidance
+
+  FD-002:
+    mode: execution-context leakage into target assets
+    signal: target tracked docs describe the current tool host, selected workflow, maintainer context, or other execution-context details as target runtime, package, devops, or contributor dependencies
+    mitigation: remove execution-context language from target assets unless it is the target product domain; describe only the target repo's own portable contract chain
+
   OQ-001:
     mode: missing next action
     signal: summary does not change action, validation, or decision state
