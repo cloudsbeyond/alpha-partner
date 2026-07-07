@@ -1,0 +1,28 @@
+scripts/verify-alpha-source.sh
+  s_a12eb38fd93c5b::t_920936dede03b8 202-203
+skills/formal-development/SKILL.md
+  s_a12eb38fd93c5b::t_f13ff5c1b997f2 66-69,73-74,76-77,79-80,82-112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "76897707e9d143bd82eb67c5bfd2326b3402bbd7",
+  "prompts": {},
+  "humans": {
+    "h_85a812cb030dae": {
+      "author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_a12eb38fd93c5b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3b4b-7d78-77a0-acee-339d4c73bb8d",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
