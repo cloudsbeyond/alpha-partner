@@ -63,47 +63,53 @@ Treat formal-development as a project-level development OS. It is not a
 service or control plane; it is the repeatable loop that keeps project state,
 layer decisions, durable assets, and evidence feedback aligned.
 
+This loop is an index, not a second copy of the rules. When a rule changes,
+edit the canonical section below and update this loop only if the route itself
+changes.
+
 ```yaml
 development_operating_loop:
   state_intake:
-    goal: establish current project state before edits
-    required_surfaces:
-      - current user objective and project phase
-      - declared product_narrative path or paths
-      - PRD.md when present, or project root when PRD.md is absent
-      - relevant architecture, contracts, execution artifacts, and validation evidence
-    staleable_context:
-      - .alphaX/project-context.md
-      - memory or handoff summaries
+    purpose: establish current project state before edits
+    canonical_rule: Re-entry Router / Re-entry inputs
   decision_route:
-    goal: choose the responsible layer before changing assets
-    steps:
-      - classify scope and phase
-      - consolidate L0 product intent and PRD.md together
-      - route downstream changes through L1/L2 before L3 execution
-      - bind L3 execution to L4 validation evidence
-      - update traceability only when project scale needs it
+    purpose: choose the responsible layer before changing assets
+    canonical_rule: Workflow / phase procedures and layer separation
   artifact_landing:
-    goal: land durable formal-development assets in tracked project source
-    tracked_project_assets:
-      product_narrative: README.md or project-declared docs path
-      formal_projection: PRD.md
-      architecture_narrative: architecture/README.md or existing architecture entrypoint
-      l2_contracts: architecture/, schemas/, contracts/, or existing contract directory
-      project_traceability: architecture/project-traceability.yaml and architecture/project-traceability.md
-      l3_execution: implementation, workflow, template, or operation directories
-      l4_validation: tests, test-results, reviews, changelog, or validation evidence paths
-    local_alphaX:
-      allowed: context, review aids, temporary process evidence
-      forbidden: formal L0-L4 project assets
+    purpose: land durable formal-development assets in tracked project source
+    canonical_rule: Artifact Placement / 产物落点
   evidence_feedback:
-    goal: close each claim with proportionate proof and route drift upstream
-    checks:
-      - L0 equivalence: product_narrative and PRD.md describe the same P0 product intent
-      - layer boundary: L1-L4 do not redefine upstream promises
-      - traceability: nontrivial claims map L0 refs -> L1/L2 refs -> L3 refs -> L4 evidence
-      - completion evidence: command or review gate matches the claimed completion state
-      - residual scan: no stale SDD or spec-driven entrypoint remains as current driver
+    purpose: close each claim with proportionate proof and route drift upstream
+    canonical_rule: Formal Development Review + Verify And Close
+```
+
+## Artifact Placement / 产物落点
+
+Land formal-development artifacts in the target project's tracked source by
+default. Use target `.alphaX/` only for local context, review aids, or temporary
+process evidence; do not put formal project assets there. Do not write target
+project facts into Alpha Partner Source.
+
+```yaml
+artifact_placement:
+  product_narrative:
+    default: README.md or project-declared docs path
+  formal_projection:
+    fixed: PRD.md
+  architecture_narrative:
+    default: architecture/README.md or existing architecture entrypoint
+  l2_contracts:
+    default: architecture/, schemas/, contracts/, or existing contract directory
+  project_traceability:
+    machine: architecture/project-traceability.yaml
+    human: architecture/project-traceability.md
+  l3_execution:
+    default: implementation, workflow, template, or operation directories
+  l4_validation:
+    default: tests, test-results, reviews, changelog, or validation evidence paths
+  local_alphaX:
+    allowed: context, review aids, temporary process evidence
+    forbidden: formal L0-L4 project assets
 ```
 
 ## Re-entry Router / 可重入路由
