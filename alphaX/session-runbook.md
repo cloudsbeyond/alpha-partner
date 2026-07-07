@@ -83,10 +83,15 @@ skill_router:
       file: skills/insight-catcher/SKILL.md
       triggers: [创意捕手, insight catcher, creative input, mechanism candidate, keep/narrow/park ideas, batch of readings for alphaX]
       pairs_with: [source_work, source_review]
+    formal_development:
+      file: skills/formal-development/SKILL.md
+      triggers: [formal development, 形式化研发, project initialization, 项目初始化, later iteration, 后续迭代, existing-project formalization, 存量项目形式化重构, formal-development review, 形式化研发评审, PRD.md, product narrative, 产品叙事, architecture narrative, 架构叙事, L0-L4, Project Traceability, spec cleanup, SDD cleanup]
+      pairs_with: [project, project_review, source_work, source_review, spec_checkpoint]
   composition:
     - if problem level is unclear, apply problem_decomposer before double_diamond_research
     - if the problem is already defined but solution space is open, apply double_diamond_research directly
     - for creative inputs evaluated as alphaX mechanism candidates, apply insight_catcher to grade dispositions before any tracked change
+    - for formal-development initialization, iteration, existing-project refactor, or review, apply formal_development after scope selection and before writing or judging PRD, architecture, contract, traceability, harness, or implementation assets
 
 project_local_setup:
   guide: templates/project-work/local-pointer.md

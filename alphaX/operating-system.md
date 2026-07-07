@@ -104,7 +104,12 @@ source_skills:
     strengthens: [source_work, source_review]
     use_when: creative inputs must be graded as alphaX mechanism candidates before any tracked change
     expected_effect: produce a disposition-tracked candidate ledger and judgment trace so no candidate is silently lost or narrowed into a single patch
-  composition_rule: if both match, use Problem Decomposer for problem level first, then 双菱形思考法 for research and solution convergence
+  formal_development:
+    source: skills/formal-development/SKILL.md
+    strengthens: [project, project_review, source_work, source_review, spec_checkpoint]
+    use_when: formal-development work needs project initialization, later iteration, existing-project formalization, conformance review, product narrative consolidation, fixed PRD.md projection, architecture narrative separation, formal contract alignment, Project Traceability, or spec/SDD residue cleanup
+    expected_effect: route work by phase, keep L0 product intent, L1/L2 architecture/contracts, and L3/L4 implementation evidence separated and verifiable, and support report-first conformance review
+  composition_rule: if multiple skills match, use Problem Decomposer for problem level first, Formal Development for L0-L4 delivery structure, then 双菱形思考法 for research and solution convergence when needed
 
 agent_intake_rule:
   principle: between agents there is no shared runtime and no mutual presence; only file trace

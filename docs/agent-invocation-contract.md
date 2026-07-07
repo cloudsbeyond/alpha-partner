@@ -92,8 +92,13 @@ skill_trigger_layer:
       source: skills/insight-catcher/SKILL.md
       use_when: creative inputs, readings, talks, notes, or research signals must be evaluated as alphaX mechanism candidates before tracked source changes
       output: disposition-tracked candidate ledger, judgment trace, exit-gate call, and next owner decision
+    formal_development:
+      source: skills/formal-development/SKILL.md
+      use_when: formal-development work touches project initialization, later iteration, existing-project formalization, conformance review, PRD.md, product narrative, architecture narrative, L0-L4, formal contracts, Project Traceability, or spec/SDD residue cleanup
+      output: phase call, L0 asset mapping, PRD projection boundary, downstream L1-L4 chain, conformance review findings when requested, validation and closeout state
   composition:
     - use problem_decomposer first when the P0 problem level is unclear
+    - use formal_development before writing or reviewing PRD, architecture, contract, traceability, harness, or implementation assets in formal-development work
     - use double_diamond_research when the problem is open, multi-stakeholder, strategic, or research-heavy
     - use insight_catcher before source changes triggered by creative input batches
     - if both match, run problem_decomposer to locate the problem level, then double_diamond_research to structure research and solution convergence
