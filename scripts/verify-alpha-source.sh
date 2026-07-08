@@ -49,7 +49,7 @@ required_paths=(
   skills/formal-development/references/coding-l0-l4.md
   skills/formal-development/references/non-coding-l0-l4.md
   scripts/init-local-alphaX.sh scripts/verify-local-alphaX.sh scripts/verify-alpha-source.sh
-  scripts/context-snapshot.sh scripts/generate-alphaX-indexes.mjs
+  scripts/context-snapshot.sh scripts/detect-applied-run-candidates.sh scripts/generate-alphaX-indexes.mjs
 )
 for path in "${required_paths[@]}"; do exists "$path"; done
 
@@ -242,6 +242,12 @@ scripts/init-local-alphaX.sh	applied-runs
 scripts/init-local-alphaX.sh	judgment-replays
 scripts/init-local-alphaX.sh	source-evolution-candidates
 scripts/init-local-alphaX.sh	thinking-notes
+scripts/detect-applied-run-candidates.sh	Applied Run Candidate Scan
+scripts/detect-applied-run-candidates.sh	read-only candidate detection
+scripts/detect-applied-run-candidates.sh	loop-reports
+scripts/detect-applied-run-candidates.sh	review-feedback
+scripts/detect-applied-run-candidates.sh	source-evolution-candidates
+scripts/detect-applied-run-candidates.sh	does not create, modify, or delete applied-run files
 scripts/verify-local-alphaX.sh	Applied Runs
 scripts/verify-local-alphaX.sh	Judgment Replays
 scripts/verify-local-alphaX.sh	Source Evolution Candidates

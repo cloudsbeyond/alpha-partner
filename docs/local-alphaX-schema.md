@@ -158,6 +158,7 @@ commands:
   init: bash scripts/init-local-alphaX.sh
   verify_local: bash scripts/verify-local-alphaX.sh
   verify_source: bash scripts/verify-alpha-source.sh
+  detect_applied_run_candidates: bash scripts/detect-applied-run-candidates.sh
 
 private_patterns:
   path: .alphaX/local/private-patterns.txt

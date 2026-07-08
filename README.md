@@ -174,7 +174,8 @@ to the same alphaX behaviors when the intent is the same.
 - `templates/`: report packets and project-local mapping templates.
 - `docs/`: evidence, schema, asset boundary, OKF profile, and
   [`docs/README.zh-CN.md`](docs/README.zh-CN.md).
-- `scripts/`: bootstrap, verification, context snapshot, and generated indexes.
+- `scripts/`: bootstrap, verification, context snapshot, applied-run candidate
+  detection, and generated indexes.
 - `assets/`: shareable visual assets, including `assets/icon.png`.
 
 Generated `index.md` files provide the detailed navigation.
