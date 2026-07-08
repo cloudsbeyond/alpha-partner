@@ -1,0 +1,36 @@
+AGENTS.md
+  s_a270229389c381::t_b6d4ae71a55d48 145
+README.md
+  s_a270229389c381::t_b2f4bfb4336d27 177-178
+docs/README.zh-CN.md
+  s_a270229389c381::t_86ceb30b647878 102
+docs/local-alphaX-schema.md
+  s_a270229389c381::t_0ba4fca4f3bfd9 161
+scripts/detect-applied-run-candidates.sh
+  s_a270229389c381::t_3e7b4e7fddcd75 1-237
+scripts/verify-alpha-source.sh
+  s_a270229389c381::t_f3cb2f93836b20 52,245-250
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "bae80a42316e319d87bb8f2633172728c4374c24",
+  "prompts": {},
+  "humans": {
+    "h_85a812cb030dae": {
+      "author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_a270229389c381": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3bb3-262c-7372-b0e8-e2e0f0911fad",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
