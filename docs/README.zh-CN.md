@@ -99,7 +99,7 @@ review 一下我现在几个项目的风险
 - `alphaX/`：行为和 scope SOP。
 - `templates/`：报告 packet 和项目本地映射模板。
 - `docs/`：证据、schema、资产边界、OKF profile 和中文入口。
-- `scripts/`：初始化、验证、上下文快照和索引生成。
+- `scripts/`：初始化、验证、上下文快照、applied-run 候选检测和索引生成。
 - `assets/`：可共享视觉资产，包括 `assets/icon.png`。
 
 详细导航由生成的 `index.md` 文件承担。

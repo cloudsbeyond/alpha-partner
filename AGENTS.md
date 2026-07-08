@@ -142,7 +142,7 @@ source_map:
   docs: [docs/evidence-index.md, docs/research-backlog.md, docs/okf-markdown-profile.md, docs/asset-boundary.yaml, docs/local-alphaX-schema.md, docs/checkpoint-memory-evaluation-prd.md]
   templates: [templates/]
   skills: [skills/problem-decomposer/SKILL.md, skills/double-diamond-research/SKILL.md, skills/insight-catcher/SKILL.md, skills/formal-development/SKILL.md]
-  scripts: [scripts/init-local-alphaX.sh, scripts/verify-local-alphaX.sh, scripts/verify-alpha-source.sh, scripts/context-snapshot.sh, scripts/generate-alphaX-indexes.mjs]
+  scripts: [scripts/init-local-alphaX.sh, scripts/verify-local-alphaX.sh, scripts/verify-alpha-source.sh, scripts/context-snapshot.sh, scripts/detect-applied-run-candidates.sh, scripts/generate-alphaX-indexes.mjs]
 ```
 
 ## Operating Rules
