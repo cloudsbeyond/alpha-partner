@@ -30,11 +30,18 @@ loops:
 
   project:
     purpose: calibrate alphaX on real project surfaces
-    flow: [identify source of truth, state P0 and constraint, classify work type, keep L0-L4 visible, verify]
+    flow: [identify source of truth, state P0 and constraint, classify work type, state delivery state, target artifact or decision, next action, human or agent gate, and validation evidence, keep L0-L4 visible, verify]
     accept:
       - concrete project improvement or clearer next decision
       - no downstream patching when upstream contract is ambiguous
+      - feedback, review findings, or failing validation route to responsible boundary, rework item, changed artifact, validation method, and open residue
       - after applied session, record contract rule that helped, got in way, and was unused
+    delivery_loop:
+      required_fields: [current_state, target_artifact_or_decision, next_action, advance_hold_or_rework, gate, validation_method, validation_evidence, feedback_route]
+      advance_rule: advance only when the target artifact exists or target decision is resolved, every applicable human-owned gate is cleared, and validation evidence supports the next action; otherwise hold or rework at the responsible boundary
+      human_gate_examples: [L0-L2 change, architecture, data or permission decision, security decision, merge, release, publication, external document refresh, durable memory update]
+      memory_filter: keep only reusable boundary judgments, verified project facts, or evidence that changes future action; park chat-only, unverified, one-off, private, noisy, or non-actionable notes
+      boundary: not a runtime, scheduler, connector, approval engine, or centralized project store
     pruning_rule: "Lack of use is a weak negative signal, not deletion evidence by itself."
 
   thinking:
@@ -45,7 +52,7 @@ loops:
   memory:
     purpose: continuity without global-memory pollution
     flow: [use current files first, search memory when prior context matters, write candidate if durable, update global memory only by user request, cite memory when material]
-    accept: memory improves continuity without overriding current evidence and has explicit source, retrieval path, update or expiry rule, and verification method
+    accept: memory improves continuity without overriding current evidence and has explicit source, retrieval path, update or expiry rule, verification method, and one allowed category among reusable boundary judgment, verified project fact, or action-changing evidence
 
   checkpoint_memory_evaluation:
     purpose: test remembered/project-local state before adding memory infrastructure

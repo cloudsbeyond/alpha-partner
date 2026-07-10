@@ -24,6 +24,33 @@ project_surface:
 p0_main_line: "<one sentence>"
 work_type: "<discovery|spec|implementation|review|reflection>"
 
+delivery_loop:
+  current_state: "<intake|clarify|design|implement|review|validate|handoff|reflect>"
+  target_artifact_or_decision: "<file|doc|contract|diff|test|decision|none>"
+  next_action: "<one concrete action or decision needed next>"
+  advance_hold_or_rework: "<advance|hold|rework + evidence-bound reason>"
+  gate:
+    owner: "<human|agent|shared>"
+    reason: "<L0-L2 decision|architecture/data/permission/security risk|merge/release/publication|external document refresh|durable memory|L3-L4 execution|none>"
+    status: "<open|cleared|blocked|not-needed>"
+  validation_method: "<test|command|artifact|review|user decision|missing>"
+  validation_evidence: []
+  feedback_route: "<how comments/findings/failures change the next artifact or action>"
+  feedback_to_rework:
+    responsible_boundary: "<L0|L1|L2|L3|L4|not L0-L4|unknown>"
+    rework_items: []
+    changed_artifacts: []
+    validation_method: "<test|command|artifact|review|user decision|missing>"
+    validation_evidence: []
+    open_residue: []
+  rework_state:
+    closed: []
+    remaining: []
+  memory_candidate_quality:
+    category: "<reusable-boundary-judgment|verified-project-fact|action-changing-evidence|none>"
+    decision: "<candidate|park-unverified|park-one-off|park-private|park-noisy|park-non-actionable|none>"
+    verification_path: []
+
 boundary:
   layer: "<L0|L1|L2|L3|L4|not L0-L4>"
   owner: "<human|agent|shared>"
