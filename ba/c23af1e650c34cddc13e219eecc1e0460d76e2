@@ -1,0 +1,28 @@
+templates/memory-candidate-packet.md
+  s_b18def69227458::t_c3471f47d971e2 21,24-25,29-35
+templates/project-work/loop-packet.md
+  s_b18def69227458::t_60e50b36f0c844 27-53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "bac23af1e650c34cddc13e219eecc1e0460d76e2",
+  "prompts": {},
+  "humans": {
+    "h_85a812cb030dae": {
+      "author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_b18def69227458": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f418a-b5cb-7d42-8517-58427a32e91f",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
