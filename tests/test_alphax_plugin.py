@@ -138,8 +138,22 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("must not issue a completion", entry)
         self.assertIn("docs/agent-invocation-contract.md", entry)
         self.assertIn("only when behavior or tone requires it", entry)
+        self.assertIn("Bounded project implementation fast path", entry)
+        self.assertIn("do not read activation,", entry)
+        self.assertIn("re-entry, operating-system, or loop-registry documents", entry)
         self.assertLessEqual(len(manifest["interface"]["defaultPrompt"]), 3)
         self.assertNotIn("/" + "Users/", entry)
+
+    def test_project_work_bounded_implementation_has_a_proportional_stop_rule(self) -> None:
+        workflow = (ROOT / "alphaX/project-work/agent-workflow.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("bounded_implementation:", workflow)
+        self.assertIn("known working project runner", workflow)
+        self.assertIn("containing test module or smallest affected suite", workflow)
+        self.assertIn("expand_validation_when", workflow)
+        self.assertIn("does_not_waive", workflow)
 
     def test_dirty_source_requires_explicit_candidate_build(self) -> None:
         self._write("skills/problem-decomposer/SKILL.md", "changed\n")

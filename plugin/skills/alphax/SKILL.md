@@ -81,14 +81,26 @@ Read from `resolved_root`:
 
 - always: `AGENTS.md`, `docs/agent-invocation-contract.md`, and
   `alphaX/session-runbook.md`;
+- **Bounded project implementation fast path:** when the user supplies a
+  concrete external target, an L3/L4 implementation request, and an executable
+  validation signal, read `alphaX/project-work/agent-workflow.md`, target
+  instructions, live source, and tests. If no re-entry, focus/risk, spec,
+  research, memory, or manual-loop trigger is present, do not read activation,
+  re-entry, operating-system, or loop-registry documents;
 - read `alphaX/persona.md` only when behavior or tone requires it;
-- read `alphaX/operating-system.md` only for the selected loop or evidence
-  rubric;
-- project work/context reload: `alphaX/activation-guide.md` and
-  `alphaX/project-work/context-reloader.md`;
+- read `alphaX/activation-guide.md` only for explicit engage/activation or when
+  the target cannot be reconstructed from the first live-project pass;
+- read `alphaX/project-work/context-reloader.md` only for project progress,
+  re-entry, stale-context, or target `.alphaX/` reconstruction;
+- read `alphaX/operating-system.md` only for focus/risk, research, memory,
+  manual-loop, intake-rule, or non-default evidence-rubric work. The ordinary
+  project delivery loop is carried by its project workflow;
+- project work outside the bounded fast path:
+  `alphaX/project-work/agent-workflow.md`;
 - project review: `alphaX/project-review/agent-workflow.md`;
 - source review: `alphaX/source-review/agent-workflow.md`;
-- loops/routines: `alphaX/loop-registry.md`;
+- explicit loops, routines, nudges, and source self-critique:
+  `alphaX/loop-registry.md`;
 - source work: relevant `alphaX/`, `docs/`, `templates/`, `skills/`, and
   `scripts/` files.
 
