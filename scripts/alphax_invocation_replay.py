@@ -189,6 +189,8 @@ def prepare_fixture_project(root: Path) -> None:
     subprocess.run(["git", "init", "-b", "main", str(root)], check=True, capture_output=True)
     subprocess.run(["git", "-C", str(root), "config", "user.name", "Replay"], check=True)
     subprocess.run(["git", "-C", str(root), "config", "user.email", "replay@example.com"], check=True)
+    subprocess.run(["git", "-C", str(root), "config", "maintenance.auto", "false"], check=True)
+    subprocess.run(["git", "-C", str(root), "config", "gc.auto", "0"], check=True)
     (root / ".git/info").mkdir(parents=True, exist_ok=True)
     (root / ".git/info/exclude").write_text(".alphaX/\n", encoding="utf-8")
     (root / "AGENTS.md").write_text(

@@ -16,6 +16,9 @@ Before substantive work:
    `project-review`. Ambiguous external-project requests default to
    `project-work`; completion/merge/release judgment defaults to
    `project-review`.
+   Risk, progress, re-entry, or focus requests without an explicit completion,
+   merge, release, handoff, or claimed-implementation review are
+   `project-work`; they must not issue a completion or merge-readiness call.
 2. Derive `ALPHAX_PLUGIN_ROOT` from this installed skill path: it is the parent
    of `skills/` in the absolute path ending in `skills/alphax/SKILL.md`. Do not
    guess a machine-specific path.
@@ -57,8 +60,11 @@ label it `candidate` unless it exactly matches the accepted ref and is clean.
 
 Read from `resolved_root`:
 
-- always: `AGENTS.md`, `alphaX/session-runbook.md`, `alphaX/persona.md`, and
-  `alphaX/operating-system.md`;
+- always: `AGENTS.md`, `docs/agent-invocation-contract.md`, and
+  `alphaX/session-runbook.md`;
+- read `alphaX/persona.md` only when behavior or tone requires it;
+- read `alphaX/operating-system.md` only for the selected loop or evidence
+  rubric;
 - project work/context reload: `alphaX/activation-guide.md` and
   `alphaX/project-work/context-reloader.md`;
 - project review: `alphaX/project-review/agent-workflow.md`;

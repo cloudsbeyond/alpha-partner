@@ -44,8 +44,6 @@
     "defaultPrompt": [
       "@alphaX restore this project context.",
       "Use alphax:problem-decomposer on this task.",
-      "Use alphax:double-diamond-research here.",
-      "Use alphax:insight-catcher to evaluate this creative input.",
       "Use alphax:formal-development for this PRD or formal-development review."
     ]
   }

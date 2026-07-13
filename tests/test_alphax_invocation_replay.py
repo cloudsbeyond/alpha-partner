@@ -114,7 +114,7 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
             self.assertFalse((case_dir / "run-events.jsonl").exists())
 
     def test_fixture_keeps_project_local_alphax_ignored(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
             root = Path(tmp) / "project"
             replay.prepare_fixture_project(root)
 

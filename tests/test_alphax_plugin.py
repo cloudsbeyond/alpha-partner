@@ -128,11 +128,17 @@ class AlphaXPluginTest(unittest.TestCase):
 
     def test_real_entry_skill_uses_package_local_source_resolution(self) -> None:
         entry = (ROOT / "plugin/skills/alphax/SKILL.md").read_text(encoding="utf-8")
+        manifest = json.loads((ROOT / "plugin/plugin.template.json").read_text(encoding="utf-8"))
 
         self.assertIn("resolve-invocation", entry)
         self.assertIn("bin/alphax_plugin.py", entry)
         self.assertIn("package_version", entry)
         self.assertIn("package_source_commit", entry)
+        self.assertIn("Risk, progress, re-entry, or focus", entry)
+        self.assertIn("must not issue a completion", entry)
+        self.assertIn("docs/agent-invocation-contract.md", entry)
+        self.assertIn("only when behavior or tone requires it", entry)
+        self.assertLessEqual(len(manifest["interface"]["defaultPrompt"]), 3)
         self.assertNotIn("/" + "Users/", entry)
 
     def test_dirty_source_requires_explicit_candidate_build(self) -> None:
