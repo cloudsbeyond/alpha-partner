@@ -168,14 +168,28 @@ alphaX run project review before handoff.
 Triggers are semantic, not literal. User prompts in another language should map
 to the same alphaX behaviors when the intent is the same.
 
+## Codex Plugin Distribution
+
+The Codex plugin is generated one-way from this repository. It embeds an
+immutable accepted Source snapshot for project work and review, while source
+work and review require an explicit live checkout. Plugin versions encode the
+Source commit or dirty candidate fingerprint; same-version differences between
+the generated package, marketplace source, and installed cache are hard
+failures.
+
+See [`docs/alphax-plugin-publication.md`](docs/alphax-plugin-publication.md) for
+build, install, parity, Source identity, and fresh invocation replay commands.
+
 ## Repository Layout
 
 - `alphaX/`: behavior and scope SOPs.
 - `templates/`: report packets and project-local mapping templates.
 - `docs/`: evidence, schema, asset boundary, OKF profile, and
   [`docs/README.zh-CN.md`](docs/README.zh-CN.md).
-- `scripts/`: bootstrap, verification, context snapshot, applied-run candidate
-  detection, and generated indexes.
+- `plugin/`: canonical Codex plugin manifest, README, and alphaX entry skill.
+- `scripts/`: bootstrap, plugin generation, fresh invocation replay,
+  verification, context snapshot, applied-run candidate detection, and
+  generated indexes.
 - `assets/`: shareable visual assets, including `assets/icon.png`.
 
 Generated `index.md` files provide the detailed navigation.

@@ -6,6 +6,10 @@
 
 - [Local alphaX Data Schema](local-alphaX-schema.md) - Schema and bootstrap contract for ignored local .alphaX data.
 
+# Distribution Contract
+
+- [alphaX Plugin Publication](alphax-plugin-publication.md) - One-way build, Source identity, parity, installation, and fresh-invocation evidence contract for the alphaX Codex plugin.
+
 # Evidence Index
 
 - [Evidence Index](evidence-index.md) - Source-backed evidence index for Alpha Partner Source design choices.

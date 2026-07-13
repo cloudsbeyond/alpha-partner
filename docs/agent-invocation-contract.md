@@ -10,6 +10,7 @@ tags: ["alphax", "agent", "invocation"]
 p0_flow:
   - short_trigger
   - intent_and_scope_call
+  - package_and_source_identity_resolution
   - required_source_read
   - skill_trigger_check
   - live_project_evidence_check
@@ -17,6 +18,13 @@ p0_flow:
   - next_action
 
 default_rule: do not ask the user to restate project context until first source pass fails to identify target, write boundary, or source of truth
+
+source_identity_gate:
+  project_work_and_review: resolve and hash-check the immutable accepted Source embedded in the installed package
+  source_work_and_review: require an explicit live Source checkout and label candidate state
+  behavior_identity: [package_version, package_source_commit, package_source_branch, package_source_authority]
+  source_identity: [scope, source_commit, source_branch_or_ref, source_authority]
+  forbidden: mutable checkout lookup as an implicit project-scope authority
 
 intents:
   engage:
@@ -125,6 +133,7 @@ output_self_check:
   - material claims have evidence strength and freshness
   - weak/stale claims listed under unverified_claims
   - next action concrete and not P1/P2 expansion
+  - nontrivial runs report package behavior identity and resolved Source identity
 
 forbidden_shortcuts:
   - treating .alphaX/project-context.md as current truth without rereading live source

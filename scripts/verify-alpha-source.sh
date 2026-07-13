@@ -9,7 +9,7 @@ exists() { [ -e "$ROOT/$1" ] || fail "missing path: $1"; }
 
 source_rg() {
   rg "$@" "$ROOT" \
-    -g '*.md' -g '*.yaml' -g '*.yml' -g '*.json' -g '*.js' -g '*.mjs' -g '*.sh' -g '*.txt' \
+    -g '*.md' -g '*.yaml' -g '*.yml' -g '*.json' -g '*.js' -g '*.mjs' -g '*.py' -g '*.sh' -g '*.txt' \
     --glob '!.git/**' --glob '!.alphaX/**' --glob '!scripts/verify-alpha-source.sh'
 }
 
@@ -33,7 +33,7 @@ required_paths=(
   docs/okf-markdown-profile.md docs/agent-invocation-contract.md docs/agent-trigger-fixtures.md
   docs/agent-trigger-fixtures.json docs/agent-judgment-fixtures.md
   docs/agent-judgment-fixtures.json docs/agent-failure-modes.md docs/checkpoint-memory-evaluation-prd.md
-  docs/research-backlog.md docs/evidence-index.md
+  docs/research-backlog.md docs/evidence-index.md docs/alphax-plugin-publication.md
   templates/index.md templates/research-loop-packet.md templates/project-work/index.md
   templates/project-work/loop-packet.md templates/thinking-loop-packet.md
   templates/memory-candidate-packet.md templates/checkpoint-memory-evaluation.md
@@ -50,6 +50,9 @@ required_paths=(
   skills/formal-development/references/non-coding-l0-l4.md
   scripts/init-local-alphaX.sh scripts/verify-local-alphaX.sh scripts/verify-alpha-source.sh
   scripts/context-snapshot.sh scripts/detect-applied-run-candidates.sh scripts/generate-alphaX-indexes.mjs
+  scripts/alphax_plugin.py scripts/alphax_invocation_replay.py
+  plugin/plugin.template.json plugin/README.md plugin/skills/alphax/SKILL.md
+  tests/test_alphax_plugin.py tests/test_alphax_invocation_replay.py
 )
 for path in "${required_paths[@]}"; do exists "$path"; done
 
@@ -81,6 +84,8 @@ AGENTS.md	cold_start:
 AGENTS.md	source_map:
 AGENTS.md	judgment_contract:
 AGENTS.md	governance_contract:
+AGENTS.md	plugin_distribution:
+AGENTS.md	same version must be byte-identical
 AGENTS.md	skills:
 AGENTS.md	skills/problem-decomposer/SKILL.md
 AGENTS.md	skills/double-diamond-research/SKILL.md
@@ -122,6 +127,12 @@ docs/agent-invocation-contract.md	scope_rules:
 docs/agent-invocation-contract.md	required_first_pass:
 docs/agent-invocation-contract.md	output_self_check:
 docs/agent-invocation-contract.md	forbidden_shortcuts:
+docs/agent-invocation-contract.md	source_identity_gate:
+docs/agent-invocation-contract.md	package_source_commit
+docs/alphax-plugin-publication.md	manual_edits_to_generated_outputs: forbidden
+docs/alphax-plugin-publication.md	fresh invocation replay covers F01-F10 and G01-G11
+plugin/skills/alphax/SKILL.md	resolve-invocation
+plugin/skills/alphax/SKILL.md	package_source_commit
 docs/agent-trigger-fixtures.md	F10-loop-verification-gate
 docs/agent-trigger-fixtures.json	F10-loop-verification-gate
 templates/project-work/local-pointer.md	default: target .git/info/exclude
@@ -277,6 +288,9 @@ if printf '%s\n' "$snapshot_output" | rg -n '\.alphaX/(process/|\.DS_Store)' >/d
 fi
 
 node "$ROOT/scripts/generate-alphaX-indexes.mjs" --check >/dev/null || fail "generated Markdown indexes are stale or frontmatter is invalid"
+
+python3 -m unittest discover -s "$ROOT/tests" -v >/dev/null || fail "Python contract tests failed"
+python3 "$ROOT/scripts/alphax_plugin.py" verify-source >/dev/null || fail "plugin generation verification failed"
 
 ROOT_FOR_NODE_CHECK="$ROOT" node <<'NODE' || fail "structured source check failed"
 const fs = require('node:fs');

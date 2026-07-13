@@ -30,6 +30,17 @@ source_layers:
   governance_contract: alphaX/source-work/intelligence-ceiling-half-life.md
   rule: the core must stay thinner and harder than the scaffolding; scaffolding can stabilize today's carriers but must not define the product core
 
+plugin_distribution:
+  authority: Alpha Partner Source is canonical; marketplace source and installed cache are generated outputs
+  canonical_inputs: [plugin/, skills/, Alpha Partner tracked source]
+  builder: scripts/alphax_plugin.py
+  publication_contract: docs/alphax-plugin-publication.md
+  version_identity: clean packages use the Source commit; dirty candidates use a full-source fingerprint
+  embedded_source: immutable accepted Source archive used by project work and project review
+  live_source: explicit checkout used only by source work and source review
+  hard_gate: same version must be byte-identical across generated package, marketplace source, and installed cache
+  invocation_evidence: fresh Codex replay of every F01-F10 and G01-G11 case with independent verdicts
+
 organization_level_pipeline:
   role: product-level frame for source work and review, not a runtime or control plane
   flow:
@@ -139,10 +150,12 @@ source_map:
   judgment_contract: [docs/agent-judgment-fixtures.json, docs/agent-judgment-fixtures.md]
   core_sops: [alphaX/session-runbook.md, alphaX/activation-guide.md, alphaX/operating-system.md, alphaX/persona.md]
   work_sops: [alphaX/source-work/agent-workflow.md, alphaX/source-work/intelligence-ceiling-half-life.md, alphaX/source-review/agent-workflow.md, alphaX/project-work/agent-workflow.md, alphaX/project-work/context-reloader.md, alphaX/project-review/agent-workflow.md]
-  docs: [docs/evidence-index.md, docs/research-backlog.md, docs/okf-markdown-profile.md, docs/asset-boundary.yaml, docs/local-alphaX-schema.md, docs/checkpoint-memory-evaluation-prd.md]
+  docs: [docs/evidence-index.md, docs/research-backlog.md, docs/okf-markdown-profile.md, docs/asset-boundary.yaml, docs/local-alphaX-schema.md, docs/checkpoint-memory-evaluation-prd.md, docs/alphax-plugin-publication.md]
   templates: [templates/]
   skills: [skills/problem-decomposer/SKILL.md, skills/double-diamond-research/SKILL.md, skills/insight-catcher/SKILL.md, skills/formal-development/SKILL.md]
-  scripts: [scripts/init-local-alphaX.sh, scripts/verify-local-alphaX.sh, scripts/verify-alpha-source.sh, scripts/context-snapshot.sh, scripts/detect-applied-run-candidates.sh, scripts/generate-alphaX-indexes.mjs]
+  plugin: [plugin/plugin.template.json, plugin/README.md, plugin/skills/alphax/SKILL.md]
+  scripts: [scripts/init-local-alphaX.sh, scripts/verify-local-alphaX.sh, scripts/verify-alpha-source.sh, scripts/context-snapshot.sh, scripts/detect-applied-run-candidates.sh, scripts/generate-alphaX-indexes.mjs, scripts/alphax_plugin.py, scripts/alphax_invocation_replay.py]
+  tests: [tests/test_alphax_plugin.py, tests/test_alphax_invocation_replay.py]
 ```
 
 ## Operating Rules
@@ -150,6 +163,7 @@ source_map:
 - Classify one scope before writes.
 - After scope and loop selection, check matching source skills before final framing or action.
 - Live source beats `.alphaX/`, memory, handoff, and summaries.
+- Never hand-edit marketplace or cache copies of alphaX; rebuild them one-way from Source and enforce version/content parity.
 - Passing checks do not prove human/product acceptance.
 - Keep core principles thin and hard; evolve cognitive frameworks from evidence; keep scaffolding depreciable and implementation carriers replaceable.
 - Do not promote P1/P2 runtime, scheduler, connector, or adapter work into P0.

@@ -10,5 +10,6 @@
 
 - [alphaX](alphaX/index.md) - Directory index for related alphaX source documents.
 - [docs](docs/index.md) - Directory index for related alphaX source documents.
+- [plugin](plugin/index.md) - Directory index for related alphaX source documents.
 - [skills](skills/index.md) - Directory index for related alphaX source documents.
 - [templates](templates/index.md) - Directory index for related alphaX source documents.
