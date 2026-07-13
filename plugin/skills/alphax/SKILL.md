@@ -163,7 +163,10 @@ Project only the fields required by the selected Source contract:
   the exact `overridden_default` and `override_reason`, then explicitly preserve
   `observed_evidence`, `inference`, `missing_evidence`, `confidence`,
   `unverified_claims`, and `next_action`. Do not hide an override as normal
-  execution. In `project-work`, report the evidence-supported `hold` or
+  execution. `overridden_default` must name the Source-defined first-read or
+  minimum-output scaffold being bypassed, not the stale claim or conflicting
+  evidence itself; put that conflict in `override_reason`. In `project-work`,
+  report the evidence-supported `hold` or
   `rework` state without declaring the project complete/incomplete or
   merge-ready/not-merge-ready; those judgments require `project-review`.
 - Problem decomposition: preserve `project-work`, explicitly name the first
@@ -172,8 +175,10 @@ Project only the fields required by the selected Source contract:
 - Alternative-path comparison: when Define and comparison criteria are strong
   enough to compare paths but evidence is too weak for an irreversible choice,
   recommend the smallest reversible pilot as the provisional path and explain
-  why each alternative is deferred. If Define itself is unsupported, stop
-  there rather than fabricate candidate paths.
+  why each alternative is deferred. Preserve the order even in the opening:
+  the P0 line may name the decision process, but it must not reveal a favored
+  path before Define, candidate paths, and comparison are explicit. If Define
+  itself is unsupported, stop there rather than fabricate candidate paths.
 - Insight or patch candidate: read `skills/insight-catcher/SKILL.md` and
   `alphaX/source-work/intelligence-ceiling-half-life.md`; name the
   `aligned_vision_signal`, definite `source_value` and changed judgment call,

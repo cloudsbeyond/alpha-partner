@@ -139,8 +139,10 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("observing incomplete implementation or failed validation does not", entry)
         self.assertIn("even when alphaX is named as the loop", entry)
         self.assertIn("without declaring the project complete/incomplete", entry)
+        self.assertIn("must name the Source-defined first-read", entry)
         self.assertIn("explicitly name the first", entry)
         self.assertIn("smallest reversible pilot", entry)
+        self.assertIn("must not reveal a favored", entry)
         self.assertIn("docs/agent-invocation-contract.md", entry)
         self.assertIn("only when behavior or tone requires it", entry)
         self.assertIn("Bounded project implementation fast path", entry)
@@ -170,10 +172,13 @@ class AlphaXPluginTest(unittest.TestCase):
 
         self.assertIn("does not by itself upgrade project work", invocation)
         self.assertIn("does not declare completion or merge readiness", invocation)
+        self.assertIn("overridden_default names the Source scaffold", invocation)
+        self.assertIn("including in the opening", invocation)
         self.assertIn("never invent a business or user objective", decomposer)
         self.assertIn("explicit weak-layer call", decomposer)
         self.assertIn("path-specific evidence and validation", diamond)
         self.assertIn("smallest reversible pilot", diamond)
+        self.assertIn("must not name a favored candidate", diamond)
         self.assertEqual(
             loop_fixture["scope"],
             "project work unless the user explicitly requests Alpha Partner Source review or change",

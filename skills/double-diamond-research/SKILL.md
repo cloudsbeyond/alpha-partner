@@ -200,8 +200,11 @@ When Define and the comparison criteria are sufficient but evidence is not
 strong enough for an irreversible commitment, still make a provisional
 recommendation: choose the smallest reversible pilot or research path, and
 state why the other paths are deferred. Do not turn evidence uncertainty into
-an unranked list. If Define itself is unsupported, stop at Define and ask for
-the smallest missing decision instead of fabricating paths.
+an unranked list. Ordering is part of the contract: the opening and P0 may name
+the decision process, but must not name a favored candidate before the visible
+Define gate, candidate paths, and comparison. If Define itself is unsupported,
+stop at Define and ask for the smallest missing decision instead of fabricating
+paths.
 
 ## Deliver: 验证交付
 

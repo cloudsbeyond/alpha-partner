@@ -136,6 +136,8 @@ output_self_check:
   - weak/stale claims listed under unverified_claims
   - next action concrete and not P1/P2 expansion
   - project work may call hold/rework but does not declare completion or merge readiness
+  - evidence-boundary overridden_default names the Source scaffold, while override_reason names the conflicting evidence
+  - alternative-path research presents Define and comparable paths before any favored path, including in the opening
   - nontrivial runs report package behavior identity and resolved Source identity
 
 forbidden_shortcuts:
