@@ -155,6 +155,10 @@ invent a new framework.
 
 Project only the fields required by the selected Source contract:
 
+- Project review: the first substantive user-visible section is `Findings`,
+  ordered by severity and grounded in evidence. Do not place a completion,
+  mergeability, release, or summary conclusion before the findings; make that
+  call only after findings and missing evidence.
 - Manual nudge: report candidate nudge, urgency, cooldown, and the approval
   boundary. Active-session advice is allowed; external push, scheduling, or
   cross-app observation still needs explicit approval.

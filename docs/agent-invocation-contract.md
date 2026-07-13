@@ -53,7 +53,7 @@ intents:
     default_scope: project review
     loop: Project review
     first_read: [alphaX/project-review/agent-workflow.md, target source of truth, diff, validation surface]
-    minimum_output: [findings, completion state, missing evidence, next action]
+    minimum_output: [findings first, completion state, missing evidence, next action]
 
   problem_decompose:
     triggers: ["这件事真正要解决什么", "what are we actually trying to solve"]
@@ -138,6 +138,7 @@ output_self_check:
   - project work may call hold/rework but does not declare completion or merge readiness
   - evidence-boundary overridden_default names the Source scaffold, while override_reason names the conflicting evidence
   - alternative-path research presents Define and comparable paths before any favored path, including in the opening
+  - project review starts with findings; completion and mergeability calls follow findings and missing evidence
   - nontrivial runs report package behavior identity and resolved Source identity
 
 forbidden_shortcuts:
