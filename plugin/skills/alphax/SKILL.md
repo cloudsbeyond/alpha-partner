@@ -85,7 +85,8 @@ alphaX_source_identity:
   package_source_branch: <carrier Source branch>
   package_source_authority: accepted|candidate
   source_commit: <resolved commit>
-  source_branch_or_ref: <source_branch or source_ref>
+  source_branch: <resolved source_branch>
+  source_ref: <resolved source_ref>
   source_authority: accepted|candidate
   source_dirty: <true|false; required for source scopes>
   source_fingerprint: <fingerprint; required for source scopes>
@@ -200,7 +201,10 @@ Project only the fields required by the selected Source contract:
   recommend the smallest reversible pilot as the provisional path and explain
   why each alternative is deferred. Preserve the order even in the opening:
   the P0 line may name the decision process, but it must not reveal a favored
-  path before Define, candidate paths, and comparison are explicit. Treat an
+  path before Define, candidate paths, and comparison are explicit. Before the
+  visible Develop comparison, the P0 line must not prescribe an action,
+  intervention, repair, pilot, implementation, or solution path; frame only
+  the decision process and problem. Treat an
   explicit user or judgment-contract statement that the problem definition and
   success criteria are sufficient for comparison as a passed Define gate; do
   not reopen that gate merely because project evidence is sparse. Give each

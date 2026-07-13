@@ -208,7 +208,10 @@ recommendation: choose the smallest reversible pilot or research path, and
 state why the other paths are deferred. Do not turn evidence uncertainty into
 an unranked list. Ordering is part of the contract: the opening and P0 may name
 the decision process, but must not name a favored candidate before the visible
-Define gate, candidate paths, and comparison. If the user or the active
+Define gate, candidate paths, and comparison. Before the visible Develop
+comparison, the P0 must not prescribe an action, intervention, repair, pilot,
+implementation, or solution path; it may frame only the decision process and
+problem. If the user or the active
 judgment contract explicitly says the problem definition and success criteria
 are sufficient to compare options, treat Define as passed for that decision;
 do not reopen it only because project evidence is sparse. For every candidate,

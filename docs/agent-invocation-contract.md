@@ -23,7 +23,7 @@ source_identity_gate:
   project_work_and_review: resolve and hash-check the immutable accepted Source embedded in the installed package
   source_work_and_review: require an explicit live Source checkout and label candidate state
   behavior_identity: [package_version, package_source_commit, package_source_branch, package_source_authority]
-  source_identity: [scope, source_commit, source_branch_or_ref, source_authority]
+  source_identity: [scope, source_commit, source_branch, source_ref, source_authority]
   forbidden: mutable checkout lookup as an implicit project-scope authority
   reporting_rule: copy scope and resolved source fields exactly from resolve-invocation; never substitute package-source or current-checkout identity
   scope_enum: [source-work, source-review, project-work, project-review]
@@ -141,7 +141,7 @@ output_self_check:
   - next action concrete and not P1/P2 expansion
   - project work may call hold/rework but does not declare completion or merge readiness
   - evidence-boundary overridden_default names the Source scaffold, while override_reason names the conflicting evidence
-  - alternative-path research presents Define and comparable paths before any favored path, including in the opening
+  - alternative-path research presents Define and comparable paths before any favored path, including in the opening; its pre-Develop P0 names no action, intervention, repair, pilot, implementation, or solution path
   - an explicit user or judgment-contract statement that Define and success criteria are sufficient for comparison is authoritative for that decision; sparse project evidence does not reopen Define
   - Double Diamond output always maps Discover, Define, Develop, and Deliver; stages beyond a blocked gate are marked blocked or deferred rather than omitted
   - comparable paths include a provisional reversible recommendation, reasons alternatives are deferred, and path-specific evidence gaps and validation approaches
