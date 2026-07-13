@@ -1,0 +1,35 @@
+docs/agent-invocation-contract.md
+  s_b18def69227458::t_e000afaf66c031 60,80-81,118-119,138
+docs/agent-trigger-fixtures.json
+  s_b18def69227458::t_fa588ca67285c0 210
+docs/agent-trigger-fixtures.md
+  s_b18def69227458::t_41b3c148e926ed 85
+plugin/skills/alphax/SKILL.md
+  s_b18def69227458::t_61997a818871d4 22-27,166-176
+scripts/verify-local-alphaX.sh
+  s_b18def69227458::t_1f887c878341be 64-66
+skills/double-diamond-research/SKILL.md
+  s_b18def69227458::t_ffa27f2fd53368 178-180,199-205
+skills/problem-decomposer/SKILL.md
+  s_b18def69227458::t_5707bcad9208de 100-106
+tests/test_alphax_plugin.py
+  s_b18def69227458::t_b4b7b00eae46ca 139-143,152-194
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "5e82bc2d4b31fe15b3a2be317757141ec18317af",
+  "prompts": {},
+  "sessions": {
+    "s_b18def69227458": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f418a-b5cb-7d42-8517-58427a32e91f",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
