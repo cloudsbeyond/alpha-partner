@@ -1,0 +1,27 @@
+docs/agent-judgment-fixtures.json
+  s_b18def69227458::t_750f2a24c1f05a 388-389,392-395
+plugin/skills/alphax/SKILL.md
+  s_b18def69227458::t_6ba8f2614c0741 8,45-55,69-70,143-148,153-154
+scripts/alphax_invocation_replay.py
+  s_b18def69227458::t_c4cc3367970e8e 58,76-79,88-89,126-127,131-132,200-203,207-210,226,231-237,431-435,437-439,441,446-460,472,510,544,550,634-646,661,669,674-683
+tests/test_alphax_invocation_replay.py
+  s_b18def69227458::t_999eacaa4d5a2e 39-46,57-66,118-134,280-281,293-294,307-342
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "a6d418e50fc136579918a44c62e10773a01dc148",
+  "prompts": {},
+  "sessions": {
+    "s_b18def69227458": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f418a-b5cb-7d42-8517-58427a32e91f",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
