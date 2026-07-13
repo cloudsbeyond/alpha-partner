@@ -36,6 +36,14 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
     def test_judgment_cases_inherit_primary_trigger_routing(self) -> None:
         cases = {case["id"]: case for case in replay.load_cases(ROOT)}
 
+        self.assertEqual(
+            replay.infer_resolved_scope(cases["F02-progress-reentry"]),
+            "project-work",
+        )
+        self.assertEqual(
+            replay.infer_resolved_scope(cases["G05-scaffold-default-needs-override"]),
+            "project-work",
+        )
         self.assertEqual(cases["G10-insight-with-vision-value-landing"]["scope"], "source review")
         self.assertEqual(
             cases["G10-insight-with-vision-value-landing"]["expected_intent"],
@@ -45,6 +53,16 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
         self.assertEqual(replay.infer_resolved_scope(cases["G10-insight-with-vision-value-landing"]), "source-review")
         self.assertEqual(replay.infer_resolved_scope(cases["G02-merge-claim-with-weak-evidence"]), "project-review")
         self.assertEqual(replay.infer_resolved_scope(cases["G11-project-delivery-loop-before-execution"]), "project-work")
+
+    def test_judgment_prompt_includes_primary_user_trigger_without_scoring_criteria(self) -> None:
+        cases = {case["id"]: case for case in replay.load_cases(ROOT)}
+
+        prompt = replay.build_run_prompt(cases["G10-insight-with-vision-value-landing"])
+
+        self.assertIn("alphaX self-critique", prompt)
+        self.assertIn("A decomposed insight candidate", prompt)
+        self.assertNotIn("expected_judgment", prompt)
+        self.assertNotIn("pass_condition", prompt)
 
     def test_run_prompt_requires_source_identity_and_natural_case_input(self) -> None:
         case = {
@@ -97,6 +115,23 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
         self.assertIn("problem_decompose", prompt)
         self.assertIn("project work", prompt)
         self.assertIn("Thinking loop plus Problem Decomposer", prompt)
+        self.assertIn("evidence-supported additional output", prompt)
+
+    def test_source_identity_stability_detects_mid_replay_drift(self) -> None:
+        before = {
+            "source_commit": "abc",
+            "source_dirty": False,
+            "source_fingerprint": "clean",
+            "source_branch": "main",
+        }
+
+        self.assertTrue(replay.source_identity_stable(before, dict(before)))
+        self.assertFalse(
+            replay.source_identity_stable(
+                before,
+                {**before, "source_dirty": True, "source_fingerprint": "dirty"},
+            )
+        )
 
     def test_event_evidence_keeps_completed_tool_observations(self) -> None:
         events = "\n".join(
@@ -242,6 +277,8 @@ alphaX_source_identity:
   source_commit: accepted
   source_ref: origin/main
   source_authority: accepted
+  source_dirty: false
+  source_fingerprint: accepted-fingerprint
 """
         expected = {
             "scope": "source-review",
@@ -253,6 +290,8 @@ alphaX_source_identity:
             "source_branch": "origin/main",
             "source_ref": "origin/main",
             "source_authority": "accepted",
+            "source_dirty": False,
+            "source_fingerprint": "accepted-fingerprint",
         }
 
         self.assertTrue(hasattr(replay, "identity_mismatches"))
@@ -263,6 +302,42 @@ alphaX_source_identity:
         self.assertEqual(
             replay.identity_mismatches(output, expected),
             ["scope: expected source-review, observed project-review"],
+        )
+
+    def test_source_scope_identity_requires_dirty_state_and_fingerprint(self) -> None:
+        output = """
+alphaX_source_identity:
+  scope: source-review
+  package_version: 0.1.0+codex.abc
+  package_source_commit: abc
+  package_source_branch: candidate-branch
+  package_source_authority: candidate
+  source_commit: abc
+  source_ref: working-tree
+  source_authority: candidate
+  source_dirty: true
+  source_fingerprint: dirty-fingerprint
+"""
+        expected = {
+            "scope": "source-review",
+            "package_version": "0.1.0+codex.abc",
+            "package_source_commit": "abc",
+            "package_source_branch": "candidate-branch",
+            "package_source_authority": "candidate",
+            "source_commit": "abc",
+            "source_branch": "candidate-branch",
+            "source_ref": "working-tree",
+            "source_authority": "candidate",
+            "source_dirty": True,
+            "source_fingerprint": "dirty-fingerprint",
+        }
+
+        self.assertEqual(replay.identity_mismatches(output, expected), [])
+        self.assertIn(
+            "missing identity field: source_fingerprint",
+            replay.identity_mismatches(
+                output.replace("  source_fingerprint", "  fingerprint"), expected
+            ),
         )
 
     def test_summary_fails_when_any_case_lacks_independent_pass(self) -> None:

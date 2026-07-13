@@ -5,7 +5,7 @@ description: Use when the user invokes @alphaX, alphaX, Alpha Partner, or asks f
 
 # alphaX
 
-alphaX is the thin ChatGPT entrypoint for Alpha Partner Source. The plugin is a
+alphaX is the thin Codex entrypoint for Alpha Partner Source. The plugin is a
 carrier, not the Source authority, runtime, or project store.
 
 ## Source Identity Gate
@@ -42,6 +42,17 @@ blocked instead of silently switching scopes. Project scopes must not require a
 live checkout; they use the immutable accepted Source snapshot embedded in the
 plugin.
 
+When `ALPHAX_SOURCE_ROOT` is set, use two distinct shell arguments rather than
+embedding the flag and path in one expansion:
+
+```bash
+python3 "$ALPHAX_PLUGIN_ROOT/bin/alphax_plugin.py" \
+  resolve-invocation \
+  --plugin-root "$ALPHAX_PLUGIN_ROOT" \
+  --scope <source-work-or-source-review> \
+  --live-source-root "$ALPHAX_SOURCE_ROOT"
+```
+
 4. Use only `resolved_root` from that result for the required Source reads.
 5. Record this compact identity in the first progress update and final handoff:
 
@@ -55,6 +66,8 @@ alphaX_source_identity:
   source_commit: <resolved commit>
   source_branch_or_ref: <source_branch or source_ref>
   source_authority: accepted|candidate
+  source_dirty: <true|false; required for source scopes>
+  source_fingerprint: <fingerprint; required for source scopes>
 ```
 
 `project-work` and `project-review` must resolve the embedded accepted Source
@@ -127,13 +140,18 @@ Project only the fields required by the selected Source contract:
 - Manual nudge: report candidate nudge, urgency, cooldown, and the approval
   boundary. Active-session advice is allowed; external push, scheduling, or
   cross-app observation still needs explicit approval.
-- Evidence-boundary override: name `overridden_default` and `override_reason`
-  whenever the normal first-read or minimum-output scaffold is too narrow. Do
-  not hide an override as normal execution.
+- Evidence-boundary override: preserve the primary request's selected scope and
+  loop; the override changes the read or evidence plan, not the routing. Name
+  the exact `overridden_default` and `override_reason`, then explicitly preserve
+  `observed_evidence`, `inference`, `missing_evidence`, `confidence`,
+  `unverified_claims`, and `next_action`. Do not hide an override as normal
+  execution.
 - Insight or patch candidate: read `skills/insight-catcher/SKILL.md` and
   `alphaX/source-work/intelligence-ceiling-half-life.md`; name the
   `aligned_vision_signal`, definite `source_value` and changed judgment call,
   `landing_layer`, `smallest_source_surface`, replay support, and owner gate.
+  If the input does not identify a concrete aligned signal or changed judgment
+  call, hold it as missing evidence rather than inventing either value.
 - Project execution with missing delivery evidence: read
   `alphaX/project-work/agent-workflow.md`; report current state, target artifact
   or decision, next action, advance/hold/rework, gate, validation method and

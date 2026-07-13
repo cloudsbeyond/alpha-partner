@@ -55,6 +55,7 @@ def load_cases(source_root: Path) -> list[dict[str, Any]]:
                 "expected_intent": primary["expected_intent"],
                 "scope": primary["scope"],
                 "loop": primary["loop"],
+                "primary_trigger": primary["trigger"],
             }
         )
     return [
@@ -72,7 +73,10 @@ def build_run_prompt(case: dict[str, Any]) -> str:
         )
     else:
         evidence = "\n".join(f"- {item}" for item in case.get("evidence_inputs", []))
-        user_input = f"@alphaX {case['scenario']}"
+        user_input = (
+            f"{case['primary_trigger']}\n\n"
+            f"Decision point observed while handling that request:\n{case['scenario']}"
+        )
         context = f"The currently observed evidence is:\n{evidence}"
     return f"""{user_input}
 
@@ -81,7 +85,8 @@ def build_run_prompt(case: dict[str, Any]) -> str:
 Respond to the request naturally. Do not assume fixture pass criteria. Include a compact
 `alphaX_source_identity` block with scope, package_version, package_source_commit,
 package_source_branch, package_source_authority, source_commit, source_branch or
-source_ref, and source_authority so the run is reproducible.
+source_ref, and source_authority so the run is reproducible. For source-work or
+source-review, also include source_dirty and source_fingerprint.
 """
 
 
@@ -118,10 +123,13 @@ Observed response:
 Observed completed tool events:
 {json.dumps(event_evidence or [], ensure_ascii=False, indent=2)}
 
+An empty expected_judgment list means no additional judgment is required. Do not penalize
+evidence-supported additional output unless it conflicts with the contract or is forbidden.
 Pass only if required behavior and output are evidenced, forbidden behavior is absent, and
 `alphaX_source_identity` contains scope, package_version, package_source_commit,
 package_source_branch, package_source_authority, source_commit, source_branch or
-source_ref, and source_authority. Return the required JSON verdict.
+source_ref, and source_authority. For source-work or source-review, source_dirty and
+source_fingerprint must also match the expected identity. Return the required JSON verdict.
 """
 
 
@@ -189,10 +197,17 @@ def has_complete_identity(output: str) -> bool:
     return REQUIRED_IDENTITY_FIELDS <= fields and branch_or_ref
 
 
+def identity_value(value: Any) -> str:
+    return json.dumps(value) if isinstance(value, bool) else str(value or "")
+
+
 def identity_mismatches(output: str, expected: dict[str, Any]) -> list[str]:
     observed = parse_identity(output)
     fields = set(observed)
-    missing = sorted(REQUIRED_IDENTITY_FIELDS - fields)
+    required = set(REQUIRED_IDENTITY_FIELDS)
+    if expected.get("scope") in {"source-work", "source-review"}:
+        required.update({"source_dirty", "source_fingerprint"})
+    missing = sorted(required - fields)
     if not fields & {"source_branch", "source_ref", "source_branch_or_ref"}:
         missing.append("source_branch_or_ref")
     if missing:
@@ -208,11 +223,18 @@ def identity_mismatches(output: str, expected: dict[str, Any]) -> list[str]:
         "source_commit",
         "source_authority",
     ):
-        expected_value = str(expected.get(key) or "")
+        expected_value = identity_value(expected.get(key))
         if observed[key] != expected_value:
             mismatches.append(
                 f"{key}: expected {expected_value}, observed {observed[key]}"
             )
+    if expected.get("scope") in {"source-work", "source-review"}:
+        for key in ("source_dirty", "source_fingerprint"):
+            expected_value = identity_value(expected.get(key))
+            if observed[key] != expected_value:
+                mismatches.append(
+                    f"{key}: expected {expected_value}, observed {observed[key]}"
+                )
     observed_branch = next(
         (
             observed[key]
@@ -406,12 +428,34 @@ def run_command(command: list[str], *, env: dict[str, str], timeout: int) -> sub
 
 
 def infer_resolved_scope(case: dict[str, Any]) -> str:
-    scope = str(case.get("scope", "")).lower()
-    if "source" in scope:
+    intent = str(case.get("expected_intent", "")).lower()
+    if intent == "source_review":
         return "source-review"
-    if "project review" in scope or "completion" in scope or "merge" in scope:
+    if intent == "project_review":
+        return "project-review"
+    scope = str(case.get("scope", "")).lower()
+    if scope.strip() == "source work":
+        return "source-work"
+    if scope.strip() == "source review":
+        return "source-review"
+    if scope.strip() == "project review":
         return "project-review"
     return "project-work"
+
+
+def source_identity_stable(before: dict[str, Any], after: dict[str, Any]) -> bool:
+    fields = (
+        "source_root",
+        "source_commit",
+        "source_branch",
+        "working_branch",
+        "accepted_ref",
+        "accepted_commit",
+        "source_dirty",
+        "source_fingerprint",
+        "source_authority",
+    )
+    return all(before.get(field) == after.get(field) for field in fields)
 
 
 def run_case(
@@ -425,6 +469,7 @@ def run_case(
     model: str | None,
     codex_env: dict[str, str],
     candidate_config: list[str],
+    expected_identity: dict[str, Any],
     reasoning_effort: str,
     timeout: int,
 ) -> dict[str, Any]:
@@ -455,13 +500,6 @@ def run_case(
     events_path.write_text(run.stdout, encoding="utf-8")
     event_evidence = extract_event_evidence(run.stdout)
     output = output_path.read_text(encoding="utf-8") if output_path.is_file() else ""
-    resolved_scope = infer_resolved_scope(case)
-    source_identity = alphax_plugin.resolve_invocation(
-        plugin_root,
-        scope=resolved_scope,
-        source_root=source_root if resolved_scope == "source-review" else None,
-    )
-
     schema_path = case_dir / "verdict-schema.json"
     verdict_path = case_dir / "verdict.json"
     schema_path.write_text(json.dumps(VERDICT_SCHEMA, indent=2) + "\n", encoding="utf-8")
@@ -469,7 +507,7 @@ def run_case(
         case,
         output,
         event_evidence,
-        expected_identity=source_identity,
+        expected_identity=expected_identity,
     )
     evaluator_command = [
         codex,
@@ -503,13 +541,13 @@ def run_case(
             "forbidden_observed": [],
             "confidence": "low",
         }
-    identity_errors = identity_mismatches(output, source_identity)
+    identity_errors = identity_mismatches(output, expected_identity)
     identity_complete = not identity_errors
     result = {
         "case_id": case["id"],
         "kind": case["kind"],
         "prompt": prompt,
-        "source_identity": source_identity,
+        "source_identity": expected_identity,
         "output": output,
         "command": command,
         "run_exit_code": run.returncode,
@@ -593,6 +631,19 @@ def main() -> int:
         )
         if not args.project_root:
             prepare_fixture_project(project_root)
+        source_identity_before = alphax_plugin.source_identity(source_root)
+        expected_identities = {}
+        for case in cases:
+            resolved_scope = infer_resolved_scope(case)
+            expected_identities[case["id"]] = alphax_plugin.resolve_invocation(
+                plugin_root,
+                scope=resolved_scope,
+                source_root=(
+                    source_root
+                    if resolved_scope in {"source-work", "source-review"}
+                    else None
+                ),
+            )
         results: list[dict[str, Any]] = []
         with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, args.jobs)) as pool:
             futures = [
@@ -607,6 +658,7 @@ def main() -> int:
                     model=args.model,
                     codex_env=isolated_plugin["env"],
                     candidate_config=isolated_plugin["config"],
+                    expected_identity=expected_identities[case["id"]],
                     reasoning_effort=args.reasoning_effort,
                     timeout=args.timeout,
                 )
@@ -614,11 +666,21 @@ def main() -> int:
             ]
             for future in concurrent.futures.as_completed(futures):
                 results.append(future.result())
+        source_identity_after = alphax_plugin.source_identity(source_root)
         plugin_provenance = json.loads(
             (plugin_root / ".alphax-source.json").read_text(encoding="utf-8")
         )
     summary = summarize_results(results, expected_case_ids=expected)
-    summary["source_identity"] = alphax_plugin.source_identity(source_root)
+    summary["source_identity"] = source_identity_before
+    summary["source_identity_after"] = source_identity_after
+    summary["source_identity_stable"] = source_identity_stable(
+        source_identity_before, source_identity_after
+    )
+    if not summary["source_identity_stable"]:
+        summary["ok"] = False
+        summary["infrastructure_errors"] = [
+            "Alpha Partner Source identity changed during replay; rerun from a stable checkout"
+        ]
     summary["active_plugin"] = {
         **active_plugin,
         "replay_isolation": "temporary CODEX_HOME with only selected plugin enabled",
