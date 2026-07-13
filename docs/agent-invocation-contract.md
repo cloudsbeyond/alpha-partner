@@ -25,6 +25,8 @@ source_identity_gate:
   behavior_identity: [package_version, package_source_commit, package_source_branch, package_source_authority]
   source_identity: [scope, source_commit, source_branch_or_ref, source_authority]
   forbidden: mutable checkout lookup as an implicit project-scope authority
+  reporting_rule: copy scope and resolved source fields exactly from resolve-invocation; never substitute package-source or current-checkout identity
+  scope_enum: [source-work, source-review, project-work, project-review]
 
 intents:
   engage:
@@ -145,6 +147,8 @@ output_self_check:
   - comparable paths include a provisional reversible recommendation, reasons alternatives are deferred, and path-specific evidence gaps and validation approaches
   - project review starts with findings; completion and mergeability calls follow findings and missing evidence
   - nontrivial runs report package behavior identity and resolved Source identity
+  - reported scope is one exact scope enum and resolved Source fields match resolve-invocation even when a candidate package embeds accepted project-scope Source
+  - scaffold half-life review names durable_principle, short_lived_scaffold, and prune_or_replace_action while preserving the core boundary
 
 forbidden_shortcuts:
   - treating .alphaX/project-context.md as current truth without rereading live source

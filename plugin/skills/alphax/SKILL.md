@@ -69,6 +69,14 @@ python3 "$ALPHAX_PLUGIN_ROOT/bin/alphax_plugin.py" \
 4. Use only `resolved_root` from that result for the required Source reads.
 5. Record this compact identity in the first progress update and final handoff:
 
+Copy the resolved Source fields exactly from the `resolve-invocation` result.
+Do not derive them from package fields, the live checkout, or the current
+branch. `scope` must be exactly one of `source-work`, `source-review`,
+`project-work`, or `project-review`; never append an intent or skill name. In
+project scopes, the package may be a candidate while the resolved Source is the
+embedded accepted snapshot, so `package_source_*` and `source_*` can
+intentionally differ.
+
 ```yaml
 alphaX_source_identity:
   scope: <scope>
@@ -200,6 +208,10 @@ Project only the fields required by the selected Source contract:
   itself is unsupported, stop there rather than fabricate candidate paths, but
   still show Develop and Deliver as blocked or deferred so the four-stage map
   remains explicit.
+- Scaffold half-life review: explicitly report `durable_principle`,
+  `short_lived_scaffold`, and `prune_or_replace_action`. Preserve the core
+  boundary while softening, moving, pruning, or replacing the incidental
+  carrier, and record why its current shape shortens Source asset half-life.
 - Insight or patch candidate: read `skills/insight-catcher/SKILL.md` and
   `alphaX/source-work/intelligence-ceiling-half-life.md`; name the
   `aligned_vision_signal` as category (`intelligence_ceiling` or
