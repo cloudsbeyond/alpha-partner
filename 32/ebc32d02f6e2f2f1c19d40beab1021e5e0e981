@@ -1,0 +1,25 @@
+docs/alphax-plugin-publication.md
+  s_b18def69227458::t_b9609856214953 31,78-83,88-89,95-96
+scripts/alphax_invocation_replay.py
+  s_b18def69227458::t_fb42ca5ddbf76c 10,32-40,68-70,101-103,136,138-144,159-163,169,174-195,213-254,327-329,341,354,379-380,397,408,423-429,450-454,478-493,508-510,517-519,522-527
+tests/test_alphax_invocation_replay.py
+  s_b18def69227458::t_a0c4ab38dcacf4 50-53,79-80,149,162-192
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "32ebc32d02f6e2f2f1c19d40beab1021e5e0e981",
+  "prompts": {},
+  "sessions": {
+    "s_b18def69227458": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f418a-b5cb-7d42-8517-58427a32e91f",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
