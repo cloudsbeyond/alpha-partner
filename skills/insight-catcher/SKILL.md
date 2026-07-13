@@ -145,7 +145,7 @@ self_iteration_exit_gates:
 workflow:
   - decompose: restate the input batch and evidence boundary; split it into atomic mechanism candidates; apply problem-decomposer when a candidate is not yet a transferable mechanism / 拆解：复述输入与证据边界，切成原子机制候选，切不动时用 problem-decomposer
   - disposition-grade: for each candidate assign disposition and status_reason; cite existing source evidence for covered; name the gap for partial/absent; state the do_not_convert_boundary; park or no-change is a first-class result / 处置分级：逐候选给处置状态与理由，covered 引证据、partial/absent 写缺口、写不该转成源机制的边界，park/no-change 是一等结果
-  - value-align: for each candidate proposed as patch-candidate, name the aligned intelligence_ceiling_signals or half_life_signals entry and set source_value; park or mark no-change when no vision signal aligns / 价值对齐：拟 patch-candidate 的候选命名对齐的愿景信号并设 source_value；对不齐则 park 或 no-change
+  - value-align: for each candidate proposed as patch-candidate, record aligned_vision_signal with the category (intelligence_ceiling or asset_half_life), exact intelligence_ceiling_signals or half_life_signals entry, and a one-sentence alignment explanation; then set source_value; park or mark no-change when no vision signal aligns / 价值对齐：拟 patch-candidate 的候选记录愿景信号类别、原始条目与一句对齐解释，再设 source_value；对不齐则 park 或 no-change
   - land: for each keep, name the target source layer and smallest source surface before any tracked patch / 落地：每个保留决定命名目标源层与最小源面，再谈 tracked 补丁
   - run the acceptance checks (SOP-defined) as the judgment trace; record omissions and narrowing corrections / 用 SOP 定义的验收检查作为判断 trace，记录遗漏与窄化纠正
   - evaluate the three exit gates before proposing any tracked change / 提任何 tracked 改动前先评三道退出闸门

@@ -97,7 +97,13 @@ mousetrap_reference:
   key_move: understand objective -> define evaluation -> improve -> form feedback loop
 
 missing_information:
-  rule: best supported decomposition; mark first weak layer; ask smallest missing question
+  rule: best supported decomposition; explicitly name the first weak layer; ask smallest missing question
+  evidence_boundary:
+    - D0-D3 is an evidence map, not permission to fill every layer
+    - if D3 is not supported, label the higher objective and loop as missing evidence
+    - never invent a business or user objective from delivery-risk symptoms
+    - recommending D2 or D3 does not replace an explicit weak-layer call
+    - applying this skill inside a live project preserves project-work scope unless the user requests completion judgment
   useful_questions:
     - what business or user outcome does this affect?
     - how is success evaluated?

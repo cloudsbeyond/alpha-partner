@@ -10,6 +10,7 @@ tags: ["alphax", "agent", "invocation"]
 p0_flow:
   - short_trigger
   - intent_and_scope_call
+  - package_and_source_identity_resolution
   - required_source_read
   - skill_trigger_check
   - live_project_evidence_check
@@ -17,6 +18,15 @@ p0_flow:
   - next_action
 
 default_rule: do not ask the user to restate project context until first source pass fails to identify target, write boundary, or source of truth
+
+source_identity_gate:
+  project_work_and_review: resolve and hash-check the immutable accepted Source embedded in the installed package
+  source_work_and_review: require an explicit live Source checkout and label candidate state
+  behavior_identity: [package_version, package_source_commit, package_source_branch, package_source_authority]
+  source_identity: [scope, source_commit, source_branch, source_ref, source_authority]
+  forbidden: mutable checkout lookup as an implicit project-scope authority
+  reporting_rule: copy scope and resolved source fields exactly from resolve-invocation; never substitute package-source or current-checkout identity
+  scope_enum: [source-work, source-review, project-work, project-review]
 
 intents:
   engage:
@@ -45,18 +55,18 @@ intents:
     default_scope: project review
     loop: Project review
     first_read: [alphaX/project-review/agent-workflow.md, target source of truth, diff, validation surface]
-    minimum_output: [findings, completion state, missing evidence, next action]
+    minimum_output: [findings first, completion state, missing evidence, next action]
 
   problem_decompose:
     triggers: ["这件事真正要解决什么", "what are we actually trying to solve"]
-    default_scope: conversation or project work
+    default_scope: conversation or project work; live project evidence does not turn decomposition into project review
     loop: Thinking loop plus Problem Decomposer
     first_read: [skills/problem-decomposer/SKILL.md, project source when project-bound]
     minimum_output: [D0-D3 map, recommended focus, validation signal]
 
   double_diamond_research:
     triggers: ["双菱形思考法", "双菱形", "Double Diamond", "Double Diamond Research", "开放复杂问题研究结构"]
-    default_scope: conversation or project work
+    default_scope: conversation or project work; incomplete implementation, failed validation, or missing acceptance evidence does not upgrade research to project review
     loop: Research loop plus 双菱形思考法 / Double Diamond Research
     first_read: [skills/double-diamond-research/SKILL.md, project source when project-bound]
     minimum_output: [P0 main line, Discover Define Develop Deliver map, evidence gaps, next decision]
@@ -69,8 +79,8 @@ intents:
     minimum_output: [source risks, evidence, source-work candidates]
 
   manual_loop:
-    triggers: ["alphaX nudge check", "alphaX PR CI watch", "alphaX research intake"]
-    default_scope: infer from loop target
+    triggers: ["alphaX nudge check", "alphaX PR CI watch", "alphaX research intake", "alphaX 设计一个自迭代 loop"]
+    default_scope: project work; use source scope only for an explicit Alpha Partner Source review or change
     loop: Manual loop layer
     first_read: [alphaX/loop-registry.md, target source when applicable]
     minimum_output: [loop report, boundary, approval needs]
@@ -107,6 +117,9 @@ scope_rules:
   - choose exactly one primary scope before writes
   - completion/merge/release/handoff/claimed implementation judgment => project review
   - current risk/progress/re-entry/focus without completion claim => Focus/risk or Context Reloader
+  - problem decomposition, Double Diamond research, and manual-loop design stay project work unless the user explicitly asks for Source review or change
+  - incomplete implementation or failed validation is project evidence; it does not by itself upgrade project work to project review
+  - source review findings and calls concern Alpha Partner Source only; target-project facts may support routing or Source-mechanism evidence but must not become project implementation, validation, acceptance, completion, release, or mergeability findings
   - Alpha Partner Source change => source work only after owner acceptance
   - alpha-partner cwd plus external target => ask before writing here
   - ambiguous but read-only inspection can disambiguate => inspect first
@@ -123,8 +136,19 @@ output_self_check:
   - write boundary respected
   - source of truth read or missing evidence stated
   - material claims have evidence strength and freshness
+  - cited target-file claims have an explicit successful content read; discovery or listing alone is missing evidence
   - weak/stale claims listed under unverified_claims
   - next action concrete and not P1/P2 expansion
+  - project work may call hold/rework but does not declare completion or merge readiness
+  - evidence-boundary overridden_default names the Source scaffold, while override_reason names the conflicting evidence
+  - alternative-path research presents Define and comparable paths before any favored path, including in the opening; its pre-Develop P0 names no action, intervention, repair, pilot, implementation, or solution path
+  - an explicit user or judgment-contract statement that Define and success criteria are sufficient for comparison is authoritative for that decision; sparse project evidence does not reopen Define
+  - Double Diamond output always maps Discover, Define, Develop, and Deliver; stages beyond a blocked gate are marked blocked or deferred rather than omitted
+  - comparable paths include a provisional reversible recommendation, reasons alternatives are deferred, and path-specific evidence gaps and validation approaches
+  - project review starts with findings; completion and mergeability calls follow findings and missing evidence
+  - nontrivial runs report package behavior identity and resolved Source identity
+  - reported scope is one exact scope enum and resolved Source fields match resolve-invocation even when a candidate package embeds accepted project-scope Source
+  - scaffold half-life review names durable_principle, short_lived_scaffold, and prune_or_replace_action while preserving the core boundary
 
 forbidden_shortcuts:
   - treating .alphaX/project-context.md as current truth without rereading live source

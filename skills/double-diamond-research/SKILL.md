@@ -56,6 +56,12 @@ Use the user's language by default. If the user says `双菱形思考法` or `�
 
 Start with the smallest useful structure. Do not force all sections if the user only needs a quick framing. For serious research, strategy, PRD, architecture, or decision work, run the full stage gate.
 
+This skill structures research inside the already selected scope; it does not
+turn research into a completion review. In a live project, remain in
+`project-work` unless the user explicitly asks to judge completion, merge,
+release, or acceptance. Incomplete implementation, failed validation, and
+missing acceptance evidence are research inputs, not routing upgrades.
+
 ## Stage 0: 研究启动
 
 Anchor the research to a decision before opening the problem.
@@ -175,6 +181,9 @@ outputs:
   - pilot_design
   - risk_hypotheses
   - resource_estimate
+path_evidence_rule:
+  - each candidate path names its strongest supporting evidence, evidence gap, and distinct validation path
+  - comparison without path-specific evidence and validation is not decision-grade
 ```
 
 Use one of these comparison structures when helpful:
@@ -192,6 +201,25 @@ time_horizon_options:
 ```
 
 Do not present a single favorite solution as the only path unless the user has already made a decision and only needs implementation planning.
+
+When Define and the comparison criteria are sufficient but evidence is not
+strong enough for an irreversible commitment, still make a provisional
+recommendation: choose the smallest reversible pilot or research path, and
+state why the other paths are deferred. Do not turn evidence uncertainty into
+an unranked list. Ordering is part of the contract: the opening and P0 may name
+the decision process, but must not name a favored candidate before the visible
+Define gate, candidate paths, and comparison. Before the visible Develop
+comparison, the P0 must not prescribe an action, intervention, repair, pilot,
+implementation, or solution path; it may frame only the decision process and
+problem. If the user or the active
+judgment contract explicitly says the problem definition and success criteria
+are sufficient to compare options, treat Define as passed for that decision;
+do not reopen it only because project evidence is sparse. For every candidate,
+state a path-specific evidence gap and validation approach. If Define itself is
+unsupported, stop at Define and ask for the smallest missing decision instead
+of fabricating paths, but still include Develop and Deliver as explicitly
+blocked or deferred stages so the Discover-Define-Develop-Deliver map is
+complete.
 
 ## Deliver: 验证交付
 

@@ -3,5 +3,7 @@
 .agents/
 .trae/
 *.log
+__pycache__/
+*.py[cod]
 tmp/
 temp/

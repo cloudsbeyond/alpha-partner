@@ -31,6 +31,28 @@ reentry:
   read: [alphaX/project-work/context-reloader.md, live target source, target .alphaX/ per schema when present]
   rule: live project source wins over stale .alphaX/ data
 
+bounded_implementation:
+  use_when:
+    - target and L3/L4 change are concrete
+    - upstream product or contract decision is already frozen
+    - repository exposes an executable validation surface
+  first_read: [target instructions, live source, relevant tests and test configuration]
+  runner_rule: use the known working project runner or declared environment before probing unrelated system runtimes or installing dependencies
+  validation_ladder:
+    - capture a failing pre-fix reproducer when feasible
+    - make the smallest responsible-boundary change
+    - pass the regression test
+    - pass the containing test module or smallest affected suite
+    - pass diff and repository hygiene checks
+  stop_when: the ladder passes and exposes no broader shared-surface, compatibility, security, or contract risk
+  expand_validation_when:
+    - a ladder step fails outside the expected pre-fix reproducer
+    - the changed surface is shared beyond the containing suite
+    - target instructions or release policy require broader checks
+    - evidence exposes a compatibility, security, data, authority, or contract risk
+  reentry_rule: reuse recorded validation commands and the known working project runner before environment discovery
+  does_not_waive: repository-required release artifacts, supported-version CI, owner acceptance, or human-owned gates
+
 delivery_loop:
   purpose: keep project assistance tied to delivery state, artifact, gate, validation, and feedback instead of task-only execution
   states: [intake, clarify, design, implement, review, validate, handoff, reflect]

@@ -1,0 +1,50 @@
+{
+  "name": "alphax",
+  "version": "0.1.0",
+  "description": "alphaX gives Codex a source-identified entrypoint and current Alpha Partner source skills.",
+  "author": {
+    "name": "Lizhao Hua"
+  },
+  "license": "MIT",
+  "keywords": [
+    "alphax",
+    "alpha-partner",
+    "codex",
+    "collaboration",
+    "context-reload",
+    "project-review",
+    "problem-decomposition",
+    "double-diamond",
+    "insight-catcher",
+    "formal-development"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "alphaX",
+    "shortDescription": "Invoke source-identified Alpha Partner workflows.",
+    "longDescription": "alphaX is a thin Codex entrypoint generated from Alpha Partner Source. It resolves accepted or candidate Source explicitly, records Source identity, and exposes current problem decomposition, Double Diamond research, Insight Catcher, and formal-development skills without becoming a runtime or project store.",
+    "developerName": "Lizhao Hua",
+    "category": "Productivity",
+    "capabilities": [
+      "Source work",
+      "Source review",
+      "Project work",
+      "Project review",
+      "Context re-entry",
+      "Spec checkpointing",
+      "Scope guard",
+      "Problem decomposition",
+      "Double Diamond research",
+      "Insight catching",
+      "Formal development"
+    ],
+    "brandColor": "#2563EB",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
+    "defaultPrompt": [
+      "@alphaX restore this project context.",
+      "Use alphax:problem-decomposer on this task.",
+      "Use alphax:formal-development for this PRD or formal-development review."
+    ]
+  }
+}

@@ -94,12 +94,19 @@ review 一下我现在几个项目的风险
 
 默认交互语言跟随用户：用户用中文，alphaX 应使用中文反馈；`D0-D3`、`P0/P1/P2`、`confidence`、`unverified_claims` 这类稳定结构字段保持不翻译。
 
+## Codex Plugin 分发
+
+Codex plugin 只能从本仓库单向生成。Project work / review 使用包内不可变的 accepted Source 快照；source work / review 才连接显式 live checkout。版本号绑定 Source commit 或 dirty candidate 全量指纹；生成包、marketplace source 与同版本安装 cache 只要有字节差异就必须失败。
+
+构建、安装、parity、Source identity 和 fresh invocation replay 合约见 `docs/alphax-plugin-publication.md`。
+
 ## 目录结构
 
 - `alphaX/`：行为和 scope SOP。
 - `templates/`：报告 packet 和项目本地映射模板。
 - `docs/`：证据、schema、资产边界、OKF profile 和中文入口。
-- `scripts/`：初始化、验证、上下文快照、applied-run 候选检测和索引生成。
+- `plugin/`：Codex plugin 的 canonical manifest、README 和 alphaX 入口 skill。
+- `scripts/`：初始化、plugin 生成、fresh invocation replay、验证、上下文快照、applied-run 候选检测和索引生成。
 - `assets/`：可共享视觉资产，包括 `assets/icon.png`。
 
 详细导航由生成的 `index.md` 文件承担。

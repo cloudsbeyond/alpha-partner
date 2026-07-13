@@ -385,13 +385,14 @@
       "tests": [
         "vision value alignment"
       ],
-      "source_layer": "cognitive_frameworks",
-      "scenario": "A decomposed insight candidate does align to an intelligence-ceiling or half-life signal and is being proposed as a patch-candidate.",
+      "source_layer": "implementation_carriers",
+      "scenario": "A decomposed insight candidate proposes snapshotting expected Source identity before a behavior replay and invalidating the replay if Source changes mid-run. It aligns to a half-life signal and is being proposed as a patch-candidate.",
       "weak_default": "Accept the aligned candidate as a patch-candidate without grading source_value, naming the changed judgment call, or choosing where and how small it lands.",
       "evidence_inputs": [
-        "candidate aligns to a named intelligence_ceiling_signals or half_life_signals entry",
-        "the round can point to which judgment call the candidate would change",
-        "a target source layer and a smallest source surface are available to carry the rule"
+        "sampling expected Source identity after candidate execution can misattribute a concurrent working-tree edit as an Agent behavior failure",
+        "aligned half_life_signals entry: verifier protects boundary, consistency, and source integrity instead of incidental prose shape",
+        "changed judgment call: classify the case as an Agent behavior failure changes to invalidate the replay as infrastructure drift and rerun from a stable checkout",
+        "target source layer is implementation_carriers and the smallest source surface is scripts/alphax_invocation_replay.py identity snapshot and stability gate"
       ],
       "expected_judgment": [
         "grade source_value high|medium|low from what judgment call the candidate changes, not from surface appeal",

@@ -207,7 +207,7 @@
       "id": "F10-loop-verification-gate",
       "trigger": "alphaX 设计一个自迭代 loop",
       "expected_intent": "manual_loop",
-      "scope": "source work or project work inferred from loop target",
+      "scope": "project work unless the user explicitly requests Alpha Partner Source review or change",
       "loop": "Manual loop layer plus loop verification gate",
       "must_read": [
         "alphaX/operating-system.md",
