@@ -47,6 +47,10 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
 
         self.assertIn("@alphaX 帮我看看当前项目风险", prompt)
         self.assertIn("alphaX_source_identity", prompt)
+        self.assertIn("package_version", prompt)
+        self.assertIn("package_source_commit", prompt)
+        self.assertIn("package_source_branch", prompt)
+        self.assertIn("package_source_authority", prompt)
         self.assertNotIn("You must pass", prompt)
         self.assertNotIn("expected_intent", prompt)
 
@@ -72,6 +76,8 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
         self.assertIn("observed agent response", prompt)
         self.assertIn("shipping downstream implementation", prompt)
         self.assertIn("git status", prompt)
+        self.assertIn("package_version", prompt)
+        self.assertIn("package_source_commit", prompt)
 
     def test_event_evidence_keeps_completed_tool_observations(self) -> None:
         events = "\n".join(
@@ -140,6 +146,7 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
                     "version": "0.1.0+codex.abc123",
                     "installed": True,
                     "enabled": True,
+                    "marketplaceSource": {"sourceType": "local", "source": "/market"},
                 }
             ]
         }
@@ -152,6 +159,37 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
 
         self.assertEqual(result["plugin_root"], "/cache/personal/alphax/0.1.0+codex.abc123")
         self.assertEqual(result["version"], "0.1.0+codex.abc123")
+        self.assertEqual(result["marketplace_source"], "/market")
+
+    def test_isolated_marketplace_config_enables_only_selected_plugin(self) -> None:
+        record = {
+            "selector": "alphax@personal",
+            "marketplace": "personal",
+            "marketplace_source": "/market",
+        }
+
+        args = replay.isolated_marketplace_config(record, reasoning_effort="medium")
+        text = " ".join(args)
+
+        self.assertIn('marketplaces.personal.source="/market"', text)
+        self.assertIn('plugins."alphax@personal".enabled=true', text)
+        self.assertIn('model_reasoning_effort="medium"', text)
+        self.assertNotIn("html-anything", text)
+
+    def test_identity_gate_requires_package_and_resolved_source_fields(self) -> None:
+        complete = """
+alphaX_source_identity:
+  scope: project-work
+  package_version: 0.1.0+codex.abc
+  package_source_commit: abc
+  package_source_branch: main
+  package_source_authority: accepted
+  source_commit: abc
+  source_ref: origin/main
+  source_authority: accepted
+"""
+        self.assertTrue(replay.has_complete_identity(complete))
+        self.assertFalse(replay.has_complete_identity(complete.replace("  package_version", "  version")))
 
     def test_summary_fails_when_any_case_lacks_independent_pass(self) -> None:
         results = [

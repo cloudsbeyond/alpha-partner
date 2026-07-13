@@ -7,6 +7,7 @@ import argparse
 import concurrent.futures
 import json
 import os
+import re
 import subprocess
 import tempfile
 from pathlib import Path
@@ -27,6 +28,15 @@ VERDICT_SCHEMA = {
         "forbidden_observed": {"type": "array", "items": {"type": "string"}},
         "confidence": {"type": "string", "enum": ["high", "medium", "low"]},
     },
+}
+REQUIRED_IDENTITY_FIELDS = {
+    "scope",
+    "package_version",
+    "package_source_commit",
+    "package_source_branch",
+    "package_source_authority",
+    "source_commit",
+    "source_authority",
 }
 
 
@@ -55,8 +65,9 @@ def build_run_prompt(case: dict[str, Any]) -> str:
 {context}
 
 Respond to the request naturally. Do not assume fixture pass criteria. Include a compact
-`alphaX_source_identity` block with scope, source_commit, source_branch or source_ref,
-and source_authority so the run is reproducible.
+`alphaX_source_identity` block with scope, package_version, package_source_commit,
+package_source_branch, package_source_authority, source_commit, source_branch or
+source_ref, and source_authority so the run is reproducible.
 """
 
 
@@ -87,7 +98,9 @@ Observed completed tool events:
 {json.dumps(event_evidence or [], ensure_ascii=False, indent=2)}
 
 Pass only if required behavior and output are evidenced, forbidden behavior is absent, and
-`alphaX_source_identity` identifies the Source used. Return the required JSON verdict.
+`alphaX_source_identity` contains scope, package_version, package_source_commit,
+package_source_branch, package_source_authority, source_commit, source_branch or
+source_ref, and source_authority. Return the required JSON verdict.
 """
 
 
@@ -120,9 +133,15 @@ def extract_event_evidence(raw_events: str) -> list[dict[str, Any]]:
             continue
         compact = {key: value for key, value in item.items() if key != "id"}
         if isinstance(compact.get("aggregated_output"), str):
-            compact["aggregated_output"] = compact["aggregated_output"][-4000:]
+            compact["aggregated_output"] = compact["aggregated_output"][-1200:]
         evidence.append(compact)
-    return evidence
+    return evidence[-80:]
+
+
+def has_complete_identity(output: str) -> bool:
+    fields = set(re.findall(r"(?m)^\s{0,4}([a-z_]+):", output))
+    branch_or_ref = bool(fields & {"source_branch", "source_ref", "source_branch_or_ref"})
+    return REQUIRED_IDENTITY_FIELDS <= fields and branch_or_ref
 
 
 def installed_plugin_record(
@@ -137,14 +156,41 @@ def installed_plugin_record(
     version = item.get("version")
     name = item.get("name")
     marketplace = item.get("marketplaceName")
-    if not all(isinstance(value, str) and value for value in (version, name, marketplace)):
+    marketplace_source = item.get("marketplaceSource", {}).get("source")
+    if not all(
+        isinstance(value, str) and value
+        for value in (version, name, marketplace, marketplace_source)
+    ):
         raise ValueError(f"plugin {selector} is missing version or marketplace identity")
     return {
         "selector": selector,
         "version": version,
         "marketplace": marketplace,
+        "marketplace_source": marketplace_source,
         "plugin_root": str((cache_base / marketplace / name / version).resolve()),
     }
+
+
+def isolated_marketplace_config(
+    plugin: dict[str, Any], *, reasoning_effort: str
+) -> list[str]:
+    marketplace = str(plugin["marketplace"])
+    selector = str(plugin["selector"])
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", marketplace):
+        raise ValueError(f"unsafe marketplace name: {marketplace}")
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+@[A-Za-z0-9_-]+", selector):
+        raise ValueError(f"unsafe plugin selector: {selector}")
+    source = json.dumps(str(plugin["marketplace_source"]))
+    return [
+        "-c",
+        f'marketplaces.{marketplace}.source_type="local"',
+        "-c",
+        f"marketplaces.{marketplace}.source={source}",
+        "-c",
+        f'plugins."{selector}".enabled=true',
+        "-c",
+        f'model_reasoning_effort="{reasoning_effort}"',
+    ]
 
 
 def discover_installed_plugin(
@@ -162,6 +208,48 @@ def discover_installed_plugin(
     except json.JSONDecodeError as exc:
         raise ValueError("codex plugin list did not return valid JSON") from exc
     return installed_plugin_record(payload, selector=selector, cache_base=cache_base)
+
+
+def prepare_isolated_codex_home(
+    codex_home: Path,
+    *,
+    codex: str,
+    plugin: dict[str, Any],
+    reasoning_effort: str,
+    timeout: int,
+) -> dict[str, Any]:
+    codex_home.mkdir(parents=True, exist_ok=True)
+    source_home = Path(os.environ.get("CODEX_HOME", Path.home() / ".codex")).expanduser()
+    auth_source = source_home / "auth.json"
+    if auth_source.is_file():
+        os.symlink(auth_source, codex_home / "auth.json")
+    config = isolated_marketplace_config(plugin, reasoning_effort=reasoning_effort)
+    env = {**os.environ, "CODEX_HOME": str(codex_home)}
+    completed = run_command(
+        [codex, "plugin", "add", *config, plugin["selector"], "--json"],
+        env=env,
+        timeout=timeout,
+    )
+    if completed.returncode != 0:
+        raise RuntimeError(completed.stderr.strip() or completed.stdout.strip())
+    try:
+        installed = json.loads(completed.stdout)
+    except json.JSONDecodeError as exc:
+        raise ValueError("isolated plugin install did not return valid JSON") from exc
+    if installed.get("version") != plugin["version"]:
+        raise ValueError(
+            f"isolated plugin version {installed.get('version')} does not match active {plugin['version']}"
+        )
+    plugin_root = Path(str(installed.get("installedPath", ""))).resolve()
+    if not (plugin_root / ".alphax-source.json").is_file():
+        raise ValueError(f"isolated plugin package is missing provenance: {plugin_root}")
+    return {
+        **plugin,
+        "plugin_root": str(plugin_root),
+        "codex_home": str(codex_home),
+        "config": config,
+        "env": env,
+    }
 
 
 def summarize_results(
@@ -236,6 +324,9 @@ def run_case(
     out_dir: Path,
     codex: str,
     model: str | None,
+    codex_env: dict[str, str],
+    candidate_config: list[str],
+    reasoning_effort: str,
     timeout: int,
 ) -> dict[str, Any]:
     case_dir = out_dir / "raw" / case["id"]
@@ -247,6 +338,7 @@ def run_case(
     command = [
         codex,
         "exec",
+        *candidate_config,
         "--ephemeral",
         "--json",
         "--sandbox",
@@ -259,7 +351,7 @@ def run_case(
     if model:
         command.extend(["--model", model])
     command.append(prompt)
-    env = {**os.environ, "ALPHAX_SOURCE_ROOT": str(source_root)}
+    env = {**codex_env, "ALPHAX_SOURCE_ROOT": str(source_root)}
     run = run_command(command, env=env, timeout=timeout)
     events_path.write_text(run.stdout, encoding="utf-8")
     event_evidence = extract_event_evidence(run.stdout)
@@ -284,6 +376,8 @@ def run_case(
     evaluator_command = [
         codex,
         "exec",
+        "-c",
+        f'model_reasoning_effort="{reasoning_effort}"',
         "--ephemeral",
         "--ignore-user-config",
         "--ignore-rules",
@@ -300,7 +394,7 @@ def run_case(
     if model:
         evaluator_command.extend(["--model", model])
     evaluator_command.append(evaluator_prompt)
-    evaluator = run_command(evaluator_command, env=os.environ.copy(), timeout=timeout)
+    evaluator = run_command(evaluator_command, env=codex_env, timeout=timeout)
     try:
         verdict = json.loads(verdict_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
@@ -311,6 +405,7 @@ def run_case(
             "forbidden_observed": [],
             "confidence": "low",
         }
+    identity_complete = has_complete_identity(output)
     result = {
         "case_id": case["id"],
         "kind": case["kind"],
@@ -325,7 +420,13 @@ def run_case(
         "evaluator_command": evaluator_command,
         "evaluator_exit_code": evaluator.returncode,
         "evaluator_stderr": evaluator.stderr[-4000:],
-        "run_ok": run.returncode == 0 and bool(output) and evaluator.returncode == 0,
+        "identity_complete": identity_complete,
+        "run_ok": (
+            run.returncode == 0
+            and bool(output)
+            and evaluator.returncode == 0
+            and identity_complete
+        ),
         "verdict": verdict,
     }
     write_case_result(out_dir, result)
@@ -340,13 +441,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--jobs", type=int, default=2)
     parser.add_argument("--codex", default="codex")
     parser.add_argument("--selector", default="alphax@personal")
-    parser.add_argument("--plugin-root", type=Path)
     parser.add_argument(
         "--plugin-cache-base",
         type=Path,
         default=Path.home() / ".codex/plugins/cache",
     )
     parser.add_argument("--model")
+    parser.add_argument(
+        "--reasoning-effort",
+        choices=["low", "medium", "high", "xhigh"],
+        default="medium",
+    )
     parser.add_argument("--timeout", type=int, default=600)
     parser.add_argument("--project-root", type=Path)
     return parser.parse_args()
@@ -362,17 +467,6 @@ def main() -> int:
         cache_base=args.plugin_cache_base,
         timeout=args.timeout,
     )
-    plugin_root = (
-        args.plugin_root.resolve() if args.plugin_root else Path(active_plugin["plugin_root"])
-    )
-    manifest_path = plugin_root / ".codex-plugin/plugin.json"
-    if not manifest_path.is_file():
-        raise ValueError(f"active plugin package is missing: {manifest_path}")
-    plugin_version = json.loads(manifest_path.read_text(encoding="utf-8")).get("version")
-    if plugin_version != active_plugin["version"]:
-        raise ValueError(
-            f"requested plugin package {plugin_version} is not active {active_plugin['version']}"
-        )
     cases = load_cases(source_root)
     if args.case:
         selected = set(args.case)
@@ -381,8 +475,22 @@ def main() -> int:
         if unknown:
             raise ValueError(f"unknown replay cases: {sorted(unknown)}")
     expected = {case["id"] for case in cases}
-    with tempfile.TemporaryDirectory(prefix="alphax-replay-project-") as tmp:
-        project_root = args.project_root.resolve() if args.project_root else Path(tmp) / "project"
+    with tempfile.TemporaryDirectory(
+        prefix="alphax-replay-home-", ignore_cleanup_errors=True
+    ) as home_tmp, tempfile.TemporaryDirectory(
+        prefix="alphax-replay-project-", ignore_cleanup_errors=True
+    ) as project_tmp:
+        isolated_plugin = prepare_isolated_codex_home(
+            Path(home_tmp),
+            codex=args.codex,
+            plugin=active_plugin,
+            reasoning_effort=args.reasoning_effort,
+            timeout=args.timeout,
+        )
+        plugin_root = Path(isolated_plugin["plugin_root"])
+        project_root = (
+            args.project_root.resolve() if args.project_root else Path(project_tmp) / "project"
+        )
         if not args.project_root:
             prepare_fixture_project(project_root)
         results: list[dict[str, Any]] = []
@@ -397,15 +505,26 @@ def main() -> int:
                     out_dir=out_dir,
                     codex=args.codex,
                     model=args.model,
+                    codex_env=isolated_plugin["env"],
+                    candidate_config=isolated_plugin["config"],
+                    reasoning_effort=args.reasoning_effort,
                     timeout=args.timeout,
                 )
                 for case in cases
             ]
             for future in concurrent.futures.as_completed(futures):
                 results.append(future.result())
+        plugin_provenance = json.loads(
+            (plugin_root / ".alphax-source.json").read_text(encoding="utf-8")
+        )
     summary = summarize_results(results, expected_case_ids=expected)
     summary["source_identity"] = alphax_plugin.source_identity(source_root)
-    summary["active_plugin"] = {**active_plugin, "plugin_root": str(plugin_root)}
+    summary["active_plugin"] = {
+        **active_plugin,
+        "replay_isolation": "temporary CODEX_HOME with only selected plugin enabled",
+        "provenance": plugin_provenance,
+    }
+    summary["reasoning_effort"] = args.reasoning_effort
     (out_dir / "summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

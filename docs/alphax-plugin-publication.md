@@ -28,6 +28,7 @@ hard_gates:
   - embedded Source hash matches provenance before project work or review
   - production install requires clean accepted Source
   - fresh invocation replay covers F01-F10 and G01-G11 with independent verdicts
+  - every observed answer contains complete package and resolved Source identity fields
 
 evidence_boundary:
   static_verification: source and carrier integrity only
@@ -74,17 +75,22 @@ is a hard failure.
 
 ## Fresh Invocation Replay
 
-Run each fixture in a fresh ephemeral Codex session. A separate fresh evaluator
-receives the case contract and observed answer and writes an independent JSON
-verdict. The evidence directory is ignored process data, not public Source.
+The replay creates a temporary isolated `CODEX_HOME`, installs the currently
+selected marketplace version there, and enables only alphaX. Run each fixture
+in a fresh ephemeral Codex session. A separate fresh evaluator receives the
+case contract, observed answer, and compact completed tool evidence, then writes
+an independent JSON verdict. The evidence directory is ignored process data,
+not public Source.
 
 ```bash
 python3 scripts/alphax_invocation_replay.py \
   --out-dir .alphaX/process/invocation-replays/<run-id> \
-  --jobs 2
+  --jobs 2 \
+  --reasoning-effort medium
 ```
 
 Each case record contains the natural input, package and Source identity,
 observed output, command status, and independent verdict. A summary can pass
 only when all required fixture IDs are present, every invocation completed, and
-every independent verdict passed.
+every independent verdict passed. Missing package or resolved Source identity
+fields fail mechanically even if the evaluator would otherwise pass.
