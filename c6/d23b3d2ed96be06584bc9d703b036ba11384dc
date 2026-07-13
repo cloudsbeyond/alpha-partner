@@ -1,0 +1,25 @@
+alphaX/project-work/agent-workflow.md
+  s_b18def69227458::t_fce98e942f93ce 34-55
+plugin/skills/alphax/SKILL.md
+  s_b18def69227458::t_3c66c15f08dbec 84-89,91-99,102-103
+tests/test_alphax_plugin.py
+  s_b18def69227458::t_1b7cc8ef15011f 141-143,147-157
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "c6d23b3d2ed96be06584bc9d703b036ba11384dc",
+  "prompts": {},
+  "sessions": {
+    "s_b18def69227458": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f418a-b5cb-7d42-8517-58427a32e91f",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
