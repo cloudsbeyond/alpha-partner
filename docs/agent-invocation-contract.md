@@ -57,7 +57,7 @@ intents:
 
   problem_decompose:
     triggers: ["这件事真正要解决什么", "what are we actually trying to solve"]
-    default_scope: conversation or project work
+    default_scope: conversation or project work; live project evidence does not turn decomposition into project review
     loop: Thinking loop plus Problem Decomposer
     first_read: [skills/problem-decomposer/SKILL.md, project source when project-bound]
     minimum_output: [D0-D3 map, recommended focus, validation signal]
@@ -77,8 +77,8 @@ intents:
     minimum_output: [source risks, evidence, source-work candidates]
 
   manual_loop:
-    triggers: ["alphaX nudge check", "alphaX PR CI watch", "alphaX research intake"]
-    default_scope: infer from loop target
+    triggers: ["alphaX nudge check", "alphaX PR CI watch", "alphaX research intake", "alphaX 设计一个自迭代 loop"]
+    default_scope: project work; use source scope only for an explicit Alpha Partner Source review or change
     loop: Manual loop layer
     first_read: [alphaX/loop-registry.md, target source when applicable]
     minimum_output: [loop report, boundary, approval needs]
@@ -115,6 +115,8 @@ scope_rules:
   - choose exactly one primary scope before writes
   - completion/merge/release/handoff/claimed implementation judgment => project review
   - current risk/progress/re-entry/focus without completion claim => Focus/risk or Context Reloader
+  - problem decomposition and manual-loop design stay project work unless the user explicitly asks for Source review or change
+  - incomplete implementation or failed validation is project evidence; it does not by itself upgrade project work to project review
   - Alpha Partner Source change => source work only after owner acceptance
   - alpha-partner cwd plus external target => ask before writing here
   - ambiguous but read-only inspection can disambiguate => inspect first
@@ -133,6 +135,7 @@ output_self_check:
   - material claims have evidence strength and freshness
   - weak/stale claims listed under unverified_claims
   - next action concrete and not P1/P2 expansion
+  - project work may call hold/rework but does not declare completion or merge readiness
   - nontrivial runs report package behavior identity and resolved Source identity
 
 forbidden_shortcuts:

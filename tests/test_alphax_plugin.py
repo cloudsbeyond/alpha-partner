@@ -136,6 +136,11 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("package_source_commit", entry)
         self.assertIn("Risk, progress, re-entry, or focus", entry)
         self.assertIn("must not issue a completion", entry)
+        self.assertIn("observing incomplete implementation or failed validation does not", entry)
+        self.assertIn("even when alphaX is named as the loop", entry)
+        self.assertIn("without declaring the project complete/incomplete", entry)
+        self.assertIn("explicitly name the first", entry)
+        self.assertIn("smallest reversible pilot", entry)
         self.assertIn("docs/agent-invocation-contract.md", entry)
         self.assertIn("only when behavior or tone requires it", entry)
         self.assertIn("Bounded project implementation fast path", entry)
@@ -143,6 +148,49 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("re-entry, operating-system, or loop-registry documents", entry)
         self.assertLessEqual(len(manifest["interface"]["defaultPrompt"]), 3)
         self.assertNotIn("/" + "Users/", entry)
+
+    def test_replay_failure_boundaries_are_source_contracts(self) -> None:
+        invocation = (ROOT / "docs/agent-invocation-contract.md").read_text(
+            encoding="utf-8"
+        )
+        decomposer = (ROOT / "skills/problem-decomposer/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        diamond = (ROOT / "skills/double-diamond-research/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        fixtures = json.loads(
+            (ROOT / "docs/agent-trigger-fixtures.json").read_text(encoding="utf-8")
+        )
+        loop_fixture = next(
+            item
+            for item in fixtures["fixtures"]
+            if item["id"] == "F10-loop-verification-gate"
+        )
+
+        self.assertIn("does not by itself upgrade project work", invocation)
+        self.assertIn("does not declare completion or merge readiness", invocation)
+        self.assertIn("never invent a business or user objective", decomposer)
+        self.assertIn("explicit weak-layer call", decomposer)
+        self.assertIn("path-specific evidence and validation", diamond)
+        self.assertIn("smallest reversible pilot", diamond)
+        self.assertEqual(
+            loop_fixture["scope"],
+            "project work unless the user explicitly requests Alpha Partner Source review or change",
+        )
+
+    def test_local_verifier_distinguishes_secret_names_from_values(self) -> None:
+        verifier = (ROOT / "scripts/verify-local-alphaX.sh").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("OPENAI_API_KEY[[:space:]]*[:=]", verifier)
+        self.assertIn("sk-[A-Za-z0-9_-]{16,}", verifier)
+        self.assertIn("ANTHROPIC_API_KEY[[:space:]]*[:=]", verifier)
+        self.assertNotIn(
+            '"BEGIN (RSA |OPENSSH |EC )?PRIVATE KEY|OPENAI_API_KEY|ANTHROPIC_API_KEY"',
+            verifier,
+        )
 
     def test_project_work_bounded_implementation_has_a_proportional_stop_rule(self) -> None:
         workflow = (ROOT / "alphaX/project-work/agent-workflow.md").read_text(

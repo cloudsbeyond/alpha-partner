@@ -175,6 +175,9 @@ outputs:
   - pilot_design
   - risk_hypotheses
   - resource_estimate
+path_evidence_rule:
+  - each candidate path names its strongest supporting evidence, evidence gap, and distinct validation path
+  - comparison without path-specific evidence and validation is not decision-grade
 ```
 
 Use one of these comparison structures when helpful:
@@ -192,6 +195,13 @@ time_horizon_options:
 ```
 
 Do not present a single favorite solution as the only path unless the user has already made a decision and only needs implementation planning.
+
+When Define and the comparison criteria are sufficient but evidence is not
+strong enough for an irreversible commitment, still make a provisional
+recommendation: choose the smallest reversible pilot or research path, and
+state why the other paths are deferred. Do not turn evidence uncertainty into
+an unranked list. If Define itself is unsupported, stop at Define and ask for
+the smallest missing decision instead of fabricating paths.
 
 ## Deliver: 验证交付
 

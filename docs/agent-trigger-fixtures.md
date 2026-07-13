@@ -82,6 +82,7 @@ fixtures:
   F10-loop-verification-gate:
     trigger: "alphaX 设计一个自迭代 loop"
     expected_intent: manual_loop
+    scope: project work unless the user explicitly requests Alpha Partner Source review or change
     loop: Manual loop layer plus loop verification gate
     must_read: [alphaX/operating-system.md, alphaX/loop-registry.md, target source when target-bound, current loop gate evidence]
     must_output: [loop goal, authority boundary, independent sensor, feedback-to-next-action path, cost or stop boundary, manual-or-upgrade call]

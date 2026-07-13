@@ -19,6 +19,12 @@ Before substantive work:
    Risk, progress, re-entry, or focus requests without an explicit completion,
    merge, release, handoff, or claimed-implementation review are
    `project-work`; they must not issue a completion or merge-readiness call.
+   Problem-decomposition requests stay `project-work` when they inspect a live
+   project; observing incomplete implementation or failed validation does not
+   upgrade them to `project-review`. A request to design or evaluate a manual
+   loop is also `project-work` by default, even when alphaX is named as the loop
+   subject. Use a source scope only when the user explicitly asks to review or
+   change Alpha Partner Source.
    Exact alphaX self-critique or source-drift triggers are `source-review`
    unless the user explicitly names target-project drift. Once selected, do not
    switch between source review and project review in one answer.
@@ -157,7 +163,17 @@ Project only the fields required by the selected Source contract:
   the exact `overridden_default` and `override_reason`, then explicitly preserve
   `observed_evidence`, `inference`, `missing_evidence`, `confidence`,
   `unverified_claims`, and `next_action`. Do not hide an override as normal
-  execution.
+  execution. In `project-work`, report the evidence-supported `hold` or
+  `rework` state without declaring the project complete/incomplete or
+  merge-ready/not-merge-ready; those judgments require `project-review`.
+- Problem decomposition: preserve `project-work`, explicitly name the first
+  weak D0-D3 layer, and mark an unsupported higher objective as missing
+  evidence instead of inventing D3.
+- Alternative-path comparison: when Define and comparison criteria are strong
+  enough to compare paths but evidence is too weak for an irreversible choice,
+  recommend the smallest reversible pilot as the provisional path and explain
+  why each alternative is deferred. If Define itself is unsupported, stop
+  there rather than fabricate candidate paths.
 - Insight or patch candidate: read `skills/insight-catcher/SKILL.md` and
   `alphaX/source-work/intelligence-ceiling-half-life.md`; name the
   `aligned_vision_signal`, definite `source_value` and changed judgment call,

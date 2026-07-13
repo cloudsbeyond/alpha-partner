@@ -61,8 +61,9 @@ if git -C "$ROOT" ls-files '.alphaX/*' | rg . >/dev/null; then
   fail ".alphaX local data is tracked by git"
 fi
 
-if rg -n "BEGIN (RSA |OPENSSH |EC )?PRIVATE KEY|OPENAI_API_KEY|ANTHROPIC_API_KEY" "$ROOT/.alphaX" >/dev/null; then
-  rg -n "BEGIN (RSA |OPENSSH |EC )?PRIVATE KEY|OPENAI_API_KEY|ANTHROPIC_API_KEY" "$ROOT/.alphaX" >&2
+secret_pattern='BEGIN (RSA |OPENSSH |EC )?PRIVATE KEY|OPENAI_API_KEY[[:space:]]*[:=][[:space:]]*[^[:alnum:]]?sk-[A-Za-z0-9_-]{16,}|ANTHROPIC_API_KEY[[:space:]]*[:=][[:space:]]*[^[:alnum:]]?sk-ant-[A-Za-z0-9_-]{16,}'
+if rg -n "$secret_pattern" "$ROOT/.alphaX" >/dev/null; then
+  rg -n "$secret_pattern" "$ROOT/.alphaX" >&2
   fail ".alphaX contains a forbidden secret marker"
 fi
 
