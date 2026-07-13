@@ -1,0 +1,25 @@
+plugin/skills/alphax/SKILL.md
+  s_b18def69227458::t_c0ff597d4d75c4 8,22-24,37-43,82-86,122-143
+scripts/alphax_invocation_replay.py
+  s_b18def69227458::t_1ba5811760fff4 46-59,61-62,89-92,95-97,103,143-150,165,170-185,187,192-236,408-416,458,468-473,506-507,523
+tests/test_alphax_invocation_replay.py
+  s_b18def69227458::t_878e04630847e2 36-48,79-81,97-99,129-149,234-267
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "61540a7f079e6319e412715f511bf87aa7c63502",
+  "prompts": {},
+  "sessions": {
+    "s_b18def69227458": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f418a-b5cb-7d42-8517-58427a32e91f",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
