@@ -145,6 +145,9 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("must not reveal a favored", entry)
         self.assertIn("first substantive user-visible section is `Findings`", entry)
         self.assertIn("mergeability, release, or summary conclusion before", entry)
+        self.assertIn("confirm the command output contains that evidence", entry)
+        self.assertIn("ignore checks, or a read command whose output", entry)
+        self.assertIn("`asset_half_life`), exact signal entry", entry)
         self.assertIn("docs/agent-invocation-contract.md", entry)
         self.assertIn("only when behavior or tone requires it", entry)
         self.assertIn("Bounded project implementation fast path", entry)
@@ -177,11 +180,14 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("overridden_default names the Source scaffold", invocation)
         self.assertIn("including in the opening", invocation)
         self.assertIn("project review starts with findings", invocation)
+        self.assertIn("discovery or listing alone is missing evidence", invocation)
         self.assertIn("never invent a business or user objective", decomposer)
         self.assertIn("explicit weak-layer call", decomposer)
         self.assertIn("path-specific evidence and validation", diamond)
         self.assertIn("smallest reversible pilot", diamond)
         self.assertIn("must not name a favored candidate", diamond)
+        self.assertIn("category (intelligence_ceiling or asset_half_life)",
+                      (ROOT / "skills/insight-catcher/SKILL.md").read_text(encoding="utf-8"))
         self.assertEqual(
             loop_fixture["scope"],
             "project work unless the user explicitly requests Alpha Partner Source review or change",

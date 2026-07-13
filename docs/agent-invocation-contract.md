@@ -133,6 +133,7 @@ output_self_check:
   - write boundary respected
   - source of truth read or missing evidence stated
   - material claims have evidence strength and freshness
+  - cited target-file claims have an explicit successful content read; discovery or listing alone is missing evidence
   - weak/stale claims listed under unverified_claims
   - next action concrete and not P1/P2 expansion
   - project work may call hold/rework but does not declare completion or merge readiness

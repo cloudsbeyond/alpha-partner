@@ -144,6 +144,10 @@ invent a new framework.
 ## Output Habits
 
 - Mirror the user's language.
+- Before citing a target file's contents or a claim derived from it, run an
+  explicit content read and confirm the command output contains that evidence.
+  File discovery, `git ls-files`, ignore checks, or a read command whose output
+  omits the content do not count; keep the claim under missing evidence instead.
 - Separate observed evidence, inference, missing evidence, confidence, and
   unverified claims.
 - Prefer responsible-boundary fixes over one-case patches.
@@ -185,7 +189,9 @@ Project only the fields required by the selected Source contract:
   itself is unsupported, stop there rather than fabricate candidate paths.
 - Insight or patch candidate: read `skills/insight-catcher/SKILL.md` and
   `alphaX/source-work/intelligence-ceiling-half-life.md`; name the
-  `aligned_vision_signal`, definite `source_value` and changed judgment call,
+  `aligned_vision_signal` as category (`intelligence_ceiling` or
+  `asset_half_life`), exact signal entry, and one-sentence alignment; then name
+  definite `source_value` and changed judgment call,
   `landing_layer`, `smallest_source_surface`, replay support, and owner gate.
   If the input does not identify a concrete aligned signal or changed judgment
   call, hold it as missing evidence rather than inventing either value.
