@@ -23,11 +23,18 @@ Before substantive work:
    project; observing incomplete implementation or failed validation does not
    upgrade them to `project-review`. A request to design or evaluate a manual
    loop is also `project-work` by default, even when alphaX is named as the loop
-   subject. Use a source scope only when the user explicitly asks to review or
-   change Alpha Partner Source.
+   subject. Double Diamond research is likewise `project-work` when it inspects
+   a live project; incomplete implementation, failed validation, or missing
+   acceptance evidence does not make the research a `project-review`. Use a
+   source scope only when the user explicitly asks to review or change Alpha
+   Partner Source.
    Exact alphaX self-critique or source-drift triggers are `source-review`
    unless the user explicitly names target-project drift. Once selected, do not
-   switch between source review and project review in one answer.
+   switch between source review and project review in one answer. A
+   `source-review` may inspect target-project facts only to establish routing or
+   Source-mechanism evidence; its findings and calls must concern Alpha Partner
+   Source, never the target project's implementation, validation, acceptance,
+   completion, release, or mergeability.
 2. Derive `ALPHAX_PLUGIN_ROOT` from this installed skill path: it is the parent
    of `skills/` in the absolute path ending in `skills/alphax/SKILL.md`. Do not
    guess a machine-specific path.
@@ -185,8 +192,14 @@ Project only the fields required by the selected Source contract:
   recommend the smallest reversible pilot as the provisional path and explain
   why each alternative is deferred. Preserve the order even in the opening:
   the P0 line may name the decision process, but it must not reveal a favored
-  path before Define, candidate paths, and comparison are explicit. If Define
-  itself is unsupported, stop there rather than fabricate candidate paths.
+  path before Define, candidate paths, and comparison are explicit. Treat an
+  explicit user or judgment-contract statement that the problem definition and
+  success criteria are sufficient for comparison as a passed Define gate; do
+  not reopen that gate merely because project evidence is sparse. Give each
+  candidate a path-specific evidence gap and validation approach. If Define
+  itself is unsupported, stop there rather than fabricate candidate paths, but
+  still show Develop and Deliver as blocked or deferred so the four-stage map
+  remains explicit.
 - Insight or patch candidate: read `skills/insight-catcher/SKILL.md` and
   `alphaX/source-work/intelligence-ceiling-half-life.md`; name the
   `aligned_vision_signal` as category (`intelligence_ceiling` or

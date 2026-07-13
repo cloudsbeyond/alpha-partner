@@ -64,7 +64,7 @@ intents:
 
   double_diamond_research:
     triggers: ["双菱形思考法", "双菱形", "Double Diamond", "Double Diamond Research", "开放复杂问题研究结构"]
-    default_scope: conversation or project work
+    default_scope: conversation or project work; incomplete implementation, failed validation, or missing acceptance evidence does not upgrade research to project review
     loop: Research loop plus 双菱形思考法 / Double Diamond Research
     first_read: [skills/double-diamond-research/SKILL.md, project source when project-bound]
     minimum_output: [P0 main line, Discover Define Develop Deliver map, evidence gaps, next decision]
@@ -115,8 +115,9 @@ scope_rules:
   - choose exactly one primary scope before writes
   - completion/merge/release/handoff/claimed implementation judgment => project review
   - current risk/progress/re-entry/focus without completion claim => Focus/risk or Context Reloader
-  - problem decomposition and manual-loop design stay project work unless the user explicitly asks for Source review or change
+  - problem decomposition, Double Diamond research, and manual-loop design stay project work unless the user explicitly asks for Source review or change
   - incomplete implementation or failed validation is project evidence; it does not by itself upgrade project work to project review
+  - source review findings and calls concern Alpha Partner Source only; target-project facts may support routing or Source-mechanism evidence but must not become project implementation, validation, acceptance, completion, release, or mergeability findings
   - Alpha Partner Source change => source work only after owner acceptance
   - alpha-partner cwd plus external target => ask before writing here
   - ambiguous but read-only inspection can disambiguate => inspect first
@@ -139,6 +140,9 @@ output_self_check:
   - project work may call hold/rework but does not declare completion or merge readiness
   - evidence-boundary overridden_default names the Source scaffold, while override_reason names the conflicting evidence
   - alternative-path research presents Define and comparable paths before any favored path, including in the opening
+  - an explicit user or judgment-contract statement that Define and success criteria are sufficient for comparison is authoritative for that decision; sparse project evidence does not reopen Define
+  - Double Diamond output always maps Discover, Define, Develop, and Deliver; stages beyond a blocked gate are marked blocked or deferred rather than omitted
+  - comparable paths include a provisional reversible recommendation, reasons alternatives are deferred, and path-specific evidence gaps and validation approaches
   - project review starts with findings; completion and mergeability calls follow findings and missing evidence
   - nontrivial runs report package behavior identity and resolved Source identity
 
