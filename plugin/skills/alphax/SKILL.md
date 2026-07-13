@@ -5,7 +5,7 @@ description: Use when the user invokes @alphaX, alphaX, Alpha Partner, or asks f
 
 # alphaX
 
-alphaX is the thin Codex entrypoint for Alpha Partner Source. The plugin is a
+alphaX is the thin ChatGPT entrypoint for Alpha Partner Source. The plugin is a
 carrier, not the Source authority, runtime, or project store.
 
 ## Source Identity Gate
@@ -19,6 +19,9 @@ Before substantive work:
    Risk, progress, re-entry, or focus requests without an explicit completion,
    merge, release, handoff, or claimed-implementation review are
    `project-work`; they must not issue a completion or merge-readiness call.
+   Exact alphaX self-critique or source-drift triggers are `source-review`
+   unless the user explicitly names target-project drift. Once selected, do not
+   switch between source review and project review in one answer.
 2. Derive `ALPHAX_PLUGIN_ROOT` from this installed skill path: it is the parent
    of `skills/` in the absolute path ending in `skills/alphax/SKILL.md`. Do not
    guess a machine-specific path.
@@ -31,10 +34,13 @@ python3 "$ALPHAX_PLUGIN_ROOT/bin/alphax_plugin.py" \
   --scope <scope>
 ```
 
-For `source-work` or `source-review`, also pass `--live-source-root` with the
-explicit candidate checkout from `ALPHAX_SOURCE_ROOT` or the current
-`alpha-partner` workspace. Project scopes must not require a live checkout;
-they use the immutable accepted Source snapshot embedded in the plugin.
+For `source-work` or `source-review`, check `ALPHAX_SOURCE_ROOT` first. When it
+is set, pass that exact path as `--live-source-root`; never substitute the
+target-project cwd. Otherwise use the current workspace only when it is the
+`alpha-partner` checkout. If neither is available, report the source scope as
+blocked instead of silently switching scopes. Project scopes must not require a
+live checkout; they use the immutable accepted Source snapshot embedded in the
+plugin.
 
 4. Use only `resolved_root` from that result for the required Source reads.
 5. Record this compact identity in the first progress update and final handoff:
@@ -73,6 +79,11 @@ Read from `resolved_root`:
 - source work: relevant `alphaX/`, `docs/`, `templates/`, `skills/`, and
   `scripts/` files.
 
+After selecting the scope and loop, check the smallest matching Source skill.
+The final response for a nontrivial run must name the selected loop and report
+`skill_trigger_check` as either `checked: <source skill path>` or
+`not_applicable: <reason>`; reading this plugin entry alone is not that check.
+
 If a required file is absent, report its resolved path and continue only when a
 safe non-source fallback exists.
 
@@ -108,3 +119,25 @@ invent a new framework.
 - Preserve alphaX as a personified collaboration function, not an always-on
   entity or control plane.
 - Include one concrete next action and the Source identity for nontrivial runs.
+
+## Conditional Contract Projection
+
+Project only the fields required by the selected Source contract:
+
+- Manual nudge: report candidate nudge, urgency, cooldown, and the approval
+  boundary. Active-session advice is allowed; external push, scheduling, or
+  cross-app observation still needs explicit approval.
+- Evidence-boundary override: name `overridden_default` and `override_reason`
+  whenever the normal first-read or minimum-output scaffold is too narrow. Do
+  not hide an override as normal execution.
+- Insight or patch candidate: read `skills/insight-catcher/SKILL.md` and
+  `alphaX/source-work/intelligence-ceiling-half-life.md`; name the
+  `aligned_vision_signal`, definite `source_value` and changed judgment call,
+  `landing_layer`, `smallest_source_surface`, replay support, and owner gate.
+- Project execution with missing delivery evidence: read
+  `alphaX/project-work/agent-workflow.md`; report current state, target artifact
+  or decision, next action, advance/hold/rework, gate, validation method and
+  evidence, feedback route, responsible-boundary rework items, changed or
+  requested artifact, open residue, memory-candidate quality, and an explicit
+  execute-or-reframe call. Missing values are reasons to hold or reframe, not
+  reasons to omit the fields.

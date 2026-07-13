@@ -33,6 +33,19 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
         ]})
         self.assertIn("G11-project-delivery-loop-before-execution", {case["id"] for case in cases})
 
+    def test_judgment_cases_inherit_primary_trigger_routing(self) -> None:
+        cases = {case["id"]: case for case in replay.load_cases(ROOT)}
+
+        self.assertEqual(cases["G10-insight-with-vision-value-landing"]["scope"], "source review")
+        self.assertEqual(
+            cases["G10-insight-with-vision-value-landing"]["expected_intent"],
+            "source_review",
+        )
+        self.assertEqual(cases["G11-project-delivery-loop-before-execution"]["loop"], "Project loop")
+        self.assertEqual(replay.infer_resolved_scope(cases["G10-insight-with-vision-value-landing"]), "source-review")
+        self.assertEqual(replay.infer_resolved_scope(cases["G02-merge-claim-with-weak-evidence"]), "project-review")
+        self.assertEqual(replay.infer_resolved_scope(cases["G11-project-delivery-loop-before-execution"]), "project-work")
+
     def test_run_prompt_requires_source_identity_and_natural_case_input(self) -> None:
         case = {
             "id": "F01-risk-current-project",
@@ -63,6 +76,9 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
             "required_output": ["D0-D3 map"],
             "pass_condition": ["execution stops"],
             "forbidden": ["shipping downstream implementation"],
+            "expected_intent": "problem_decompose",
+            "scope": "project work",
+            "loop": "Thinking loop plus Problem Decomposer",
         }
 
         prompt = replay.build_evaluator_prompt(
@@ -78,6 +94,9 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
         self.assertIn("git status", prompt)
         self.assertIn("package_version", prompt)
         self.assertIn("package_source_commit", prompt)
+        self.assertIn("problem_decompose", prompt)
+        self.assertIn("project work", prompt)
+        self.assertIn("Thinking loop plus Problem Decomposer", prompt)
 
     def test_event_evidence_keeps_completed_tool_observations(self) -> None:
         events = "\n".join(
@@ -106,6 +125,27 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
         self.assertEqual(len(evidence), 1)
         self.assertEqual(evidence[0]["command"], "git status --short")
         self.assertEqual(evidence[0]["exit_code"], 0)
+
+    def test_event_evidence_preserves_head_and_tail_when_output_is_long(self) -> None:
+        output = "HEAD: branch main clean\n" + ("noise\n" * 700) + "TAIL: warning only\n"
+        events = json.dumps(
+            {
+                "type": "item.completed",
+                "item": {
+                    "type": "command_execution",
+                    "command": "git status --short --branch",
+                    "aggregated_output": output,
+                    "exit_code": 0,
+                    "status": "completed",
+                },
+            }
+        )
+
+        evidence = replay.extract_event_evidence(events)
+
+        self.assertIn("HEAD: branch main clean", evidence[0]["aggregated_output"])
+        self.assertIn("TAIL: warning only", evidence[0]["aggregated_output"])
+        self.assertIn("omitted", evidence[0]["aggregated_output"])
 
     def test_clear_case_outputs_prevents_stale_result_reuse(self) -> None:
         with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
@@ -190,6 +230,40 @@ alphaX_source_identity:
 """
         self.assertTrue(replay.has_complete_identity(complete))
         self.assertFalse(replay.has_complete_identity(complete.replace("  package_version", "  version")))
+
+    def test_identity_gate_rejects_values_that_do_not_match_resolver(self) -> None:
+        output = """
+alphaX_source_identity:
+  scope: project-review
+  package_version: 0.1.0+codex.abc
+  package_source_commit: abc
+  package_source_branch: candidate-branch
+  package_source_authority: candidate
+  source_commit: accepted
+  source_ref: origin/main
+  source_authority: accepted
+"""
+        expected = {
+            "scope": "source-review",
+            "package_version": "0.1.0+codex.abc",
+            "package_source_commit": "abc",
+            "package_source_branch": "candidate-branch",
+            "package_source_authority": "candidate",
+            "source_commit": "accepted",
+            "source_branch": "origin/main",
+            "source_ref": "origin/main",
+            "source_authority": "accepted",
+        }
+
+        self.assertTrue(hasattr(replay, "identity_mismatches"))
+        self.assertEqual(
+            replay.identity_mismatches(output.replace("project-review", "source-review"), expected),
+            [],
+        )
+        self.assertEqual(
+            replay.identity_mismatches(output, expected),
+            ["scope: expected source-review, observed project-review"],
+        )
 
     def test_summary_fails_when_any_case_lacks_independent_pass(self) -> None:
         results = [

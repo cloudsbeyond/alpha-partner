@@ -43,9 +43,23 @@ REQUIRED_IDENTITY_FIELDS = {
 def load_cases(source_root: Path) -> list[dict[str, Any]]:
     triggers = json.loads((source_root / "docs/agent-trigger-fixtures.json").read_text(encoding="utf-8"))
     judgments = json.loads((source_root / "docs/agent-judgment-fixtures.json").read_text(encoding="utf-8"))
+    trigger_cases = [{**case, "kind": "trigger"} for case in triggers["fixtures"]]
+    triggers_by_id = {case["id"]: case for case in trigger_cases}
+    judgment_cases: list[dict[str, Any]] = []
+    for case in judgments["cases"]:
+        primary = triggers_by_id[case["primary_fixture_id"]]
+        judgment_cases.append(
+            {
+                **case,
+                "kind": "judgment",
+                "expected_intent": primary["expected_intent"],
+                "scope": primary["scope"],
+                "loop": primary["loop"],
+            }
+        )
     return [
-        *[{**case, "kind": "trigger"} for case in triggers["fixtures"]],
-        *[{**case, "kind": "judgment"} for case in judgments["cases"]],
+        *trigger_cases,
+        *judgment_cases,
     ]
 
 
@@ -72,14 +86,21 @@ source_ref, and source_authority so the run is reproducible.
 
 
 def build_evaluator_prompt(
-    case: dict[str, Any], observed_output: str, event_evidence: list[dict[str, Any]] | None = None
+    case: dict[str, Any],
+    observed_output: str,
+    event_evidence: list[dict[str, Any]] | None = None,
+    expected_identity: dict[str, Any] | None = None,
 ) -> str:
     requirements = {
+        "expected_intent": case.get("expected_intent"),
+        "scope": case.get("scope"),
+        "loop": case.get("loop"),
         "must_read": case.get("must_read", []),
         "must_output": case.get("must_output", case.get("required_output", [])),
         "expected_judgment": case.get("expected_judgment", []),
         "pass_condition": case.get("pass_condition", []),
         "forbidden": case.get("forbidden", []),
+        "expected_source_identity": expected_identity or {},
     }
     return f"""You are an independent evaluator. Judge only the observed response against the
 fixture contract. Do not repair the response and do not infer missing evidence as present.
@@ -119,6 +140,14 @@ def clear_case_outputs(case_dir: Path) -> None:
             path.unlink()
 
 
+def compact_command_output(value: str, limit: int = 2400) -> str:
+    if len(value) <= limit:
+        return value
+    marker = "\n... output omitted ...\n"
+    side = (limit - len(marker)) // 2
+    return value[:side] + marker + value[-side:]
+
+
 def extract_event_evidence(raw_events: str) -> list[dict[str, Any]]:
     evidence: list[dict[str, Any]] = []
     for line in raw_events.splitlines():
@@ -133,15 +162,76 @@ def extract_event_evidence(raw_events: str) -> list[dict[str, Any]]:
             continue
         compact = {key: value for key, value in item.items() if key != "id"}
         if isinstance(compact.get("aggregated_output"), str):
-            compact["aggregated_output"] = compact["aggregated_output"][-1200:]
+            compact["aggregated_output"] = compact_command_output(compact["aggregated_output"])
         evidence.append(compact)
     return evidence[-80:]
 
 
+def parse_identity(output: str) -> dict[str, str]:
+    marker = re.search(r"(?m)^\s{0,3}alphaX_source_identity:\s*$", output)
+    if not marker:
+        return {}
+    fields: dict[str, str] = {}
+    for line in output[marker.end() :].splitlines():
+        if line.strip().startswith("```"):
+            break
+        match = re.match(r"^[ \t]{2,8}([a-z_]+):\s*(.*?)\s*$", line)
+        if match:
+            fields[match.group(1)] = match.group(2).strip().strip("`\"'")
+        elif fields and line.strip():
+            break
+    return fields
+
+
 def has_complete_identity(output: str) -> bool:
-    fields = set(re.findall(r"(?m)^\s{0,4}([a-z_]+):", output))
+    fields = set(parse_identity(output))
     branch_or_ref = bool(fields & {"source_branch", "source_ref", "source_branch_or_ref"})
     return REQUIRED_IDENTITY_FIELDS <= fields and branch_or_ref
+
+
+def identity_mismatches(output: str, expected: dict[str, Any]) -> list[str]:
+    observed = parse_identity(output)
+    fields = set(observed)
+    missing = sorted(REQUIRED_IDENTITY_FIELDS - fields)
+    if not fields & {"source_branch", "source_ref", "source_branch_or_ref"}:
+        missing.append("source_branch_or_ref")
+    if missing:
+        return [f"missing identity field: {field}" for field in missing]
+
+    mismatches: list[str] = []
+    for key in (
+        "scope",
+        "package_version",
+        "package_source_commit",
+        "package_source_branch",
+        "package_source_authority",
+        "source_commit",
+        "source_authority",
+    ):
+        expected_value = str(expected.get(key) or "")
+        if observed[key] != expected_value:
+            mismatches.append(
+                f"{key}: expected {expected_value}, observed {observed[key]}"
+            )
+    observed_branch = next(
+        (
+            observed[key]
+            for key in ("source_branch_or_ref", "source_branch", "source_ref")
+            if observed.get(key)
+        ),
+        "",
+    )
+    expected_branches = {
+        str(expected[key])
+        for key in ("source_branch", "source_ref")
+        if expected.get(key)
+    }
+    if observed_branch not in expected_branches:
+        mismatches.append(
+            "source_branch_or_ref: expected one of "
+            f"{sorted(expected_branches)}, observed {observed_branch}"
+        )
+    return mismatches
 
 
 def installed_plugin_record(
@@ -315,6 +405,15 @@ def run_command(command: list[str], *, env: dict[str, str], timeout: int) -> sub
     )
 
 
+def infer_resolved_scope(case: dict[str, Any]) -> str:
+    scope = str(case.get("scope", "")).lower()
+    if "source" in scope:
+        return "source-review"
+    if "project review" in scope or "completion" in scope or "merge" in scope:
+        return "project-review"
+    return "project-work"
+
+
 def run_case(
     case: dict[str, Any],
     *,
@@ -356,13 +455,7 @@ def run_case(
     events_path.write_text(run.stdout, encoding="utf-8")
     event_evidence = extract_event_evidence(run.stdout)
     output = output_path.read_text(encoding="utf-8") if output_path.is_file() else ""
-    fixture_scope = str(case.get("scope", "")).lower()
-    if "source" in fixture_scope:
-        resolved_scope = "source-review"
-    elif case["kind"] == "judgment" or "review" in fixture_scope:
-        resolved_scope = "project-review"
-    else:
-        resolved_scope = "project-work"
+    resolved_scope = infer_resolved_scope(case)
     source_identity = alphax_plugin.resolve_invocation(
         plugin_root,
         scope=resolved_scope,
@@ -372,7 +465,12 @@ def run_case(
     schema_path = case_dir / "verdict-schema.json"
     verdict_path = case_dir / "verdict.json"
     schema_path.write_text(json.dumps(VERDICT_SCHEMA, indent=2) + "\n", encoding="utf-8")
-    evaluator_prompt = build_evaluator_prompt(case, output, event_evidence)
+    evaluator_prompt = build_evaluator_prompt(
+        case,
+        output,
+        event_evidence,
+        expected_identity=source_identity,
+    )
     evaluator_command = [
         codex,
         "exec",
@@ -405,7 +503,8 @@ def run_case(
             "forbidden_observed": [],
             "confidence": "low",
         }
-    identity_complete = has_complete_identity(output)
+    identity_errors = identity_mismatches(output, source_identity)
+    identity_complete = not identity_errors
     result = {
         "case_id": case["id"],
         "kind": case["kind"],
@@ -421,6 +520,7 @@ def run_case(
         "evaluator_exit_code": evaluator.returncode,
         "evaluator_stderr": evaluator.stderr[-4000:],
         "identity_complete": identity_complete,
+        "identity_mismatches": identity_errors,
         "run_ok": (
             run.returncode == 0
             and bool(output)
