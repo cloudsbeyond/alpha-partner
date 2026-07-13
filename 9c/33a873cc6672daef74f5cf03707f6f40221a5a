@@ -1,0 +1,27 @@
+docs/agent-invocation-contract.md
+  s_b18def69227458::t_37144b09fd8326 67,118,120,143-145
+plugin/skills/alphax/SKILL.md
+  s_b18def69227458::t_967ac431c1b9d7 26-30,33-37,195-202
+skills/double-diamond-research/SKILL.md
+  s_b18def69227458::t_db0a3f15e89dd3 59-64,211-219
+tests/test_alphax_plugin.py
+  s_b18def69227458::t_a6abbc6a9d086e 146-150,189-191,197-199
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "9c33a873cc6672daef74f5cf03707f6f40221a5a",
+  "prompts": {},
+  "sessions": {
+    "s_b18def69227458": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f418a-b5cb-7d42-8517-58427a32e91f",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
