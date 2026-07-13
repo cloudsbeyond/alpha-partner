@@ -120,6 +120,7 @@ source_work_pdca:
       - strongest counterargument is represented
       - evidence weight changes the action or completion call
       - upstream redefinition is surfaced when downstream work would patch symptoms
+      - project delivery state, target artifact or decision, next action, human or agent gate, validation evidence, and feedback route are explicit, and evidence determines advance, hold, or rework before execution
       - default scaffolding can be overridden with an evidence-boundary reason
       - scenario fixtures in docs/agent-judgment-fixtures.json cover the claim being made
     half_life_signals:

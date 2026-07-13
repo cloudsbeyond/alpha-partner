@@ -19,6 +19,7 @@ required_coverage:
   - justified override of default scaffold
   - loop verification
   - authority boundary
+  - delivery loop closure
   - scaffold pruning
   - asset half-life
   - vision value alignment
@@ -40,6 +41,7 @@ fixture_contract:
     - live source overrides memory, handoff, and stale local context
     - strongest counterargument can block weak source-work candidates
     - default scaffolding can be overridden with an explicit evidence-boundary reason
+    - project execution exposes delivery state, target artifact or decision, next action, gate, validation evidence, and feedback route before implementation
     - stale scaffolding can be separated from durable principles and pruned or replaced
 
 cases:
@@ -102,4 +104,10 @@ cases:
     expected_judgment: [grade source_value from the changed judgment call not surface appeal, name changed call and choose landing_layer and smallest_source_surface, require replay support and owner gate before a tracked patch]
     pass_condition: [source_value justified by a named changed judgment call, keep names landing_layer and smallest_source_surface and still defers the tracked patch to replay and owner gate]
     forbidden: [grade source_value from reusability or novelty, advance to a tracked patch without landing_layer replay support or owner gate]
+
+  G11-project-delivery-loop-before-execution:
+    tests: [delivery loop closure, authority boundary, evidence weighting]
+    expected_judgment: [state current delivery state, target artifact or decision, next action, gate owner and status, advance/hold/rework call, validation evidence, feedback route, rework route, and memory candidate quality before execution]
+    pass_condition: [execution is reframed or paused when state, artifact or decision, next action, gate, validation evidence, or feedback route is missing; delivery advances only when the target artifact exists or target decision is resolved, applicable human gates are cleared, and validation evidence supports the next action]
+    forbidden: [task-only implementation, hidden human gate, advancing from a state label without gate status and validation evidence, feedback without responsible boundary/rework item/changed artifact/validation/open residue, memory from unverified project noise]
 ```
