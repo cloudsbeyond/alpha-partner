@@ -1,0 +1,25 @@
+alphaX/project-work/agent-workflow.md
+  s_e033bb2be497ce::t_b0871db995a593 34-48
+docs/agent-failure-modes.md
+  s_e033bb2be497ce::t_d7cde7c2900f9e 21-22
+templates/project-work/loop-packet.md
+  s_e033bb2be497ce::t_fc657d0147d494 27-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "fc5c5237f76bba97eeec9c513911a5371cf77de0",
+  "prompts": {},
+  "sessions": {
+    "s_e033bb2be497ce": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f6dff-5eb8-7c30-8b9b-9ab0b0d97d5b",
+        "model": "unknown"
+      },
+      "human_author": "Clouds Beyond <34269366+cloudsbeyond@users.noreply.github.com>"
+    }
+  },
+  "attestation_metadata": {},
+  "remote_transcripts": {}
+}
