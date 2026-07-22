@@ -80,6 +80,22 @@ lifecycle_hygiene:
   compact_only_unless_triggered: true
   preserve: [current baseline, durable decisions, evidence pointers, unfrozen evidence, open decisions, next actions, local-only warnings]
   archive_or_remove: [command transcripts, obsolete phase logs, duplicated source facts, stale paths, superseded names unless anti-drift sentinel]
+  closeout_asset_hygiene:
+    use_when: a full-lifecycle merge, handoff, freeze, release, or publication review includes Git or generated-output cleanup
+    inspect: [worktrees, branches, stashes, ordinary untracked files, ignored or generated outputs]
+    classify: [authoritative source, durable project evidence, reproducible output, temporary safety copy, unresolved unique content]
+    deletion_gate:
+      allow_when:
+        - live-source coverage is proven by ancestry, tree equivalence, content equivalence, or another direct repository-specific check
+        - durable logic, provenance, decisions, and evidence pointers have an explicit owning target surface
+        - generated outputs are proven reproducible or their release authority is preserved by the target project
+      hold_when:
+        - unique content, authority, reproducibility, or absorption destination remains unresolved
+    absorption_rule: preserve the reusable judgment and project evidence in their owning source or allowed project-local review surface; do not retain binary copies merely because cleanup produced them
+    temporary_safety_copy:
+      role: optional transaction guard for an authorized destructive cleanup, not a durable archive or new project data surface
+      disposal_gate: delete after logical absorption, clean-state verification, and confirmation that no unresolved unique content depends on it
+      anti_pattern: leaving a recovery directory indefinitely after its transaction has closed
 
 output:
   order: [findings, completion state, drift markers, missing evidence, lifecycle hygiene gaps, unverified_claims, next action]

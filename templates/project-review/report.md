@@ -100,6 +100,19 @@ Project Lifecycle Hygiene:
   compaction_rule:
     preserve: [current baseline, durable decisions, evidence pointers, unfrozen evidence, open decisions, next actions, local-only warnings]
     remove_or_summarize: [command transcripts, obsolete phase logs, duplicated source facts, stale paths, superseded names unless anti-drift sentinel]
+  closeout_assets:
+    required_when: lifecycle cleanup touches worktrees, branches, stashes, untracked files, ignored outputs, or generated outputs
+    inventory:
+      - surface: "<worktree|branch|stash|untracked|ignored|generated>"
+        content_class: "<authoritative source|durable project evidence|reproducible output|temporary safety copy|unresolved unique content>"
+        coverage_or_absorption_evidence: "<pointer|missing>"
+        disposition: "<keep in owner surface|remove|hold for owner decision>"
+    unresolved_unique_content: []
+    temporary_safety_copy:
+      used: "<yes|no>"
+      disposal_condition: "<condition|not applicable>"
+      final_state: "<deleted|held with owner and reason|not applicable>"
+    cleanup_verification: "<clean state and remaining surfaces|not checked>"
 
 findings:
   - severity: "<P0|P1|P2|P3>"
