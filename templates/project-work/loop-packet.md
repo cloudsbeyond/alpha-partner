@@ -24,6 +24,21 @@ project_surface:
 p0_main_line: "<one sentence>"
 work_type: "<discovery|spec|implementation|review|reflection>"
 
+delivery_scope:
+  intended_outcome: "<project-native outcome; distinguish repository change, release artifact, and target-environment acceptance when relevant>"
+  responsibility_lane:
+    source_of_truth: "<source|contract|artifact|environment|decision>"
+    owner: "<human|agent|shared|external>"
+    acceptance_gate: "<evidence or decision that clears this lane>"
+    release_authority: "<owner|not-applicable>"
+  adjacent_work: "<same lane|split|sequence + reason>"
+  external_evidence_boundary:
+    required_evidence: []
+    provider: "<target environment|external owner|none>"
+    available_now: "<yes|no|not-needed>"
+    smallest_fail_closed_carrier: "<existing check or artifact|missing|not-needed>"
+    decision: "<continue|hold + evidence-bound reason>"
+
 delivery_loop:
   current_state: "<intake|clarify|design|implement|review|validate|handoff|reflect>"
   target_artifact_or_decision: "<file|doc|contract|diff|test|decision|none>"

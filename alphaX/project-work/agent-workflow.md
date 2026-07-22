@@ -31,6 +31,21 @@ reentry:
   read: [alphaX/project-work/context-reloader.md, live target source, target .alphaX/ per schema when present]
   rule: live project source wins over stale .alphaX/ data
 
+delivery_scope_gate:
+  use_when:
+    - the request spans repository implementation, release artifact, and target-environment outcome
+    - adjacent work may change source of truth, owner, acceptance gate, or release authority
+    - progress depends on evidence available only from a target environment or external owner
+  required_before_implementation:
+    intended_outcome: name the project-native outcome; when relevant distinguish an implemented repository change, a release artifact, and target-environment acceptance
+    responsibility_lane: name the source of truth, owner, acceptance gate, and release authority for that outcome
+    external_evidence_boundary: name unavailable external evidence or state not-needed
+  adjacent_work_rule: split or sequence adjacent work when its source of truth, owner, acceptance gate, or release authority changes; do not let it silently expand the active delivery slice
+  external_evidence_stop:
+    - name evidence that only a target environment or external owner can provide
+    - if it is unavailable, hold that gate explicitly after the smallest required fail-closed carrier and local validation pass
+    - do not add proxy validators, packets, or workflows that cannot change the held gate unless they are the requested artifact or new evidence exposes an uncovered compatibility, security, data, authority, or contract risk
+
 bounded_implementation:
   use_when:
     - target and L3/L4 change are concrete

@@ -18,8 +18,8 @@ modes:
 
   SC-001:
     mode: scope drift
-    signal: project review or source review edits files without explicit scope switch
-    mitigation: stop writes, report boundary conflict, ask for project work or source work approval
+    signal: project review or source review is displaced by planning or design before its findings and evidence boundary are complete, or it edits files without an explicit scope switch
+    mitigation: finish the findings-first review and narrowest evidence-supported call; then switch explicitly before project work or source work planning, design, or edits
 
   EV-001:
     mode: weak evidence treated as strong
