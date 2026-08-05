@@ -39,7 +39,7 @@ plugin_distribution:
   embedded_source: immutable accepted Source archive used by project work and project review
   live_source: explicit checkout used only by source work and source review
   hard_gate: same version must be byte-identical across generated package, marketplace source, and installed cache
-  invocation_evidence: fresh Codex replay of every F01-F10 and G01-G11 case with independent verdicts
+  invocation_evidence: fresh Codex replay of every F01-F10 and G01-G14 case with independent verdicts
 
 organization_level_pipeline:
   role: product-level frame for source work and review, not a runtime or control plane

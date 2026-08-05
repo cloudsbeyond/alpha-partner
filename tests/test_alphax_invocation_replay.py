@@ -18,7 +18,7 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
     def test_loads_all_trigger_and_judgment_cases(self) -> None:
         cases = replay.load_cases(ROOT)
 
-        self.assertEqual(len(cases), 21)
+        self.assertEqual(len(cases), 24)
         self.assertEqual({case["id"] for case in cases if case["kind"] == "trigger"}, {f"F{i:02d}" + suffix for i, suffix in [
             (1, "-risk-current-project"),
             (2, "-progress-reentry"),
@@ -31,7 +31,11 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
             (9, "-double-diamond-research"),
             (10, "-loop-verification-gate"),
         ]})
-        self.assertIn("G11-project-delivery-loop-before-execution", {case["id"] for case in cases})
+        judgment_ids = {case["id"] for case in cases if case["kind"] == "judgment"}
+        self.assertIn("G11-project-delivery-loop-before-execution", judgment_ids)
+        self.assertIn("G12-generic-continuation-preserves-task-target", judgment_ids)
+        self.assertIn("G13-echoed-approval-does-not-cure-inferred-target", judgment_ids)
+        self.assertIn("G14-explicit-cross-target-switch-proceeds", judgment_ids)
 
     def test_judgment_cases_inherit_primary_trigger_routing(self) -> None:
         cases = {case["id"]: case for case in replay.load_cases(ROOT)}
@@ -53,6 +57,42 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
         self.assertEqual(replay.infer_resolved_scope(cases["G10-insight-with-vision-value-landing"]), "source-review")
         self.assertEqual(replay.infer_resolved_scope(cases["G02-merge-claim-with-weak-evidence"]), "project-review")
         self.assertEqual(replay.infer_resolved_scope(cases["G11-project-delivery-loop-before-execution"]), "project-work")
+        self.assertEqual(
+            replay.infer_resolved_scope(
+                cases["G12-generic-continuation-preserves-task-target"]
+            ),
+            "source-review",
+        )
+        self.assertEqual(
+            replay.infer_resolved_scope(
+                cases["G13-echoed-approval-does-not-cure-inferred-target"]
+            ),
+            "source-review",
+        )
+        self.assertEqual(
+            replay.infer_resolved_scope(
+                cases["G14-explicit-cross-target-switch-proceeds"]
+            ),
+            "project-work",
+        )
+
+    def test_thread_objective_cases_include_negative_and_positive_boundaries(self) -> None:
+        cases = {case["id"]: case for case in replay.load_cases(ROOT)}
+
+        generic_continue = replay.build_run_prompt(
+            cases["G12-generic-continuation-preserves-task-target"]
+        )
+        echoed_approval = replay.build_run_prompt(
+            cases["G13-echoed-approval-does-not-cure-inferred-target"]
+        )
+        explicit_switch = replay.build_run_prompt(
+            cases["G14-explicit-cross-target-switch-proceeds"]
+        )
+
+        self.assertIn("继续吧", generic_continue)
+        self.assertIn("限定修复", echoed_approval)
+        self.assertIn("明确切换", explicit_switch)
+        self.assertIn("example-project", explicit_switch)
 
     def test_judgment_prompt_includes_primary_user_trigger_without_scoring_criteria(self) -> None:
         cases = {case["id"]: case for case in replay.load_cases(ROOT)}
