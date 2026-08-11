@@ -111,9 +111,11 @@ alphaX/source-review/agent-workflow.md	intelligence-ceiling-half-life.md
 alphaX/session-runbook.md	skill_router:
 alphaX/session-runbook.md	double_diamond_research
 alphaX/session-runbook.md	formal_development
+alphaX/session-runbook.md	formal_code_review
 alphaX/operating-system.md	source_skills:
 alphaX/operating-system.md	problem_decomposer:
 alphaX/operating-system.md	formal_development:
+alphaX/operating-system.md	formal_code_review:
 alphaX/operating-system.md	loop_verification_gate:
 alphaX/operating-system.md	independent_sensor
 alphaX/loop-registry.md	loop_quality_gate:
@@ -123,6 +125,7 @@ docs/agent-invocation-contract.md	intents:
 docs/agent-invocation-contract.md	skill_trigger_layer:
 docs/agent-invocation-contract.md	insight_catcher
 docs/agent-invocation-contract.md	formal_development
+docs/agent-invocation-contract.md	formal_code_review
 docs/agent-invocation-contract.md	scope_rules:
 docs/agent-invocation-contract.md	required_first_pass:
 docs/agent-invocation-contract.md	output_self_check:
@@ -130,12 +133,12 @@ docs/agent-invocation-contract.md	forbidden_shortcuts:
 docs/agent-invocation-contract.md	source_identity_gate:
 docs/agent-invocation-contract.md	package_source_commit
 docs/alphax-plugin-publication.md	manual_edits_to_generated_outputs: forbidden
-AGENTS.md	fresh Codex replay of every F01-F10 and G01-G14 case with independent verdicts
-docs/alphax-plugin-publication.md	fresh invocation replay covers F01-F10 and G01-G14
+AGENTS.md	fresh Codex replay of every F01-F11 and G01-G14 case with independent verdicts
+docs/alphax-plugin-publication.md	fresh invocation replay covers F01-F11 and G01-G14
 plugin/skills/alphax/SKILL.md	resolve-invocation
 plugin/skills/alphax/SKILL.md	package_source_commit
-docs/agent-trigger-fixtures.md	F10-loop-verification-gate
-docs/agent-trigger-fixtures.json	F10-loop-verification-gate
+docs/agent-trigger-fixtures.md	F11-formal-code-review
+docs/agent-trigger-fixtures.json	F11-formal-code-review
 templates/project-work/local-pointer.md	default: target .git/info/exclude
 templates/project-work/local-pointer.md	target_tracked_tree:
 templates/project-work/local-pointer.md	edit_versioned_AGENTS_md: false

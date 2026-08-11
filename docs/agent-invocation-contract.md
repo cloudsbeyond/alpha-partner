@@ -71,6 +71,13 @@ intents:
     first_read: [skills/double-diamond-research/SKILL.md, project source when project-bound]
     minimum_output: [P0 main line, Discover Define Develop Deliver map, evidence gaps, next decision]
 
+  formal_code_review:
+    triggers: ["用形式化研发的双模式代码审查检查这个分支", "formal code review"]
+    default_scope: project work unless completion judgment is explicitly requested
+    loop: Project loop plus Formal Code Review
+    first_read: [skills/formal-development/SKILL.md, skills/formal-code-review/SKILL.md, target AGENTS.md, current project source, contracts, and diff]
+    minimum_output: [mode, target coverage, verified findings, L0-L3 routing, validation evidence, residual risk]
+
   source_review:
     triggers: ["alphaX self-critique", "检查 alphaX 本身", "source drift check"]
     default_scope: source review
@@ -106,11 +113,16 @@ skill_trigger_layer:
       source: skills/formal-development/SKILL.md
       use_when: formal-development work touches project initialization, later iteration, existing-project formalization, conformance review, PRD.md, product narrative, architecture narrative, L0-L4, formal contracts, Project Traceability, or spec/SDD residue cleanup
       output: phase call, L0 asset mapping, PRD projection boundary, downstream L1-L4 chain, conformance review findings when requested, validation and closeout state
+    formal_code_review:
+      source: skills/formal-code-review/SKILL.md
+      use_when: code-review requests inside formal-development work need an L3/L4-only review of a bounded target
+      output: mode, target coverage, verified findings, L0-L3 routing, validation evidence, residual risk
   composition:
     - use problem_decomposer first when the P0 problem level is unclear
     - use formal_development before writing or reviewing PRD, architecture, contract, traceability, harness, or implementation assets in formal-development work
     - use double_diamond_research when the problem is open, multi-stakeholder, strategic, or research-heavy
     - use insight_catcher before source changes triggered by creative input batches
+    - for formal-development code review, compose formal_development -> formal_code_review -> project validation -> optional PR/CI handling -> closeout; OCR remains optional unless the user or project gate requests it
     - if both match, run problem_decomposer to locate the problem level, then double_diamond_research to structure research and solution convergence
 
 scope_rules:

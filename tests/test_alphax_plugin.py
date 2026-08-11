@@ -170,6 +170,27 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("raw model reasoning", authority.lower())
         self.assertIn("forbid", authority.lower())
 
+    def test_formal_code_review_routing_is_registered(self) -> None:
+        invocation = (ROOT / "docs/agent-invocation-contract.md").read_text(encoding="utf-8")
+        runbook = (ROOT / "alphaX/session-runbook.md").read_text(encoding="utf-8")
+        operating = (ROOT / "alphaX/operating-system.md").read_text(encoding="utf-8")
+        publication = (ROOT / "docs/alphax-plugin-publication.md").read_text(encoding="utf-8")
+        manifest = json.loads((ROOT / "plugin/plugin.template.json").read_text(encoding="utf-8"))
+        fixtures = json.loads((ROOT / "docs/agent-trigger-fixtures.json").read_text(encoding="utf-8"))
+        review = next(item for item in fixtures["fixtures"] if item["id"] == "F11-formal-code-review")
+
+        self.assertIn("formal_code_review:", invocation)
+        self.assertIn("skills/formal-code-review/SKILL.md", invocation)
+        self.assertIn("formal_code_review:", runbook)
+        self.assertIn("formal_code_review:", operating)
+        self.assertEqual(review["expected_intent"], "formal_code_review")
+        self.assertTrue(
+            any("delegation mode" in item for item in review["must_output"])
+        )
+        self.assertIn("F01-F11", publication)
+        self.assertIn("formal-code-review", manifest["keywords"])
+        self.assertIn("Formal code review", manifest["interface"]["capabilities"])
+
     def test_real_entry_skill_uses_package_local_source_resolution(self) -> None:
         entry = (ROOT / "plugin/skills/alphax/SKILL.md").read_text(encoding="utf-8")
         manifest = json.loads((ROOT / "plugin/plugin.template.json").read_text(encoding="utf-8"))

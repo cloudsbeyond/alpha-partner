@@ -228,6 +228,33 @@
         "scheduling without approval",
         "hidden authority upgrade"
       ]
+    },
+    {
+      "id": "F11-formal-code-review",
+      "trigger": "用形式化研发的双模式代码审查检查这个分支",
+      "expected_intent": "formal_code_review",
+      "scope": "project work unless completion judgment is explicitly requested",
+      "loop": "Project loop plus Formal Code Review",
+      "must_read": [
+        "skills/formal-development/SKILL.md",
+        "skills/formal-code-review/SKILL.md",
+        "target AGENTS.md",
+        "current project source, contracts, and diff"
+      ],
+      "must_output": [
+        "delegation mode by default or explicit managed mode",
+        "review target and coverage",
+        "verified findings",
+        "L0-L3 routing",
+        "validation evidence",
+        "residual risk"
+      ],
+      "forbidden": [
+        "silent mode fallback",
+        "review output rewriting L0-L2",
+        "automatic external write",
+        "wiki-derived project decision"
+      ]
     }
   ]
 }
