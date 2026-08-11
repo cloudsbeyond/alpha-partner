@@ -183,10 +183,33 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("skills/formal-code-review/SKILL.md", invocation)
         self.assertIn("formal_code_review:", runbook)
         self.assertIn("formal_code_review:", operating)
-        self.assertEqual(review["expected_intent"], "formal_code_review")
-        self.assertTrue(
-            any("delegation mode" in item for item in review["must_output"])
-        )
+        self.assertEqual(review, {
+            "id": "F11-formal-code-review",
+            "trigger": "用形式化研发的双模式代码审查检查这个分支",
+            "expected_intent": "formal_code_review",
+            "scope": "project work unless completion judgment is explicitly requested",
+            "loop": "Project loop plus Formal Code Review",
+            "must_read": [
+                "skills/formal-development/SKILL.md",
+                "skills/formal-code-review/SKILL.md",
+                "target AGENTS.md",
+                "current project source, contracts, and diff",
+            ],
+            "must_output": [
+                "delegation mode by default or explicit managed mode",
+                "review target and coverage",
+                "verified findings",
+                "L0-L3 routing",
+                "validation evidence",
+                "residual risk",
+            ],
+            "forbidden": [
+                "silent mode fallback",
+                "review output rewriting L0-L2",
+                "automatic external write",
+                "wiki-derived project decision",
+            ],
+        })
         self.assertIn("F01-F11", publication)
         self.assertIn("formal-code-review", manifest["keywords"])
         self.assertIn("Formal code review", manifest["interface"]["capabilities"])
@@ -232,7 +255,11 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("Bounded project implementation fast path", entry)
         self.assertIn("do not read activation,", entry)
         self.assertIn("re-entry, operating-system, or loop-registry documents", entry)
-        self.assertLessEqual(len(manifest["interface"]["defaultPrompt"]), 3)
+        self.assertEqual(manifest["interface"]["defaultPrompt"], [
+            "@alphaX restore this project context.",
+            "Use alphax:problem-decomposer on this task.",
+            "Use alphax:formal-code-review to review this branch against main.",
+        ])
         self.assertNotIn("/" + "Users/", entry)
 
     def test_replay_failure_boundaries_are_source_contracts(self) -> None:
