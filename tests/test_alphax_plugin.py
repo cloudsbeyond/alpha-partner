@@ -92,6 +92,22 @@ class AlphaXPluginTest(unittest.TestCase):
             "---\nname: formal-development\ndescription: Use when formalizing.\n---\n# B\nSemantic Preservation\n",
         )
         self._write("skills/formal-development/references/rule.md", "rule\n")
+        self._write(
+            "skills/formal-code-review/SKILL.md",
+            "---\nname: formal-code-review\ndescription: Use when formal code review is requested.\n---\n# Formal Code Review\ndefault_mode: delegate\n",
+        )
+        self._write(
+            "skills/formal-code-review/references/mode-and-evidence.md",
+            "---\ntype: Reference\ntitle: Mode And Evidence\ndescription: fixture\n---\n# Mode And Evidence\n",
+        )
+        self._write(
+            "skills/formal-code-review/references/use-cases/authority-and-promotion.md",
+            "---\ntype: Reference\ntitle: Authority And Promotion\ndescription: fixture\n---\n# Authority And Promotion\n",
+        )
+        self._write(
+            "skills/formal-code-review/references/use-cases/pattern-schema.md",
+            "---\ntype: Reference\ntitle: Pattern Schema\ndescription: fixture\n---\n# Pattern Schema\n",
+        )
         self._write("AGENTS.md", "accepted\n")
 
     def _git(self, *args: str) -> str:
@@ -121,10 +137,38 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertTrue((out / "skills/alphax/SKILL.md").is_file())
         self.assertTrue((out / "skills/problem-decomposer/SKILL.md").is_file())
         self.assertTrue((out / "skills/formal-development/SKILL.md").is_file())
+        self.assertTrue((out / "skills/formal-code-review/SKILL.md").is_file())
+        self.assertTrue(
+            (out / "skills/formal-code-review/references/mode-and-evidence.md").is_file()
+        )
+        self.assertTrue(
+            (out / "skills/formal-code-review/references/use-cases/authority-and-promotion.md").is_file()
+        )
         self.assertEqual(
             (out / "skills/formal-development/references/rule.md").read_text(),
             "rule\n",
         )
+
+    def test_real_formal_code_review_source_contract(self) -> None:
+        skill = (ROOT / "skills/formal-code-review/SKILL.md").read_text(encoding="utf-8")
+        mode = (
+            ROOT / "skills/formal-code-review/references/mode-and-evidence.md"
+        ).read_text(encoding="utf-8")
+        authority = (
+            ROOT
+            / "skills/formal-code-review/references/use-cases/authority-and-promotion.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("name: formal-code-review", skill)
+        self.assertIn("default_mode: delegate", skill)
+        self.assertIn("managed_mode_requires_explicit_request: true", skill)
+        self.assertIn("silent_mode_fallback: forbidden", skill)
+        self.assertIn("review-coverage-incomplete", mode)
+        self.assertIn("l2-contract-drift", mode)
+        self.assertIn("project truth -> local review evidence -> sanitized pattern", authority)
+        self.assertIn("Audit -> Confirm -> Apply", authority)
+        self.assertIn("raw model reasoning", authority.lower())
+        self.assertIn("forbid", authority.lower())
 
     def test_real_entry_skill_uses_package_local_source_resolution(self) -> None:
         entry = (ROOT / "plugin/skills/alphax/SKILL.md").read_text(encoding="utf-8")
