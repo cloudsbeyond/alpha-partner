@@ -645,10 +645,41 @@ class AlphaXPluginTest(unittest.TestCase):
                 + "\nallow_candidate=False\n",
                 encoding="utf-8",
             )
+            nested_function = temporary_root / "nested-function.py"
+            nested_function.write_text(
+                implementation.replace(
+                    "            alphax_installer(\n                source_root,",
+                    "            installer_removed(\n                source_root,",
+                    1,
+                ).replace(
+                    '    if parity_check["status"] == "pass":',
+                    "    def unused() -> None:\n"
+                    "        alphax_installer(allow_candidate=False)\n\n"
+                    '    if parity_check["status"] == "pass":',
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            nested_lambda = temporary_root / "nested-lambda.py"
+            nested_lambda.write_text(
+                implementation.replace(
+                    "            alphax_installer(\n                source_root,",
+                    "            installer_removed(\n                source_root,",
+                    1,
+                ).replace(
+                    '    if parity_check["status"] == "pass":',
+                    "    unused = lambda: alphax_installer(allow_candidate=False)\n\n"
+                    '    if parity_check["status"] == "pass":',
+                    1,
+                ),
+                encoding="utf-8",
+            )
 
             self.assertEqual(verify(current).returncode, 0)
             self.assertNotEqual(verify(changed_value).returncode, 0)
             self.assertNotEqual(verify(moved_value).returncode, 0)
+            self.assertNotEqual(verify(nested_function).returncode, 0)
+            self.assertNotEqual(verify(nested_lambda).returncode, 0)
 
     def test_render_doctor_covers_result_fields_without_unbounded_payloads(self) -> None:
         result = {

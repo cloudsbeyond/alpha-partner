@@ -46,13 +46,32 @@ doctor_setup = next(
 if doctor_setup is None:
     raise SystemExit("doctor installer binding: doctor_setup is missing")
 
-calls = [
-    node
-    for node in ast.walk(doctor_setup)
-    if isinstance(node, ast.Call)
-    and isinstance(node.func, ast.Name)
-    and node.func.id == "alphax_installer"
-]
+class ExecutionScopeCallFinder(ast.NodeVisitor):
+    def __init__(self):
+        self.calls = []
+
+    def visit_FunctionDef(self, node):
+        return
+
+    def visit_AsyncFunctionDef(self, node):
+        return
+
+    def visit_Lambda(self, node):
+        return
+
+    def visit_ClassDef(self, node):
+        return
+
+    def visit_Call(self, node):
+        if isinstance(node.func, ast.Name) and node.func.id == "alphax_installer":
+            self.calls.append(node)
+        self.generic_visit(node)
+
+
+finder = ExecutionScopeCallFinder()
+for statement in doctor_setup.body:
+    finder.visit(statement)
+calls = finder.calls
 if len(calls) != 1:
     raise SystemExit(
         f"doctor installer binding: expected one alphax_installer call, found {len(calls)}"
