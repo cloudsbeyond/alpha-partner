@@ -62,9 +62,15 @@ code_refs: [src/import/request.ts]
 validation:
   command: npm test -- import-request
   artifact: test-results/import-request.json
-  review: OCR review report
 result: pass
 residual_risk: manual product acceptance not yet complete
+```
+
+Optional OCR review carrier (only when `formal_code_review_gate` applies):
+
+```yaml
+validation:
+  review: OCR review report
 ```
 
 An OCR review report is review evidence, not human acceptance, merge readiness,

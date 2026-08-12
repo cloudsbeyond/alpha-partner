@@ -183,6 +183,11 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("does not make OCR mandatory", formal)
         self.assertIn("OCR review report", coding)
         self.assertIn("not human acceptance", coding)
+        minimal_l4 = coding.split("Minimal coding L4:\n\n```yaml\n", 1)[1].split(
+            "```", 1
+        )[0]
+        self.assertNotIn("OCR review report", minimal_l4)
+        self.assertIn("Optional OCR review carrier", coding)
 
     def test_formal_code_review_routing_is_registered(self) -> None:
         invocation = (ROOT / "docs/agent-invocation-contract.md").read_text(encoding="utf-8")
