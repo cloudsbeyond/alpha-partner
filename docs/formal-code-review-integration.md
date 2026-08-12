@@ -337,7 +337,7 @@ The integration is complete only when:
 - the OCR CLI and Codex plugin are installed from their declared upstream;
 - a fresh delegation-mode review proves target coverage and normalized output;
 - managed mode either passes against an explicitly approved endpoint or is
-  reported as guarded-but-unproven with the exact missing owner evidence;
+  reported as guarded-unproven with the exact missing owner evidence;
 - formal-development and closeout preserve the L0-L2/L3-L4 boundary;
 - the use-case map exists under the bridge references and contains no
   speculative or project-private page;
