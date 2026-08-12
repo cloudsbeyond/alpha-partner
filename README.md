@@ -177,8 +177,16 @@ Source commit or dirty candidate fingerprint; same-version differences between
 the generated package, marketplace source, and installed cache are hard
 failures.
 
+For formal-review adopter setup:
+
+```bash
+python3 scripts/alphax_plugin.py doctor
+python3 scripts/alphax_plugin.py doctor --install
+```
+
 See [`docs/alphax-plugin-publication.md`](docs/alphax-plugin-publication.md) for
-build, install, parity, Source identity, and fresh invocation replay commands.
+the canonical quickstart, prerequisites, exit codes, parity, Source identity,
+and fresh invocation replay commands.
 
 ## Repository Layout
 

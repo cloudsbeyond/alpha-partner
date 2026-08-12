@@ -547,6 +547,35 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertEqual(alphax_plugin.doctor_exit_code({"overall": "action-required"}), 2)
         self.assertEqual(alphax_plugin.doctor_exit_code({"overall": "blocked"}), 1)
 
+    def test_formal_review_adopter_onboarding_is_a_source_contract(self) -> None:
+        publication = (ROOT / "docs/alphax-plugin-publication.md").read_text(encoding="utf-8")
+        root_readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        chinese_readme = (ROOT / "docs/README.zh-CN.md").read_text(encoding="utf-8")
+        plugin_readme = (ROOT / "plugin/README.md").read_text(encoding="utf-8")
+        design = (ROOT / "docs/formal-code-review-integration.md").read_text(encoding="utf-8")
+
+        quickstart = (
+            "python3 scripts/alphax_plugin.py doctor",
+            "python3 scripts/alphax_plugin.py doctor --install",
+        )
+        for text in (publication, root_readme, chinese_readme):
+            for command in quickstart:
+                self.assertIn(command, text)
+        self.assertIn("python3 scripts/alphax_plugin.py doctor --json", publication)
+        for identity in (
+            "@alibaba-group/open-code-review",
+            "https://github.com/alibaba/open-code-review.git",
+            "open-code-review-codex@open-code-review",
+            "managed-llm-unapproved",
+            "clean accepted Source",
+            "ready: 0",
+            "blocked: 1",
+            "action-required: 2",
+        ):
+            self.assertIn(identity, publication)
+        self.assertIn("docs/alphax-plugin-publication.md", plugin_readme)
+        self.assertIn("adopter_setup_implementation_status: validated-local", design)
+
     def test_render_doctor_covers_result_fields_without_unbounded_payloads(self) -> None:
         result = {
             "overall": "action-required",

@@ -48,6 +48,35 @@ accepted Source and verifies its full tree fingerprint. For source work and
 source review, it requires `--live-source-root`; the output must identify that
 checkout as accepted or candidate.
 
+## Formal Review Adopter Quickstart
+
+From a clean accepted Source, first inspect the complete local state:
+
+```bash
+python3 scripts/alphax_plugin.py doctor
+python3 scripts/alphax_plugin.py doctor --install
+python3 scripts/alphax_plugin.py doctor --json
+```
+
+`doctor` is read-only. `doctor --install` is idempotent: it changes only a
+missing automatic dependency, re-probes after each attempted change, and reports
+the final observed state. Production AlphaX installation requires a clean
+accepted Source; never use --allow-candidate to bypass that gate.
+
+The doctor requires Python `>=3.10` and Git `>=2.41`. Node `>=14` plus runnable
+npm are conditional: they are needed only when the OCR CLI is absent. The OCR
+identities are `@alibaba-group/open-code-review`,
+`https://github.com/alibaba/open-code-review.git`, and
+`open-code-review-codex@open-code-review`. Automated installation is supported
+on macOS and Linux; on Windows, doctor remains read-only and returns upstream
+manual guidance.
+
+Exit codes are stable: `ready: 0`, `blocked: 1`, and `action-required: 2`.
+Managed review remains `managed-llm-unapproved` until an explicit endpoint and
+target-code egress approval exist outside doctor. Unit tests use mocked command
+results; local Source verification proves the tracked contract, not a live
+installation, managed review, or human acceptance.
+
 ## Build And Verify
 
 ```bash

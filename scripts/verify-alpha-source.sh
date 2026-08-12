@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 
 fail() { printf 'FAIL: %s\n' "$1" >&2; exit 1; }
-has() { rg -n "$1" "$ROOT/$2" >/dev/null || fail "missing pattern in $2: $1"; }
+has() { rg -n -- "$1" "$ROOT/$2" >/dev/null || fail "missing pattern in $2: $1"; }
 exists() { [ -e "$ROOT/$1" ] || fail "missing path: $1"; }
 
 source_rg() {
@@ -133,6 +133,14 @@ docs/agent-invocation-contract.md	forbidden_shortcuts:
 docs/agent-invocation-contract.md	source_identity_gate:
 docs/agent-invocation-contract.md	package_source_commit
 docs/alphax-plugin-publication.md	manual_edits_to_generated_outputs: forbidden
+scripts/alphax_plugin.py	subparsers\.add_parser\("doctor"\)
+scripts/alphax_plugin.py	doctor\.add_argument\("--install"
+docs/alphax-plugin-publication.md	python3 scripts/alphax_plugin.py doctor
+docs/alphax-plugin-publication.md	@alibaba-group/open-code-review
+docs/alphax-plugin-publication.md	https://github.com/alibaba/open-code-review.git
+docs/alphax-plugin-publication.md	open-code-review-codex@open-code-review
+docs/alphax-plugin-publication.md	managed-llm-unapproved
+docs/alphax-plugin-publication.md	never use --allow-candidate
 AGENTS.md	fresh Codex replay of every F01-F11 and G01-G14 case with independent verdicts
 docs/alphax-plugin-publication.md	fresh invocation replay covers F01-F11 and G01-G14
 plugin/skills/alphax/SKILL.md	resolve-invocation

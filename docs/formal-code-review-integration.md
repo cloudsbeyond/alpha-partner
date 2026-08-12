@@ -20,7 +20,7 @@ implementation_status: validated-local
 managed_mode_evidence: guarded-unproven
 managed_mode_failure_class: managed-llm-unapproved
 adopter_setup_design_status: approved
-adopter_setup_implementation_status: not-started
+adopter_setup_implementation_status: validated-local
 primary_scope: Alpha Partner Source work
 integration_owner: skills/formal-code-review
 external_dependencies:

@@ -24,5 +24,6 @@ snapshot. Project work and review use the embedded snapshot; source work and
 review require an explicit live checkout. Every nontrivial invocation reports
 package and resolved Source identity.
 
-Build, install, parity, and replay rules are defined in
-`docs/alphax-plugin-publication.md` in Alpha Partner Source.
+The accepted Source publication contract defines build, install, parity, and
+replay rules: `docs/alphax-plugin-publication.md`. Generated copies must follow
+that Source contract rather than assume an adjacent checkout.
