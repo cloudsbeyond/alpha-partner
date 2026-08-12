@@ -62,6 +62,10 @@ python3 scripts/alphax_plugin.py doctor --json
 missing automatic dependency, re-probes after each attempted change, and reports
 the final observed state. Production AlphaX installation requires a clean
 accepted Source; never use --allow-candidate to bypass that gate.
+Python and Git must pass before the first mutation. A partial AlphaX carrier is
+blocked and requires manual inspection; automatic AlphaX installation runs only
+when both marketplace and cache carriers are absent, so it never overwrites an
+existing tree.
 
 The doctor requires Python `>=3.10`, Git `>=2.41`, and a Codex CLI that can run
 `codex plugin marketplace list --json` and `codex plugin list --json`. If that
@@ -74,7 +78,17 @@ they are needed only when the OCR CLI is absent. The OCR identities are
 on macOS and Linux; on Windows, doctor remains read-only and returns upstream
 manual guidance.
 
+The OCR CLI must report an `open-code-review v...` product signature and must
+not be a development build. A runnable pre-existing carrier is usable but is
+reported as `provenance-unverified` with residual risk
+`ocr-cli-provenance-unverified`; only a successful npm install and product
+re-probe is `package-installed` for that run. An installed OCR plugin passes
+only when its exact `marketplaceSource.source` is the approved repository.
+Missing or mismatched plugin provenance is blocked and never overwritten.
+
 Exit codes are stable: `ready: 0`, `blocked: 1`, and `action-required: 2`.
+Any `failed` change forces `overall: blocked` and exit code 1 while the final
+checks and a bounded retry action remain in the report.
 Managed review remains `managed-llm-unapproved` until an explicit endpoint and
 target-code egress approval exist outside doctor. Unit tests use mocked command
 results; local Source verification proves the tracked contract, not a live

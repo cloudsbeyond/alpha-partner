@@ -107,7 +107,7 @@ observed final state.
 | Git | `>=2.41` | Resolve version and repository state | Cannot self-install; return exact manual action |
 | Codex CLI | Must expose `codex plugin` marketplace and install commands | Read-only capability probe | Cannot self-install Codex; return exact manual action |
 | Node/npm | Node `>=14` plus runnable npm, required only when OCR CLI is absent | Report whether npm installation is available | Use npm only for the declared OCR package |
-| OCR CLI | `@alibaba-group/open-code-review`, runnable non-development version | Run `ocr version`; distinguish missing, incompatible, and ready | If missing, run `npm install -g @alibaba-group/open-code-review` |
+| OCR CLI | `@alibaba-group/open-code-review`, runnable non-development version | Require an `open-code-review v...` product signature; a runnable pre-existing carrier is `provenance-unverified` | If missing, run `npm install -g @alibaba-group/open-code-review` |
 | OCR marketplace | Git source `https://github.com/alibaba/open-code-review.git` | Read Codex marketplace JSON and verify exact source | Add `alibaba/open-code-review --ref main` only when absent |
 | OCR Codex plugin | `open-code-review-codex@open-code-review`, installed and enabled | Read Codex plugin JSON and verify selector/source/state | Install the selector only when absent or not enabled |
 | AlphaX Source | Clean and accepted for production install | Run Source verification and report `accepted` or `candidate` | Install AlphaX only from clean accepted Source; never use `--allow-candidate` |
@@ -119,6 +119,11 @@ doctor remains read-only and emits upstream manual installation guidance instead
 of guessing shell, privilege, or global-package configuration. An already
 runnable OCR binary is accepted as a carrier; doctor reports when npm provenance
 cannot be established and never overwrites a working non-npm installation.
+That state is observed as `<version> (provenance-unverified)` with residual risk
+`ocr-cli-provenance-unverified`; only a successful npm mutation followed by the
+same product-signature probe is reported as `package-installed` for that run.
+An exit-zero unrelated tool or development build is incompatible, not delegation
+ready.
 
 ### State And Output Contract
 
@@ -147,6 +152,8 @@ residual_risk: [unverified-or-manual-gate]
 The report contains versions, selectors, repository-relative refs, failure
 classes, and sanitized actions. It must not contain tokens, credential values,
 raw config files, hidden reasoning, private logs, or copied project source.
+Any `failed` change forces `overall: blocked` and exit code 1 while preserving
+the final observed checks and a bounded retry action.
 
 ### Install Order And Idempotence
 
@@ -155,17 +162,25 @@ raw config files, hidden reasoning, private logs, or copied project source.
 2. Without `--install`, return the complete action plan and make no mutation.
 3. With `--install`, install only missing automatic dependencies in this order:
    OCR npm package, OCR marketplace, OCR plugin, then AlphaX from accepted Source.
-4. After each change, re-probe the affected state. Stop on command failure,
+4. Before the first mutation, stop if the Python or Git core prerequisite is not
+   passing. After the independent OCR CLI step, stop before Codex marketplace,
+   plugin, or AlphaX changes if the Codex plugin capability is not passing.
+5. After each change, re-probe the affected state. Stop on command failure,
    marketplace source mismatch, incompatible tool, candidate/dirty Source, or
    parity failure. Never remove, downgrade, overwrite, silently fall back, or
    hand-edit Codex configuration/cache.
-5. Rerunning either command is safe. A ready environment produces no changes;
+6. Rerunning either command is safe. A ready environment produces no changes;
    a partial prior run resumes from observed state and reports earlier work as
    `already-satisfied`.
 
 Marketplace presence with a different source is `blocked`, not an invitation to
 replace it. A candidate Source does not block installing OCR dependencies, but
 it blocks the AlphaX production-install step with the exact Source-authority gap.
+An installed OCR plugin proves provenance only when its exact
+`marketplaceSource.source` equals the approved repository; missing or mismatched
+provenance is blocked and non-installable. Likewise, any partial AlphaX carrier
+state is blocked: automatic AlphaX installation is allowed only when marketplace
+and cache carriers are both absent, so it cannot overwrite an existing tree.
 
 ### Documentation And Testing Scope
 

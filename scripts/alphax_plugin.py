@@ -556,6 +556,20 @@ def _version_tuple(value: str) -> tuple[int, ...] | None:
     return tuple(int(part) for part in match.group().split("."))
 
 
+def _ocr_cli_version(value: str) -> str | None:
+    lines = [line.strip() for line in value.splitlines() if line.strip()]
+    if not lines or re.search(r"\bdev(?:elopment)?\b", lines[0], re.IGNORECASE):
+        return None
+    match = re.fullmatch(
+        r"open-code-review\s+v(\d+(?:\.\d+)+)"
+        r"(?:\s+\([0-9a-z.-]+\))?"
+        r"(?:\s+[0-9a-z._-]+/[0-9a-z._-]+)?",
+        lines[0],
+        re.IGNORECASE,
+    )
+    return match.group(1) if match else None
+
+
 def _check(
     check_id: str,
     scope: str,
@@ -620,6 +634,14 @@ def _marketplace_source(marketplace: dict[str, Any]) -> str | None:
         if isinstance(source, str):
             return source
     return None
+
+
+def _plugin_marketplace_source(plugin: dict[str, Any]) -> str | None:
+    marketplace_source = plugin.get("marketplaceSource")
+    if not isinstance(marketplace_source, dict):
+        return None
+    source = marketplace_source.get("source")
+    return source if isinstance(source, str) else None
 
 
 def _probe_codex_state(
@@ -730,6 +752,26 @@ def _probe_codex_state(
             True,
             "install and enable the Open Code Review Codex plugin",
         )
+    elif _plugin_marketplace_source(plugin) is None:
+        plugin_check = _check(
+            "ocr-plugin",
+            "delegation",
+            "blocked",
+            "source-unverified",
+            "installed and enabled " + OCR_PLUGIN_SELECTOR,
+            False,
+            "verify the installed Open Code Review plugin source manually",
+        )
+    elif _plugin_marketplace_source(plugin) != OCR_MARKETPLACE_REPOSITORY:
+        plugin_check = _check(
+            "ocr-plugin",
+            "delegation",
+            "blocked",
+            "source-mismatch",
+            "installed and enabled " + OCR_PLUGIN_SELECTOR,
+            False,
+            "resolve the installed Open Code Review plugin source manually",
+        )
     elif "installed" in plugins and plugin.get("installed") is not True:
         plugin_check = _check(
             "ocr-plugin",
@@ -832,7 +874,11 @@ def _probe_alphax_state(
     except (OSError, ValueError):
         verification = {"ok": False, "failure_classes": ["verification-error"]}
     cache = Path(str(verification.get("cache", ""))) if verification.get("cache") else None
-    if not plugin_source.is_dir() or cache is None or not cache.is_dir():
+    plugin_present = plugin_source.is_dir()
+    cache_present = cache is not None and cache.is_dir()
+    cache_root_present = cache_root.is_dir() and any(cache_root.iterdir())
+    failure_classes = set(verification.get("failure_classes", []))
+    if not plugin_present and not cache_root_present:
         parity_check = _check(
             "alphax-parity",
             "alphax-publication",
@@ -842,7 +888,7 @@ def _probe_alphax_state(
             True,
             "install AlphaX from clean accepted Source and verify parity",
         )
-    elif verification.get("ok"):
+    elif plugin_present and cache_present and verification.get("ok"):
         parity_check = _check(
             "alphax-parity",
             "alphax-publication",
@@ -853,14 +899,24 @@ def _probe_alphax_state(
             None,
         )
     else:
+        observed = (
+            "drift-detected"
+            if any("drift" in failure for failure in failure_classes)
+            and not failure_classes.issubset({"marketplace-content-drift", "cache-content-drift"})
+            else "partial-carrier-state"
+        )
+        if plugin_present and "marketplace-content-drift" in failure_classes:
+            observed = "drift-detected"
+        if cache_present and "cache-content-drift" in failure_classes:
+            observed = "drift-detected"
         parity_check = _check(
             "alphax-parity",
             "alphax-publication",
             "blocked",
-            "drift-detected",
+            observed,
             "byte-identical generated package, marketplace, and cache",
             False,
-            "repair AlphaX Source or regenerate the installed package",
+            "inspect existing AlphaX carriers and restore verified parity manually",
         )
     return source_check, parity_check
 
@@ -916,18 +972,32 @@ def doctor_setup(
     )
 
     ocr_probe = _run_probe(command_runner, ["ocr", "version"])
-    ocr_version = _version_tuple(ocr_probe.stdout)
+    ocr_version = _ocr_cli_version(ocr_probe.stdout)
     ocr_status = "pass" if ocr_probe.returncode == 0 and ocr_version else (
         "missing" if ocr_probe.returncode != 0 else "incompatible"
     )
+    if ocr_status == "pass":
+        ocr_observed = f"{ocr_version} (provenance-unverified)"
+    elif re.search(r"\bdev(?:elopment)?\b", ocr_probe.stdout, re.IGNORECASE):
+        ocr_observed = "development-build"
+    elif ocr_probe.returncode == 0:
+        ocr_observed = "identity-unverified"
+    else:
+        ocr_observed = None
     ocr_check = _check(
         "ocr-cli",
         "delegation",
         ocr_status,
-        ".".join(str(part) for part in ocr_version) if ocr_version else None,
+        ocr_observed,
         OCR_PACKAGE,
         ocr_status == "missing",
-        None if ocr_status == "pass" else "install " + OCR_PACKAGE,
+        (
+            None
+            if ocr_status == "pass"
+            else "install " + OCR_PACKAGE
+            if ocr_status == "missing"
+            else "resolve the existing ocr executable manually"
+        ),
     )
 
     if ocr_status == "missing":
@@ -993,7 +1063,8 @@ def doctor_setup(
         "overall": _overall_status(checks),
         "checks": checks,
         "changes": [],
-        "residual_risk": ["managed-llm-unapproved"],
+        "residual_risk": ["managed-llm-unapproved"]
+        + (["ocr-cli-provenance-unverified"] if ocr_status == "pass" else []),
     }
     if not install_requested:
         return payload
@@ -1021,6 +1092,7 @@ def doctor_setup(
         ),
     ]
     changes: list[dict[str, Any]] = []
+    ocr_package_installed = False
 
     def record(
         check_id: str, command_class: str, status: str, action: str | None = None
@@ -1046,7 +1118,31 @@ def doctor_setup(
         )
         refreshed["mode"] = "install"
         refreshed["changes"] = changes
+        if ocr_package_installed:
+            refreshed_cli = next(
+                check for check in refreshed["checks"] if check["id"] == "ocr-cli"
+            )
+            if refreshed_cli["status"] == "pass" and isinstance(
+                refreshed_cli["observed"], str
+            ):
+                version = refreshed_cli["observed"].split(" ", 1)[0]
+                refreshed_cli["observed"] = f"{version} (package-installed)"
+                refreshed["residual_risk"] = [
+                    risk
+                    for risk in refreshed["residual_risk"]
+                    if risk != "ocr-cli-provenance-unverified"
+                ]
+        if any(change["status"] == "failed" for change in changes):
+            refreshed["overall"] = "blocked"
         return refreshed
+
+    check_by_id = {check["id"]: check for check in checks}
+    if any(check_by_id[check_id]["status"] != "pass" for check_id in ("python", "git")):
+        action = "repair Python and Git core prerequisites before installation"
+        for check_id, command_class, _command in install_steps:
+            record(check_id, command_class, "skipped", action)
+        record("alphax", "alphax-install", "skipped", action)
+        return finish()
 
     if (platform_name or sys.platform).lower() not in {"darwin", "linux"}:
         for check_id, command_class, _command in install_steps:
@@ -1054,7 +1150,6 @@ def doctor_setup(
         record("alphax", "alphax-install", "skipped", "install AlphaX manually on a supported platform")
         return finish()
 
-    check_by_id = {check["id"]: check for check in checks}
     ocr_check = check_by_id["ocr-cli"]
     if ocr_check["status"] == "pass":
         record("ocr-cli", "npm-install", "already-satisfied")
@@ -1065,9 +1160,14 @@ def doctor_setup(
         _check_id, command_class, command = install_steps[0]
         completed = _run_probe(command_runner, command)
         reprobe = _run_probe(command_runner, ["ocr", "version"])
-        if completed.returncode != 0 or reprobe.returncode != 0 or _version_tuple(reprobe.stdout) is None:
+        if (
+            completed.returncode != 0
+            or reprobe.returncode != 0
+            or _ocr_cli_version(reprobe.stdout) is None
+        ):
             record("ocr-cli", command_class, "failed", "install OCR CLI manually and retry")
             return finish()
+        ocr_package_installed = True
         record("ocr-cli", command_class, "applied")
 
     marketplace_check = _probe_codex_state(command_runner)[1]
@@ -1192,6 +1292,12 @@ def render_doctor(result: dict[str, Any]) -> str:
 
 
 def doctor_exit_code(result: dict[str, Any]) -> int:
+    changes = result.get("changes", [])
+    if isinstance(changes, list) and any(
+        isinstance(change, dict) and change.get("status") == "failed"
+        for change in changes
+    ):
+        return 1
     overall = result.get("overall")
     if overall == "ready":
         return 0
