@@ -8,15 +8,17 @@ tags: ["alphax", "formal-development", "code-review", "open-code-review", "valid
 
 ## Status And Scope
 
-This document records the owner-approved design for integrating Alibaba Open
-Code Review (`ocr`) into alphaX formal-development work. It is architecture and
-implementation guidance, not implementation evidence. The integration remains
-incomplete until the source skill, plugin package, installation, and behavior
-checks described below exist and pass.
+This document records the owner-approved design and current local validation
+state for integrating Alibaba Open Code Review (`ocr`) into alphaX
+formal-development work. The Source candidate and delegation flow are validated
+locally. This does not establish accepted publication, installed AlphaX parity,
+fresh F11 live replay, managed-model behavior, or owner/product acceptance.
 
 ```yaml
 design_status: approved
-implementation_status: not-started
+implementation_status: validated-local
+managed_mode_evidence: guarded-unproven
+managed_mode_failure_class: managed-llm-unapproved
 primary_scope: Alpha Partner Source work
 integration_owner: skills/formal-code-review
 external_dependencies:
