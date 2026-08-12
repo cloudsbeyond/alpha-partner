@@ -105,7 +105,7 @@ python3 scripts/alphax_plugin.py doctor
 python3 scripts/alphax_plugin.py doctor --install
 ```
 
-完整 quickstart、前置条件、退出码、构建、安装、parity、Source identity 和 fresh invocation replay 合约见 `docs/alphax-plugin-publication.md`。
+完整 quickstart、前置条件、退出码、构建、安装、parity、Source identity 和 fresh invocation replay 合约见 [`docs/alphax-plugin-publication.md`](alphax-plugin-publication.md)。
 
 ## 目录结构
 

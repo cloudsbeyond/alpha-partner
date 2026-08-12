@@ -63,9 +63,12 @@ missing automatic dependency, re-probes after each attempted change, and reports
 the final observed state. Production AlphaX installation requires a clean
 accepted Source; never use --allow-candidate to bypass that gate.
 
-The doctor requires Python `>=3.10` and Git `>=2.41`. Node `>=14` plus runnable
-npm are conditional: they are needed only when the OCR CLI is absent. The OCR
-identities are `@alibaba-group/open-code-review`,
+The doctor requires Python `>=3.10`, Git `>=2.41`, and a Codex CLI that can run
+`codex plugin marketplace list --json` and `codex plugin list --json`. If that
+Codex capability is absent, doctor returns `blocked` with a manual action and
+does not self-install Codex. Node `>=14` plus runnable npm are conditional:
+they are needed only when the OCR CLI is absent. The OCR identities are
+`@alibaba-group/open-code-review`,
 `https://github.com/alibaba/open-code-review.git`, and
 `open-code-review-codex@open-code-review`. Automated installation is supported
 on macOS and Linux; on Windows, doctor remains read-only and returns upstream

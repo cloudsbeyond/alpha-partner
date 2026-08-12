@@ -553,6 +553,9 @@ class AlphaXPluginTest(unittest.TestCase):
         chinese_readme = (ROOT / "docs/README.zh-CN.md").read_text(encoding="utf-8")
         plugin_readme = (ROOT / "plugin/README.md").read_text(encoding="utf-8")
         design = (ROOT / "docs/formal-code-review-integration.md").read_text(encoding="utf-8")
+        verifier = (ROOT / "scripts/verify-alpha-source.sh").read_text(encoding="utf-8")
+        implementation = (ROOT / "scripts/alphax_plugin.py").read_text(encoding="utf-8")
+        self.assertIn('has_fixed() { rg -n -F -- "$1" "$ROOT/$2"', verifier)
 
         quickstart = (
             "python3 scripts/alphax_plugin.py doctor",
@@ -561,7 +564,12 @@ class AlphaXPluginTest(unittest.TestCase):
         for text in (publication, root_readme, chinese_readme):
             for command in quickstart:
                 self.assertIn(command, text)
+        for text in (root_readme, chinese_readme):
+            self.assertEqual(text.count("python3 scripts/alphax_plugin.py doctor\n"), 1)
+            self.assertEqual(text.count("python3 scripts/alphax_plugin.py doctor --install\n"), 1)
         self.assertIn("python3 scripts/alphax_plugin.py doctor --json", publication)
+        self.assertIn("codex plugin marketplace list --json", publication)
+        self.assertIn("codex plugin list --json", publication)
         for identity in (
             "@alibaba-group/open-code-review",
             "https://github.com/alibaba/open-code-review.git",
@@ -574,7 +582,39 @@ class AlphaXPluginTest(unittest.TestCase):
         ):
             self.assertIn(identity, publication)
         self.assertIn("docs/alphax-plugin-publication.md", plugin_readme)
+        self.assertNotIn("python3 scripts/alphax_plugin.py doctor", plugin_readme)
+        self.assertIn("](alphax-plugin-publication.md)", chinese_readme)
         self.assertIn("adopter_setup_implementation_status: validated-local", design)
+        self.assertIn("managed_mode_evidence: guarded-unproven", design)
+        self.assertIn("managed_mode_failure_class: managed-llm-unapproved", design)
+        for constant in (
+            'OCR_PACKAGE = "@alibaba-group/open-code-review"',
+            'OCR_MARKETPLACE_REPOSITORY = "https://github.com/alibaba/open-code-review.git"',
+            'OCR_PLUGIN_SELECTOR = "open-code-review-codex@open-code-review"',
+            "allow_candidate=False",
+        ):
+            self.assertIn(constant, implementation)
+            self.assertIn(constant, verifier)
+
+    def test_source_verifier_treats_dash_prefixed_private_pattern_as_literal(self) -> None:
+        verifier = (ROOT / "scripts/verify-alpha-source.sh").read_text(encoding="utf-8")
+        helper = verifier.split("required_paths=(", 1)[0]
+        root_assignment = 'ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"'
+        self.assertIn(root_assignment, helper)
+        helper = helper.replace(root_assignment, 'ROOT="$1"')
+
+        with tempfile.TemporaryDirectory() as temporary:
+            source_root = Path(temporary)
+            (source_root / "marker.md").write_text("-n\n", encoding="utf-8")
+            result = subprocess.run(
+                ["bash", "-c", helper + '\nsource_rg -n -F "$2"', "bash", str(source_root), "-n"],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("marker.md", result.stdout)
 
     def test_render_doctor_covers_result_fields_without_unbounded_payloads(self) -> None:
         result = {

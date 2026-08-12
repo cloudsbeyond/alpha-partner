@@ -5,12 +5,20 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 
 fail() { printf 'FAIL: %s\n' "$1" >&2; exit 1; }
 has() { rg -n -- "$1" "$ROOT/$2" >/dev/null || fail "missing pattern in $2: $1"; }
+has_fixed() { rg -n -F -- "$1" "$ROOT/$2" >/dev/null || fail "missing fixed text in $2: $1"; }
 exists() { [ -e "$ROOT/$1" ] || fail "missing path: $1"; }
 
 source_rg() {
-  rg "$@" "$ROOT" \
+  local argument_count=$#
+  local pattern="${!argument_count}"
+  local -a rg_flags=()
+  if [ "$argument_count" -gt 1 ]; then
+    rg_flags=("${@:1:$((argument_count - 1))}")
+  fi
+  rg "${rg_flags[@]}" \
     -g '*.md' -g '*.yaml' -g '*.yml' -g '*.json' -g '*.js' -g '*.mjs' -g '*.py' -g '*.sh' -g '*.txt' \
-    --glob '!.git/**' --glob '!.alphaX/**' --glob '!scripts/verify-alpha-source.sh'
+    --glob '!.git/**' --glob '!.alphaX/**' --glob '!scripts/verify-alpha-source.sh' \
+    -- "$pattern" "$ROOT"
 }
 
 absent_public() {
@@ -135,7 +143,10 @@ docs/agent-invocation-contract.md	package_source_commit
 docs/alphax-plugin-publication.md	manual_edits_to_generated_outputs: forbidden
 scripts/alphax_plugin.py	subparsers\.add_parser\("doctor"\)
 scripts/alphax_plugin.py	doctor\.add_argument\("--install"
+scripts/alphax_plugin.py	alphax_installer\(
 docs/alphax-plugin-publication.md	python3 scripts/alphax_plugin.py doctor
+docs/alphax-plugin-publication.md	codex plugin marketplace list --json
+docs/alphax-plugin-publication.md	codex plugin list --json
 docs/alphax-plugin-publication.md	@alibaba-group/open-code-review
 docs/alphax-plugin-publication.md	https://github.com/alibaba/open-code-review.git
 docs/alphax-plugin-publication.md	open-code-review-codex@open-code-review
@@ -283,6 +294,15 @@ scripts/verify-local-alphaX.sh	packet %d missing
 scripts/verify-local-alphaX.sh	expected_judgment
 scripts/init-local-alphaX.sh	private-patterns.txt
 scripts/init-local-alphaX.sh	source checkout
+EOF
+
+while IFS=$'\t' read -r file text; do
+  has_fixed "$text" "$file"
+done <<'EOF'
+scripts/alphax_plugin.py	OCR_PACKAGE = "@alibaba-group/open-code-review"
+scripts/alphax_plugin.py	OCR_MARKETPLACE_REPOSITORY = "https://github.com/alibaba/open-code-review.git"
+scripts/alphax_plugin.py	OCR_PLUGIN_SELECTOR = "open-code-review-codex@open-code-review"
+scripts/alphax_plugin.py	allow_candidate=False
 EOF
 
 [ ! -e "$ROOT/partner" ] || fail "public source contains legacy local-asset directory: partner"
