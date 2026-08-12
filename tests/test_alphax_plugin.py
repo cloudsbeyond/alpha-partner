@@ -170,6 +170,20 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("raw model reasoning", authority.lower())
         self.assertIn("forbid", authority.lower())
 
+    def test_formal_development_composes_optional_code_review(self) -> None:
+        formal = (ROOT / "skills/formal-development/SKILL.md").read_text(encoding="utf-8")
+        coding = (
+            ROOT / "skills/formal-development/references/coding-l0-l4.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("formal_code_review_gate:", formal)
+        self.assertIn("skill: skills/formal-code-review/SKILL.md", formal)
+        self.assertIn("required_when: user-or-project-review-gate", formal)
+        self.assertIn("default_for_routine_review: delegation", formal)
+        self.assertIn("does not make OCR mandatory", formal)
+        self.assertIn("OCR review report", coding)
+        self.assertIn("not human acceptance", coding)
+
     def test_formal_code_review_routing_is_registered(self) -> None:
         invocation = (ROOT / "docs/agent-invocation-contract.md").read_text(encoding="utf-8")
         runbook = (ROOT / "alphaX/session-runbook.md").read_text(encoding="utf-8")
