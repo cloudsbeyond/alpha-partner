@@ -706,6 +706,9 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertNotIn("stderr", json.dumps(result))
         self.assertFalse(any(call[:4] == ["codex", "plugin", "add", alphax_plugin.OCR_PLUGIN_SELECTOR] for call in runner.calls))
         self.assertEqual(installer_calls, [])
+        self.assertEqual(next(check for check in result["checks"] if check["id"] == "ocr-cli")["status"], "pass")
+        self.assertNotEqual(next(check for check in result["checks"] if check["id"] == "ocr-marketplace")["status"], "pass")
+        self.assertEqual(result["overall"], "action-required")
 
     def test_doctor_install_ready_records_already_satisfied_without_mutation(self) -> None:
         plugin_source, cache_root = self._ready_doctor_paths()
@@ -807,6 +810,163 @@ class AlphaXPluginTest(unittest.TestCase):
             ["codex", "plugin", "marketplace", "add", "alibaba/open-code-review", "--ref", "main", "--json"],
             runner.calls,
         )
+
+    def test_doctor_install_requires_literal_true_for_mutation(self) -> None:
+        for value in (1, "false"):
+            with self.subTest(value=value):
+                responses = self._doctor_responses(ocr_code=127)
+                mutation = ("npm", "install", "-g", alphax_plugin.OCR_PACKAGE)
+                responses[mutation] = (0, "", "")
+                runner = ScriptedRunner(responses)
+
+                result = alphax_plugin.doctor_setup(
+                    self.source,
+                    install=value,
+                    command_runner=runner,
+                    plugin_source=Path(self.temp.name) / "literal-true-marketplace" / "alphax",
+                    cache_root=Path(self.temp.name) / "literal-true-cache" / "alphax",
+                )
+
+                self.assertEqual(result["mode"], "doctor")
+                self.assertEqual(result["changes"], [])
+                self.assertNotIn(list(mutation), runner.calls)
+
+    def test_doctor_install_repairs_missing_ocr_before_unavailable_codex(self) -> None:
+        state = {"ocr": False}
+
+        class CodexUnavailableRunner:
+            def __init__(self) -> None:
+                self.calls: list[list[str]] = []
+
+            def __call__(self, argv: list[str]) -> subprocess.CompletedProcess[str]:
+                self.calls.append(list(argv))
+                responses = {
+                    ("git", "--version"): (0, "git version 2.41.0\n", ""),
+                    ("ocr", "version"): (0 if state["ocr"] else 127, "ocr 1.2.3\n" if state["ocr"] else "", ""),
+                    ("node", "--version"): (0, "v20.0.0\n", ""),
+                    ("npm", "--version"): (0, "10.0.0\n", ""),
+                    ("codex", "plugin", "marketplace", "list", "--json"): (127, "", "not found"),
+                    ("codex", "plugin", "list", "--json"): (127, "", "not found"),
+                    ("npm", "install", "-g", alphax_plugin.OCR_PACKAGE): (0, "", ""),
+                }
+                if argv == ["npm", "install", "-g", alphax_plugin.OCR_PACKAGE]:
+                    state["ocr"] = True
+                code, stdout, stderr = responses[tuple(argv)]
+                return subprocess.CompletedProcess(argv, code, stdout, stderr)
+
+        runner = CodexUnavailableRunner()
+        result = alphax_plugin.doctor_setup(
+            self.source,
+            install=True,
+            command_runner=runner,
+            plugin_source=Path(self.temp.name) / "codex-unavailable-marketplace" / "alphax",
+            cache_root=Path(self.temp.name) / "codex-unavailable-cache" / "alphax",
+        )
+
+        self.assertEqual(
+            [(change["id"], change["status"]) for change in result["changes"]],
+            [("ocr-cli", "applied"), ("ocr-marketplace", "skipped")],
+        )
+        self.assertEqual(next(check for check in result["checks"] if check["id"] == "ocr-cli")["status"], "pass")
+        self.assertEqual(result["overall"], "blocked")
+
+    def test_doctor_install_keeps_existing_ocr_satisfied_when_codex_is_unavailable(self) -> None:
+        responses = self._doctor_responses(ocr_code=0)
+        responses[("codex", "plugin", "marketplace", "list", "--json")] = (127, "", "not found")
+        responses[("codex", "plugin", "list", "--json")] = (127, "", "not found")
+        runner = ScriptedRunner(responses)
+
+        result = alphax_plugin.doctor_setup(
+            self.source,
+            install=True,
+            command_runner=runner,
+            plugin_source=Path(self.temp.name) / "codex-unavailable-existing-ocr" / "alphax",
+            cache_root=Path(self.temp.name) / "codex-unavailable-existing-cache" / "alphax",
+        )
+
+        self.assertEqual(result["changes"][0]["id"], "ocr-cli")
+        self.assertEqual(result["changes"][0]["status"], "already-satisfied")
+
+    def test_doctor_install_adapts_single_argument_runner_for_alphax_installer(self) -> None:
+        plugin_source = Path(self.temp.name) / "adapter-marketplace" / "alphax"
+        cache_root = Path(self.temp.name) / "adapter-cache" / "alphax"
+        installed = {"value": False}
+        responses = self._doctor_responses(
+            marketplaces=[{"name": "open-code-review", "repository": alphax_plugin.OCR_MARKETPLACE_REPOSITORY}],
+            plugins=[{"id": alphax_plugin.OCR_PLUGIN_SELECTOR, "enabled": True}],
+        )
+        responses[("codex", "plugin", "add", "alphax@personal", "--json")] = (0, "", "")
+        runner = ScriptedRunner(responses)
+
+        def verifier(*_args, **_kwargs):
+            cache = cache_root / "installed" if installed["value"] else None
+            return {"ok": installed["value"], "cache": str(cache) if cache else None}
+
+        def installer(_source_root, *, runner, **_kwargs):
+            completed = runner(
+                ["codex", "plugin", "add", "alphax@personal", "--json"],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 0)
+            installed["value"] = True
+            plugin_source.mkdir(parents=True)
+            (cache_root / "installed").mkdir(parents=True)
+
+        result = alphax_plugin.doctor_setup(
+            self.source,
+            install=True,
+            command_runner=runner,
+            alphax_verifier=verifier,
+            alphax_installer=installer,
+            plugin_source=plugin_source,
+            cache_root=cache_root,
+        )
+
+        self.assertEqual(result["changes"][-1]["status"], "applied")
+
+    def test_doctor_install_bounds_alphax_installer_exception(self) -> None:
+        runner = ScriptedRunner(
+            self._doctor_responses(
+                marketplaces=[{"name": "open-code-review", "repository": alphax_plugin.OCR_MARKETPLACE_REPOSITORY}],
+                plugins=[{"id": alphax_plugin.OCR_PLUGIN_SELECTOR, "enabled": True}],
+            )
+        )
+
+        def installer(*_args, **_kwargs):
+            raise TypeError("private installer detail")
+
+        result = alphax_plugin.doctor_setup(
+            self.source,
+            install=True,
+            command_runner=runner,
+            alphax_installer=installer,
+            plugin_source=Path(self.temp.name) / "exception-marketplace" / "alphax",
+            cache_root=Path(self.temp.name) / "exception-cache" / "alphax",
+        )
+
+        self.assertEqual(result["changes"][-1]["status"], "failed")
+        self.assertNotIn("private installer detail", json.dumps(result))
+
+    def test_doctor_install_freebsd_is_manual_only(self) -> None:
+        responses = self._doctor_responses(ocr_code=127)
+        mutation = ("npm", "install", "-g", alphax_plugin.OCR_PACKAGE)
+        responses[mutation] = (0, "", "")
+        runner = ScriptedRunner(responses)
+
+        result = alphax_plugin.doctor_setup(
+            self.source,
+            install=True,
+            command_runner=runner,
+            platform_name="freebsd",
+            plugin_source=Path(self.temp.name) / "freebsd-marketplace" / "alphax",
+            cache_root=Path(self.temp.name) / "freebsd-cache" / "alphax",
+        )
+
+        self.assertEqual([change["status"] for change in result["changes"]], ["skipped"] * 4)
+        self.assertTrue(all(change["action"] for change in result["changes"]))
+        self.assertNotIn(list(mutation), runner.calls)
 
     def test_doctor_rejects_incompatible_git_and_node(self) -> None:
         runner = ScriptedRunner(

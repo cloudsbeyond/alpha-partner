@@ -865,6 +865,7 @@ def doctor_setup(
     plugin_source: Path | None = None,
     cache_root: Path | None = None,
 ) -> dict[str, Any]:
+    install_requested = install is True
     plugin_source = plugin_source or Path.home() / "plugins/alphax"
     cache_root = cache_root or Path.home() / ".codex/plugins/cache/personal/alphax"
     python_version = tuple(sys.version_info[:3])
@@ -968,13 +969,13 @@ def doctor_setup(
     ]
     payload = {
         "schema_version": DOCTOR_SCHEMA_VERSION,
-        "mode": "install" if install else "doctor",
+        "mode": "install" if install_requested else "doctor",
         "overall": _overall_status(checks),
         "checks": checks,
         "changes": [],
         "residual_risk": ["managed-llm-unapproved"],
     }
-    if not install:
+    if not install_requested:
         return payload
 
     install_steps = [
@@ -1013,35 +1014,40 @@ def doctor_setup(
             }
         )
 
-    if (platform_name or sys.platform).lower().startswith("win"):
+    def finish() -> dict[str, Any]:
+        refreshed = doctor_setup(
+            source_root,
+            command_runner=command_runner,
+            alphax_verifier=alphax_verifier,
+            alphax_installer=alphax_installer,
+            platform_name=platform_name,
+            plugin_source=plugin_source,
+            cache_root=cache_root,
+        )
+        refreshed["mode"] = "install"
+        refreshed["changes"] = changes
+        return refreshed
+
+    if (platform_name or sys.platform).lower() not in {"darwin", "linux"}:
         for check_id, command_class, _command in install_steps:
-            record(check_id, command_class, "skipped", "run this installation manually on Windows")
-        record("alphax", "alphax-install", "skipped", "install AlphaX manually on Windows")
-        payload["changes"] = changes
-        return payload
+            record(check_id, command_class, "skipped", "run this installation manually on a supported platform")
+        record("alphax", "alphax-install", "skipped", "install AlphaX manually on a supported platform")
+        return finish()
 
     check_by_id = {check["id"]: check for check in checks}
-    core_ready = all(check_by_id[check_id]["status"] == "pass" for check_id in ("python", "git", "codex-plugin"))
-    if not core_ready:
-        record("ocr-cli", "npm-install", "skipped", "repair incompatible core prerequisites first")
-        payload["changes"] = changes
-        return payload
-
     ocr_check = check_by_id["ocr-cli"]
     if ocr_check["status"] == "pass":
         record("ocr-cli", "npm-install", "already-satisfied")
     elif ocr_check["status"] != "missing" or check_by_id["node-npm"]["status"] != "pass":
         record("ocr-cli", "npm-install", "skipped", "repair Node/npm or OCR prerequisites first")
-        payload["changes"] = changes
-        return payload
+        return finish()
     else:
         _check_id, command_class, command = install_steps[0]
         completed = _run_probe(command_runner, command)
         reprobe = _run_probe(command_runner, ["ocr", "version"])
         if completed.returncode != 0 or reprobe.returncode != 0 or _version_tuple(reprobe.stdout) is None:
             record("ocr-cli", command_class, "failed", "install OCR CLI manually and retry")
-            payload["changes"] = changes
-            return payload
+            return finish()
         record("ocr-cli", command_class, "applied")
 
     marketplace_check = _probe_codex_state(command_runner)[1]
@@ -1049,16 +1055,14 @@ def doctor_setup(
         record("ocr-marketplace", "marketplace-add", "already-satisfied")
     elif marketplace_check["status"] != "missing":
         record("ocr-marketplace", "marketplace-add", "skipped", marketplace_check["action"])
-        payload["changes"] = changes
-        return payload
+        return finish()
     else:
         _check_id, command_class, command = install_steps[1]
         completed = _run_probe(command_runner, command)
         reprobe = _probe_codex_state(command_runner)[1]
         if completed.returncode != 0 or reprobe["status"] != "pass":
             record("ocr-marketplace", command_class, "failed", "add the approved marketplace manually and retry")
-            payload["changes"] = changes
-            return payload
+            return finish()
         record("ocr-marketplace", command_class, "applied")
 
     plugin_check = _probe_codex_state(command_runner)[2]
@@ -1066,16 +1070,14 @@ def doctor_setup(
         record("ocr-plugin", "plugin-install", "already-satisfied")
     elif plugin_check["status"] != "missing":
         record("ocr-plugin", "plugin-install", "skipped", plugin_check["action"])
-        payload["changes"] = changes
-        return payload
+        return finish()
     else:
         _check_id, command_class, command = install_steps[2]
         completed = _run_probe(command_runner, command)
         reprobe = _probe_codex_state(command_runner)[2]
         if completed.returncode != 0 or reprobe["status"] != "pass":
             record("ocr-plugin", command_class, "failed", "install the OCR plugin manually and retry")
-            payload["changes"] = changes
-            return payload
+            return finish()
         record("ocr-plugin", command_class, "applied")
 
     source_check, parity_check = _probe_alphax_state(
@@ -1086,27 +1088,29 @@ def doctor_setup(
     )
     if source_check["status"] != "pass":
         record("alphax", "alphax-install", "skipped", source_check["action"])
-        payload["changes"] = changes
-        return payload
+        return finish()
     if parity_check["status"] == "pass":
         record("alphax", "alphax-install", "already-satisfied")
     elif parity_check["status"] != "missing":
         record("alphax", "alphax-install", "skipped", parity_check["action"])
-        payload["changes"] = changes
-        return payload
+        return finish()
     else:
+        def installer_runner(
+            argv: list[str], **_kwargs: Any
+        ) -> subprocess.CompletedProcess[str]:
+            return command_runner(argv)
+
         try:
             alphax_installer(
                 source_root,
                 plugin_source=plugin_source,
                 cache_root=cache_root,
                 allow_candidate=False,
-                runner=command_runner,
+                runner=installer_runner,
             )
-        except (OSError, RuntimeError, ValueError):
+        except Exception:
             record("alphax", "alphax-install", "failed", "install AlphaX from accepted Source manually and retry")
-            payload["changes"] = changes
-            return payload
+            return finish()
         _source_check, reprobe = _probe_alphax_state(
             source_root,
             plugin_source=plugin_source,
@@ -1115,22 +1119,10 @@ def doctor_setup(
         )
         if reprobe["status"] != "pass":
             record("alphax", "alphax-install", "failed", "verify AlphaX parity and retry")
-            payload["changes"] = changes
-            return payload
+            return finish()
         record("alphax", "alphax-install", "applied")
 
-    refreshed = doctor_setup(
-        source_root,
-        command_runner=command_runner,
-        alphax_verifier=alphax_verifier,
-        alphax_installer=alphax_installer,
-        platform_name=platform_name,
-        plugin_source=plugin_source,
-        cache_root=cache_root,
-    )
-    refreshed["mode"] = "install"
-    refreshed["changes"] = changes
-    return refreshed
+    return finish()
 
 
 def default_source_root() -> Path:
