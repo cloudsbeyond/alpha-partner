@@ -8,6 +8,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -20,6 +21,14 @@ from typing import Any, Callable
 SOURCE_SCOPES = {"source-work", "source-review"}
 PROJECT_SCOPES = {"project-work", "project-review"}
 IGNORED_NAMES = {".DS_Store", "__pycache__"}
+DOCTOR_SCHEMA_VERSION = 1
+OCR_PACKAGE = "@alibaba-group/open-code-review"
+OCR_MARKETPLACE_REPOSITORY = "https://github.com/alibaba/open-code-review.git"
+OCR_PLUGIN_SELECTOR = "open-code-review-codex@open-code-review"
+
+
+def run_command(argv: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(argv, text=True, capture_output=True, check=False)
 
 
 def run_git(source_root: Path, *args: str, check: bool = True) -> str:
@@ -536,6 +545,432 @@ def install_plugin(
             "cache": verification["cache"],
             "source_authority": build["source_authority"],
         }
+
+
+def _version_tuple(value: str) -> tuple[int, ...] | None:
+    match = re.search(r"\d+(?:\.\d+)*", value)
+    if not match:
+        return None
+    return tuple(int(part) for part in match.group().split("."))
+
+
+def _check(
+    check_id: str,
+    scope: str,
+    status: str,
+    observed: str | None,
+    required: str,
+    installable: bool,
+    action: str | None,
+) -> dict[str, Any]:
+    return {
+        "id": check_id,
+        "scope": scope,
+        "status": status,
+        "observed": observed,
+        "required": required,
+        "installable": installable,
+        "action": action,
+    }
+
+
+def _run_probe(
+    command_runner: Callable[[list[str]], subprocess.CompletedProcess[str]], argv: list[str]
+) -> subprocess.CompletedProcess[str]:
+    try:
+        return command_runner(argv)
+    except OSError:
+        return subprocess.CompletedProcess(argv, 127, "", "")
+
+
+def _json_object(completed: subprocess.CompletedProcess[str]) -> dict[str, Any] | None:
+    if completed.returncode != 0:
+        return None
+    try:
+        value = json.loads(completed.stdout)
+    except json.JSONDecodeError:
+        return None
+    if isinstance(value, dict):
+        return value
+    if isinstance(value, list):
+        return {"items": value}
+    return None
+
+
+def _items(payload: dict[str, Any], key: str) -> list[dict[str, Any]]:
+    value = payload.get(key, payload.get("items", []))
+    if not isinstance(value, list):
+        return []
+    return [item for item in value if isinstance(item, dict)]
+
+
+def _strings(value: Any) -> list[str]:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, dict):
+        return [item for nested in value.values() for item in _strings(nested)]
+    if isinstance(value, list):
+        return [item for nested in value for item in _strings(nested)]
+    return []
+
+
+def _probe_codex_state(
+    command_runner: Callable[[list[str]], subprocess.CompletedProcess[str]],
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    marketplaces = _json_object(
+        _run_probe(command_runner, ["codex", "plugin", "marketplace", "list", "--json"])
+    )
+    plugins = _json_object(_run_probe(command_runner, ["codex", "plugin", "list", "--json"]))
+    if marketplaces is None or plugins is None:
+        capability = _check(
+            "codex-plugin",
+            "delegation",
+            "blocked",
+            None,
+            "Codex plugin marketplace and list JSON commands",
+            False,
+            "install or repair a Codex CLI with plugin support",
+        )
+        unavailable = _check(
+            "ocr-marketplace",
+            "delegation",
+            "blocked",
+            None,
+            OCR_MARKETPLACE_REPOSITORY,
+            False,
+            "repair Codex plugin capability before configuring OCR",
+        )
+        return capability, unavailable, _check(
+            "ocr-plugin",
+            "delegation",
+            "blocked",
+            None,
+            OCR_PLUGIN_SELECTOR,
+            False,
+            "repair Codex plugin capability before configuring OCR",
+        )
+
+    capability = _check(
+        "codex-plugin",
+        "delegation",
+        "pass",
+        "plugin-json-supported",
+        "Codex plugin marketplace and list JSON commands",
+        False,
+        None,
+    )
+    marketplace = next(
+        (
+            item
+            for item in _items(marketplaces, "marketplaces")
+            if item.get("name") == "open-code-review"
+        ),
+        None,
+    )
+    if marketplace is None:
+        marketplace_check = _check(
+            "ocr-marketplace",
+            "delegation",
+            "missing",
+            "absent",
+            OCR_MARKETPLACE_REPOSITORY,
+            True,
+            "add the Open Code Review marketplace from its approved repository",
+        )
+    elif OCR_MARKETPLACE_REPOSITORY not in _strings(marketplace):
+        marketplace_check = _check(
+            "ocr-marketplace",
+            "delegation",
+            "blocked",
+            "source-mismatch",
+            OCR_MARKETPLACE_REPOSITORY,
+            False,
+            "resolve the existing Open Code Review marketplace source manually",
+        )
+    else:
+        marketplace_check = _check(
+            "ocr-marketplace",
+            "delegation",
+            "pass",
+            "approved-source",
+            OCR_MARKETPLACE_REPOSITORY,
+            False,
+            None,
+        )
+
+    plugin = next(
+        (
+            item
+            for item in _items(plugins, "plugins")
+            if item.get("id") == OCR_PLUGIN_SELECTOR or item.get("pluginId") == OCR_PLUGIN_SELECTOR
+        ),
+        None,
+    )
+    if plugin is None:
+        plugin_check = _check(
+            "ocr-plugin",
+            "delegation",
+            "missing",
+            "absent",
+            "installed and enabled " + OCR_PLUGIN_SELECTOR,
+            True,
+            "install and enable the Open Code Review Codex plugin",
+        )
+    elif plugin.get("enabled") is not True:
+        plugin_check = _check(
+            "ocr-plugin",
+            "delegation",
+            "missing",
+            "not-enabled",
+            "installed and enabled " + OCR_PLUGIN_SELECTOR,
+            True,
+            "install and enable the Open Code Review Codex plugin",
+        )
+    else:
+        plugin_check = _check(
+            "ocr-plugin",
+            "delegation",
+            "pass",
+            "enabled",
+            "installed and enabled " + OCR_PLUGIN_SELECTOR,
+            False,
+            None,
+        )
+    return capability, marketplace_check, plugin_check
+
+
+def _probe_alphax_state(
+    source_root: Path,
+    *,
+    plugin_source: Path,
+    cache_root: Path,
+    alphax_verifier: Callable[..., dict[str, Any]],
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    try:
+        identity = source_identity(source_root)
+    except (OSError, ValueError):
+        return (
+            _check(
+                "alphax-source",
+                "alphax-publication",
+                "error",
+                None,
+                "clean accepted Source",
+                False,
+                "repair the AlphaX Source checkout before installation",
+            ),
+            _check(
+                "alphax-parity",
+                "alphax-publication",
+                "blocked",
+                None,
+                "byte-identical generated package, marketplace, and cache",
+                False,
+                "verify an accepted AlphaX Source first",
+            ),
+        )
+    if identity["source_authority"] != "accepted":
+        source_check = _check(
+            "alphax-source",
+            "alphax-publication",
+            "manual-gate",
+            "candidate",
+            "clean accepted Source",
+            False,
+            "clean or accept the AlphaX Source before production installation",
+        )
+        return source_check, _check(
+            "alphax-parity",
+            "alphax-publication",
+            "manual-gate",
+            "source-not-accepted",
+            "byte-identical generated package, marketplace, and cache",
+            False,
+            "verify package parity after Source acceptance",
+        )
+
+    source_check = _check(
+        "alphax-source",
+        "alphax-publication",
+        "pass",
+        "accepted",
+        "clean accepted Source",
+        False,
+        None,
+    )
+    try:
+        verification = alphax_verifier(
+            source_root,
+            plugin_source=plugin_source,
+            cache_root=cache_root,
+            require_accepted=True,
+        )
+    except (OSError, ValueError):
+        verification = {"ok": False, "failure_classes": ["verification-error"]}
+    cache = Path(str(verification.get("cache", ""))) if verification.get("cache") else None
+    if not plugin_source.is_dir() or cache is None or not cache.is_dir():
+        parity_check = _check(
+            "alphax-parity",
+            "alphax-publication",
+            "missing",
+            "generated-path-absent",
+            "byte-identical generated package, marketplace, and cache",
+            True,
+            "install AlphaX from clean accepted Source and verify parity",
+        )
+    elif verification.get("ok"):
+        parity_check = _check(
+            "alphax-parity",
+            "alphax-publication",
+            "pass",
+            "byte-identical",
+            "byte-identical generated package, marketplace, and cache",
+            False,
+            None,
+        )
+    else:
+        parity_check = _check(
+            "alphax-parity",
+            "alphax-publication",
+            "blocked",
+            "drift-detected",
+            "byte-identical generated package, marketplace, and cache",
+            False,
+            "repair AlphaX Source or regenerate the installed package",
+        )
+    return source_check, parity_check
+
+
+def _overall_status(checks: list[dict[str, Any]]) -> str:
+    required = [check for check in checks if check["id"] != "managed-mode"]
+    if any(check["status"] in {"blocked", "incompatible", "error"} for check in required):
+        return "blocked"
+    if any(check["status"] in {"missing", "manual-gate"} for check in required):
+        return "action-required"
+    return "ready"
+
+
+def doctor_setup(
+    source_root: Path,
+    *,
+    install: bool = False,
+    command_runner: Callable[[list[str]], subprocess.CompletedProcess[str]] = run_command,
+    alphax_verifier: Callable[..., dict[str, Any]] = verify_installed,
+    alphax_installer: Callable[..., dict[str, Any]] = install_plugin,
+    platform_name: str | None = None,
+    plugin_source: Path | None = None,
+    cache_root: Path | None = None,
+) -> dict[str, Any]:
+    del alphax_installer, platform_name
+    plugin_source = plugin_source or Path.home() / "plugins/alphax"
+    cache_root = cache_root or Path.home() / ".codex/plugins/cache/personal/alphax"
+    python_version = tuple(sys.version_info[:3])
+    python_ready = python_version >= (3, 10)
+    python_check = _check(
+        "python",
+        "core",
+        "pass" if python_ready else "incompatible",
+        ".".join(str(part) for part in python_version),
+        ">=3.10",
+        False,
+        None if python_ready else "install Python >=3.10",
+    )
+
+    git_probe = _run_probe(command_runner, ["git", "--version"])
+    git_version = _version_tuple(git_probe.stdout)
+    git_status = "pass" if git_probe.returncode == 0 and git_version and git_version >= (2, 41) else (
+        "missing" if git_probe.returncode != 0 else "incompatible"
+    )
+    git_check = _check(
+        "git",
+        "core",
+        git_status,
+        ".".join(str(part) for part in git_version) if git_version else None,
+        ">=2.41",
+        False,
+        None if git_status == "pass" else "install Git >=2.41",
+    )
+
+    ocr_probe = _run_probe(command_runner, ["ocr", "version"])
+    ocr_version = _version_tuple(ocr_probe.stdout)
+    ocr_status = "pass" if ocr_probe.returncode == 0 and ocr_version else (
+        "missing" if ocr_probe.returncode != 0 else "incompatible"
+    )
+    ocr_check = _check(
+        "ocr-cli",
+        "delegation",
+        ocr_status,
+        ".".join(str(part) for part in ocr_version) if ocr_version else None,
+        OCR_PACKAGE,
+        ocr_status == "missing",
+        None if ocr_status == "pass" else "install " + OCR_PACKAGE,
+    )
+
+    if ocr_status == "missing":
+        node_probe = _run_probe(command_runner, ["node", "--version"])
+        npm_probe = _run_probe(command_runner, ["npm", "--version"])
+        node_version = _version_tuple(node_probe.stdout)
+        npm_version = _version_tuple(npm_probe.stdout)
+        if node_probe.returncode != 0 or npm_probe.returncode != 0:
+            node_status = "missing"
+        elif node_version is None or node_version < (14,) or npm_version is None:
+            node_status = "incompatible"
+        else:
+            node_status = "pass"
+        node_observed = (
+            f"node-{'.'.join(str(part) for part in node_version)} npm-{'.'.join(str(part) for part in npm_version)}"
+            if node_version and npm_version
+            else None
+        )
+    else:
+        node_status = "pass"
+        node_observed = "not-required"
+    node_check = _check(
+        "node-npm",
+        "delegation",
+        node_status,
+        node_observed,
+        "Node >=14 and runnable npm when OCR CLI is missing",
+        node_status == "missing",
+        None if node_status == "pass" else "install Node >=14 with npm",
+    )
+
+    codex_check, marketplace_check, plugin_check = _probe_codex_state(command_runner)
+    source_check, parity_check = _probe_alphax_state(
+        source_root,
+        plugin_source=plugin_source,
+        cache_root=cache_root,
+        alphax_verifier=alphax_verifier,
+    )
+    managed_check = _check(
+        "managed-mode",
+        "managed",
+        "manual-gate",
+        "unapproved",
+        "explicit endpoint and target-code egress approval",
+        False,
+        "obtain managed-model approval outside doctor",
+    )
+    checks = [
+        python_check,
+        git_check,
+        codex_check,
+        node_check,
+        ocr_check,
+        marketplace_check,
+        plugin_check,
+        source_check,
+        parity_check,
+        managed_check,
+    ]
+    return {
+        "schema_version": DOCTOR_SCHEMA_VERSION,
+        "mode": "install" if install else "doctor",
+        "overall": _overall_status(checks),
+        "checks": checks,
+        "changes": [],
+        "residual_risk": ["managed-llm-unapproved"],
+    }
 
 
 def default_source_root() -> Path:
