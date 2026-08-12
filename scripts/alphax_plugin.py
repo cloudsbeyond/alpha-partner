@@ -27,7 +27,9 @@ OCR_MARKETPLACE_REPOSITORY = "https://github.com/alibaba/open-code-review.git"
 OCR_PLUGIN_SELECTOR = "open-code-review-codex@open-code-review"
 
 
-def run_command(argv: list[str]) -> subprocess.CompletedProcess[str]:
+def run_command(
+    argv: list[str], **_kwargs: Any
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(argv, text=True, capture_output=True, check=False)
 
 
@@ -863,7 +865,6 @@ def doctor_setup(
     plugin_source: Path | None = None,
     cache_root: Path | None = None,
 ) -> dict[str, Any]:
-    del alphax_installer, platform_name
     plugin_source = plugin_source or Path.home() / "plugins/alphax"
     cache_root = cache_root or Path.home() / ".codex/plugins/cache/personal/alphax"
     python_version = tuple(sys.version_info[:3])
@@ -965,7 +966,7 @@ def doctor_setup(
         parity_check,
         managed_check,
     ]
-    return {
+    payload = {
         "schema_version": DOCTOR_SCHEMA_VERSION,
         "mode": "install" if install else "doctor",
         "overall": _overall_status(checks),
@@ -973,6 +974,163 @@ def doctor_setup(
         "changes": [],
         "residual_risk": ["managed-llm-unapproved"],
     }
+    if not install:
+        return payload
+
+    install_steps = [
+        ("ocr-cli", "npm-install", ["npm", "install", "-g", OCR_PACKAGE]),
+        (
+            "ocr-marketplace",
+            "marketplace-add",
+            [
+                "codex",
+                "plugin",
+                "marketplace",
+                "add",
+                "alibaba/open-code-review",
+                "--ref",
+                "main",
+                "--json",
+            ],
+        ),
+        (
+            "ocr-plugin",
+            "plugin-install",
+            ["codex", "plugin", "add", OCR_PLUGIN_SELECTOR, "--json"],
+        ),
+    ]
+    changes: list[dict[str, Any]] = []
+
+    def record(
+        check_id: str, command_class: str, status: str, action: str | None = None
+    ) -> None:
+        changes.append(
+            {
+                "id": check_id,
+                "command_class": command_class,
+                "status": status,
+                "action": action,
+            }
+        )
+
+    if (platform_name or sys.platform).lower().startswith("win"):
+        for check_id, command_class, _command in install_steps:
+            record(check_id, command_class, "skipped", "run this installation manually on Windows")
+        record("alphax", "alphax-install", "skipped", "install AlphaX manually on Windows")
+        payload["changes"] = changes
+        return payload
+
+    check_by_id = {check["id"]: check for check in checks}
+    core_ready = all(check_by_id[check_id]["status"] == "pass" for check_id in ("python", "git", "codex-plugin"))
+    if not core_ready:
+        record("ocr-cli", "npm-install", "skipped", "repair incompatible core prerequisites first")
+        payload["changes"] = changes
+        return payload
+
+    ocr_check = check_by_id["ocr-cli"]
+    if ocr_check["status"] == "pass":
+        record("ocr-cli", "npm-install", "already-satisfied")
+    elif ocr_check["status"] != "missing" or check_by_id["node-npm"]["status"] != "pass":
+        record("ocr-cli", "npm-install", "skipped", "repair Node/npm or OCR prerequisites first")
+        payload["changes"] = changes
+        return payload
+    else:
+        _check_id, command_class, command = install_steps[0]
+        completed = _run_probe(command_runner, command)
+        reprobe = _run_probe(command_runner, ["ocr", "version"])
+        if completed.returncode != 0 or reprobe.returncode != 0 or _version_tuple(reprobe.stdout) is None:
+            record("ocr-cli", command_class, "failed", "install OCR CLI manually and retry")
+            payload["changes"] = changes
+            return payload
+        record("ocr-cli", command_class, "applied")
+
+    marketplace_check = _probe_codex_state(command_runner)[1]
+    if marketplace_check["status"] == "pass":
+        record("ocr-marketplace", "marketplace-add", "already-satisfied")
+    elif marketplace_check["status"] != "missing":
+        record("ocr-marketplace", "marketplace-add", "skipped", marketplace_check["action"])
+        payload["changes"] = changes
+        return payload
+    else:
+        _check_id, command_class, command = install_steps[1]
+        completed = _run_probe(command_runner, command)
+        reprobe = _probe_codex_state(command_runner)[1]
+        if completed.returncode != 0 or reprobe["status"] != "pass":
+            record("ocr-marketplace", command_class, "failed", "add the approved marketplace manually and retry")
+            payload["changes"] = changes
+            return payload
+        record("ocr-marketplace", command_class, "applied")
+
+    plugin_check = _probe_codex_state(command_runner)[2]
+    if plugin_check["status"] == "pass":
+        record("ocr-plugin", "plugin-install", "already-satisfied")
+    elif plugin_check["status"] != "missing":
+        record("ocr-plugin", "plugin-install", "skipped", plugin_check["action"])
+        payload["changes"] = changes
+        return payload
+    else:
+        _check_id, command_class, command = install_steps[2]
+        completed = _run_probe(command_runner, command)
+        reprobe = _probe_codex_state(command_runner)[2]
+        if completed.returncode != 0 or reprobe["status"] != "pass":
+            record("ocr-plugin", command_class, "failed", "install the OCR plugin manually and retry")
+            payload["changes"] = changes
+            return payload
+        record("ocr-plugin", command_class, "applied")
+
+    source_check, parity_check = _probe_alphax_state(
+        source_root,
+        plugin_source=plugin_source,
+        cache_root=cache_root,
+        alphax_verifier=alphax_verifier,
+    )
+    if source_check["status"] != "pass":
+        record("alphax", "alphax-install", "skipped", source_check["action"])
+        payload["changes"] = changes
+        return payload
+    if parity_check["status"] == "pass":
+        record("alphax", "alphax-install", "already-satisfied")
+    elif parity_check["status"] != "missing":
+        record("alphax", "alphax-install", "skipped", parity_check["action"])
+        payload["changes"] = changes
+        return payload
+    else:
+        try:
+            alphax_installer(
+                source_root,
+                plugin_source=plugin_source,
+                cache_root=cache_root,
+                allow_candidate=False,
+                runner=command_runner,
+            )
+        except (OSError, RuntimeError, ValueError):
+            record("alphax", "alphax-install", "failed", "install AlphaX from accepted Source manually and retry")
+            payload["changes"] = changes
+            return payload
+        _source_check, reprobe = _probe_alphax_state(
+            source_root,
+            plugin_source=plugin_source,
+            cache_root=cache_root,
+            alphax_verifier=alphax_verifier,
+        )
+        if reprobe["status"] != "pass":
+            record("alphax", "alphax-install", "failed", "verify AlphaX parity and retry")
+            payload["changes"] = changes
+            return payload
+        record("alphax", "alphax-install", "applied")
+
+    refreshed = doctor_setup(
+        source_root,
+        command_runner=command_runner,
+        alphax_verifier=alphax_verifier,
+        alphax_installer=alphax_installer,
+        platform_name=platform_name,
+        plugin_source=plugin_source,
+        cache_root=cache_root,
+    )
+    refreshed["mode"] = "install"
+    refreshed["changes"] = changes
+    return refreshed
 
 
 def default_source_root() -> Path:
