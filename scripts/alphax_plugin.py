@@ -604,14 +604,16 @@ def _items(payload: dict[str, Any], key: str) -> list[dict[str, Any]]:
     return [item for item in value if isinstance(item, dict)]
 
 
-def _strings(value: Any) -> list[str]:
-    if isinstance(value, str):
-        return [value]
-    if isinstance(value, dict):
-        return [item for nested in value.values() for item in _strings(nested)]
-    if isinstance(value, list):
-        return [item for nested in value for item in _strings(nested)]
-    return []
+def _marketplace_source(marketplace: dict[str, Any]) -> str | None:
+    repository = marketplace.get("repository")
+    if isinstance(repository, str):
+        return repository
+    marketplace_source = marketplace.get("marketplaceSource")
+    if isinstance(marketplace_source, dict):
+        source = marketplace_source.get("source")
+        if isinstance(source, str):
+            return source
+    return None
 
 
 def _probe_codex_state(
@@ -677,7 +679,7 @@ def _probe_codex_state(
             True,
             "add the Open Code Review marketplace from its approved repository",
         )
-    elif OCR_MARKETPLACE_REPOSITORY not in _strings(marketplace):
+    elif _marketplace_source(marketplace) != OCR_MARKETPLACE_REPOSITORY:
         marketplace_check = _check(
             "ocr-marketplace",
             "delegation",

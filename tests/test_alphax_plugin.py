@@ -627,6 +627,33 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertFalse(marketplace["installable"])
         self.assertNotIn("example.invalid", json.dumps(result))
 
+    def test_doctor_blocks_fork_when_metadata_mentions_approved_source(self) -> None:
+        runner = ScriptedRunner(
+            self._doctor_responses(
+                marketplaces=[
+                    {
+                        "name": "open-code-review",
+                        "repository": "https://example.invalid/fork.git",
+                        "metadata": {
+                            "documentation": "https://github.com/alibaba/open-code-review.git"
+                        },
+                    }
+                ]
+            )
+        )
+
+        result = alphax_plugin.doctor_setup(
+            self.source,
+            command_runner=runner,
+            plugin_source=Path(self.temp.name) / "missing-marketplace" / "alphax",
+            cache_root=Path(self.temp.name) / "missing-cache" / "alphax",
+        )
+
+        marketplace = next(check for check in result["checks"] if check["id"] == "ocr-marketplace")
+        self.assertEqual(marketplace["status"], "blocked")
+        self.assertFalse(marketplace["installable"])
+        self.assertNotIn("example.invalid", json.dumps(result))
+
 
 if __name__ == "__main__":
     unittest.main()
