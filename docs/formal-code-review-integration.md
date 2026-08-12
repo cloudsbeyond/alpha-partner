@@ -19,6 +19,8 @@ design_status: approved
 implementation_status: validated-local
 managed_mode_evidence: guarded-unproven
 managed_mode_failure_class: managed-llm-unapproved
+adopter_setup_design_status: approved
+adopter_setup_implementation_status: not-started
 primary_scope: Alpha Partner Source work
 integration_owner: skills/formal-code-review
 external_dependencies:
@@ -80,6 +82,111 @@ Code Review, Superpowers, GitHub, and CoXX plugins stay separately versioned.
 The bridge refers to their public skill contracts when installed and otherwise
 falls back only to the documented local CLI path. It never patches generated
 marketplace or cache copies.
+
+## Adopter Setup And Doctor Design
+
+The setup surface belongs to the existing one-way plugin publication CLI. It is
+not a new plugin, installer service, package manager, or protocol.
+
+```text
+python3 scripts/alphax_plugin.py doctor
+python3 scripts/alphax_plugin.py doctor --install
+```
+
+The first command is always read-only. It detects dependencies, versions,
+installed state, provenance, Source authority, and remaining manual gates. The
+second command is the only path that may install missing automatic dependencies;
+after every attempted change it reruns the same doctor checks and reports the
+observed final state.
+
+### Dependency Matrix
+
+| Dependency or gate | Minimum / identity | Doctor behavior | `--install` behavior |
+| --- | --- | --- | --- |
+| Python | `>=3.10` | Report the running interpreter | Cannot self-install; return exact manual action |
+| Git | `>=2.41` | Resolve version and repository state | Cannot self-install; return exact manual action |
+| Codex CLI | Must expose `codex plugin` marketplace and install commands | Read-only capability probe | Cannot self-install Codex; return exact manual action |
+| Node/npm | Node `>=14` plus runnable npm, required only when OCR CLI is absent | Report whether npm installation is available | Use npm only for the declared OCR package |
+| OCR CLI | `@alibaba-group/open-code-review`, runnable non-development version | Run `ocr version`; distinguish missing, incompatible, and ready | If missing, run `npm install -g @alibaba-group/open-code-review` |
+| OCR marketplace | Git source `https://github.com/alibaba/open-code-review.git` | Read Codex marketplace JSON and verify exact source | Add `alibaba/open-code-review --ref main` only when absent |
+| OCR Codex plugin | `open-code-review-codex@open-code-review`, installed and enabled | Read Codex plugin JSON and verify selector/source/state | Install the selector only when absent or not enabled |
+| AlphaX Source | Clean and accepted for production install | Run Source verification and report `accepted` or `candidate` | Install AlphaX only from clean accepted Source; never use `--allow-candidate` |
+| AlphaX package parity | Package, personal marketplace, and selected cache are byte-identical | Verify when an accepted install exists | Reuse the existing one-way install and parity implementation |
+| Managed OCR endpoint | Explicit endpoint and target-code egress approval | Report `managed-llm-unapproved` unless approval is supplied outside the doctor | Never create credentials, choose an endpoint, inspect tokens, or run a managed review |
+
+The first automated-install implementation supports macOS and Linux. On Windows,
+doctor remains read-only and emits upstream manual installation guidance instead
+of guessing shell, privilege, or global-package configuration. An already
+runnable OCR binary is accepted as a carrier; doctor reports when npm provenance
+cannot be established and never overwrites a working non-npm installation.
+
+### State And Output Contract
+
+Human-readable output is the default. `--json` emits the same stable data for
+automation:
+
+```yaml
+schema_version: 1
+mode: doctor|install
+overall: ready|action-required|blocked
+checks:
+  - id: stable-check-id
+    scope: core|delegation|managed|alphax-publication
+    status: pass|missing|incompatible|manual-gate|blocked|error
+    observed: sanitized-value-or-null
+    required: bounded-requirement
+    installable: boolean
+    action: bounded-next-action-or-null
+changes:
+  - id: stable-change-id
+    command_class: npm-install|marketplace-add|plugin-install|alphax-install
+    status: applied|already-satisfied|skipped|failed
+residual_risk: [unverified-or-manual-gate]
+```
+
+The report contains versions, selectors, repository-relative refs, failure
+classes, and sanitized actions. It must not contain tokens, credential values,
+raw config files, hidden reasoning, private logs, or copied project source.
+
+### Install Order And Idempotence
+
+1. Probe Python, Git, repository state, Codex plugin capability, Node/npm, OCR,
+   OCR marketplace/plugin, Source authority, and installed AlphaX parity.
+2. Without `--install`, return the complete action plan and make no mutation.
+3. With `--install`, install only missing automatic dependencies in this order:
+   OCR npm package, OCR marketplace, OCR plugin, then AlphaX from accepted Source.
+4. After each change, re-probe the affected state. Stop on command failure,
+   marketplace source mismatch, incompatible tool, candidate/dirty Source, or
+   parity failure. Never remove, downgrade, overwrite, silently fall back, or
+   hand-edit Codex configuration/cache.
+5. Rerunning either command is safe. A ready environment produces no changes;
+   a partial prior run resumes from observed state and reports earlier work as
+   `already-satisfied`.
+
+Marketplace presence with a different source is `blocked`, not an invitation to
+replace it. A candidate Source does not block installing OCR dependencies, but
+it blocks the AlphaX production-install step with the exact Source-authority gap.
+
+### Documentation And Testing Scope
+
+Implementation updates the existing publication guide and root/plugin READMEs
+with one copyable quickstart. It extends `scripts/alphax_plugin.py`; it does not
+add a second installer script. Unit tests use injected command results and
+temporary homes, never real global npm or Codex mutations. Required cases are:
+
+- read-only doctor on a ready environment performs no mutation;
+- missing dependencies produce a complete ordered action plan;
+- `--install` calls only the missing automatic steps and then verifies them;
+- repeated `--install` is a no-op;
+- candidate or dirty Source never reaches AlphaX production install;
+- marketplace source mismatch stops without overwrite;
+- a failed command reports partial changes and a retryable next action;
+- JSON and human output derive from the same result object;
+- output and tests contain no credential value or private configuration body.
+
+The Source verifier must make the doctor interface and onboarding documentation
+part of its tracked contract. Live installation on a disposable or current
+approved environment remains a separate validation layer from mocked unit tests.
 
 ## Dual-Mode Policy
 
