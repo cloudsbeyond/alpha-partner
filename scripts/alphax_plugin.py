@@ -599,11 +599,15 @@ def _json_object(completed: subprocess.CompletedProcess[str]) -> dict[str, Any] 
     return None
 
 
-def _items(payload: dict[str, Any], key: str) -> list[dict[str, Any]]:
-    value = payload.get(key, payload.get("items", []))
-    if not isinstance(value, list):
-        return []
-    return [item for item in value if isinstance(item, dict)]
+def _items(payload: dict[str, Any], *keys: str) -> list[dict[str, Any]] | None:
+    for key in keys:
+        if key not in payload:
+            continue
+        value = payload[key]
+        if not isinstance(value, list):
+            return None
+        return [item for item in value if isinstance(item, dict)]
+    return None
 
 
 def _marketplace_source(marketplace: dict[str, Any]) -> str | None:
@@ -625,7 +629,13 @@ def _probe_codex_state(
         _run_probe(command_runner, ["codex", "plugin", "marketplace", "list", "--json"])
     )
     plugins = _json_object(_run_probe(command_runner, ["codex", "plugin", "list", "--json"]))
-    if marketplaces is None or plugins is None:
+    marketplace_items = (
+        _items(marketplaces, "marketplaces", "items") if marketplaces is not None else None
+    )
+    plugin_items = (
+        _items(plugins, "installed", "plugins", "items") if plugins is not None else None
+    )
+    if marketplace_items is None or plugin_items is None:
         capability = _check(
             "codex-plugin",
             "delegation",
@@ -666,7 +676,7 @@ def _probe_codex_state(
     marketplace = next(
         (
             item
-            for item in _items(marketplaces, "marketplaces")
+            for item in marketplace_items
             if item.get("name") == "open-code-review"
         ),
         None,
@@ -705,7 +715,7 @@ def _probe_codex_state(
     plugin = next(
         (
             item
-            for item in _items(plugins, "plugins")
+            for item in plugin_items
             if item.get("id") == OCR_PLUGIN_SELECTOR or item.get("pluginId") == OCR_PLUGIN_SELECTOR
         ),
         None,
@@ -716,6 +726,16 @@ def _probe_codex_state(
             "delegation",
             "missing",
             "absent",
+            "installed and enabled " + OCR_PLUGIN_SELECTOR,
+            True,
+            "install and enable the Open Code Review Codex plugin",
+        )
+    elif "installed" in plugins and plugin.get("installed") is not True:
+        plugin_check = _check(
+            "ocr-plugin",
+            "delegation",
+            "missing",
+            "not-installed",
             "installed and enabled " + OCR_PLUGIN_SELECTOR,
             True,
             "install and enable the Open Code Review Codex plugin",
@@ -735,7 +755,7 @@ def _probe_codex_state(
             "ocr-plugin",
             "delegation",
             "pass",
-            "enabled",
+            "installed-enabled" if "installed" in plugins else "enabled",
             "installed and enabled " + OCR_PLUGIN_SELECTOR,
             False,
             None,

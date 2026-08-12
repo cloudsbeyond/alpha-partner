@@ -511,6 +511,7 @@ class AlphaXPluginTest(unittest.TestCase):
         ocr_code: int = 0,
         marketplaces: list[dict[str, object]] | None = None,
         plugins: list[dict[str, object]] | None = None,
+        plugin_payload: dict[str, object] | None = None,
         node_version: str = "v20.0.0",
         npm_version: str = "10.0.0",
     ) -> dict[tuple[str, ...], tuple[int, str, str]]:
@@ -524,7 +525,11 @@ class AlphaXPluginTest(unittest.TestCase):
             ),
             ("codex", "plugin", "list", "--json"): (
                 0,
-                json.dumps({"plugins": plugins or []}),
+                json.dumps(
+                    plugin_payload
+                    if plugin_payload is not None
+                    else {"plugins": plugins or []}
+                ),
                 "",
             ),
         }
@@ -532,6 +537,31 @@ class AlphaXPluginTest(unittest.TestCase):
             responses[("node", "--version")] = (0, f"{node_version}\\n", "")
             responses[("npm", "--version")] = (0, f"{npm_version}\\n", "")
         return responses
+
+    def _current_codex_plugin_payload(self) -> dict[str, object]:
+        return {
+            "installed": [
+                {
+                    "pluginId": alphax_plugin.OCR_PLUGIN_SELECTOR,
+                    "name": "open-code-review-codex",
+                    "marketplaceName": "open-code-review",
+                    "version": "1.0.0",
+                    "installed": True,
+                    "enabled": True,
+                    "source": {
+                        "source": "local",
+                        "path": "/plugin-fixture/open-code-review",
+                    },
+                    "marketplaceSource": {
+                        "sourceType": "git",
+                        "source": alphax_plugin.OCR_MARKETPLACE_REPOSITORY,
+                    },
+                    "installPolicy": "AVAILABLE",
+                    "authPolicy": "ON_INSTALL",
+                }
+            ],
+            "available": [],
+        }
 
     def _ready_doctor_paths(self) -> tuple[Path, Path]:
         plugin_source = Path(self.temp.name) / "marketplace" / "alphax"
@@ -740,6 +770,80 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertNotIn("sentinel-secret", json.dumps(result))
         self.assertNotIn("sentinel-secret", alphax_plugin.render_doctor(result))
 
+    def test_doctor_reads_current_installed_plugin_schema(self) -> None:
+        runner = ScriptedRunner(
+            self._doctor_responses(
+                marketplaces=[
+                    {
+                        "name": "open-code-review",
+                        "repository": alphax_plugin.OCR_MARKETPLACE_REPOSITORY,
+                    }
+                ],
+                plugin_payload=self._current_codex_plugin_payload(),
+            )
+        )
+
+        result = alphax_plugin.doctor_setup(
+            self.source,
+            command_runner=runner,
+            plugin_source=Path(self.temp.name) / "current-schema-marketplace" / "alphax",
+            cache_root=Path(self.temp.name) / "current-schema-cache" / "alphax",
+        )
+
+        plugin = next(check for check in result["checks"] if check["id"] == "ocr-plugin")
+        self.assertEqual(plugin["status"], "pass")
+        self.assertEqual(plugin["observed"], "installed-enabled")
+        self.assertFalse(plugin["installable"])
+
+    def test_doctor_keeps_legacy_plugin_list_schemas_compatible(self) -> None:
+        for payload in (
+            {"plugins": [{"id": alphax_plugin.OCR_PLUGIN_SELECTOR, "enabled": True}]},
+            {"items": [{"pluginId": alphax_plugin.OCR_PLUGIN_SELECTOR, "enabled": True}]},
+        ):
+            with self.subTest(schema=next(iter(payload))):
+                runner = ScriptedRunner(self._doctor_responses(plugin_payload=payload))
+                result = alphax_plugin.doctor_setup(
+                    self.source,
+                    command_runner=runner,
+                    plugin_source=Path(self.temp.name) / "legacy-schema-marketplace" / "alphax",
+                    cache_root=Path(self.temp.name) / "legacy-schema-cache" / "alphax",
+                )
+                plugin = next(
+                    check for check in result["checks"] if check["id"] == "ocr-plugin"
+                )
+                self.assertEqual(plugin["status"], "pass")
+
+    def test_doctor_blocks_unknown_plugin_list_schema_without_raw_output(self) -> None:
+        marker = "raw-schema-marker-must-not-escape"
+        runner = ScriptedRunner(
+            self._doctor_responses(
+                plugin_payload={
+                    "unexpected": [
+                        {
+                            "pluginId": alphax_plugin.OCR_PLUGIN_SELECTOR,
+                            "enabled": True,
+                            "private": marker,
+                        }
+                    ]
+                }
+            )
+        )
+
+        result = alphax_plugin.doctor_setup(
+            self.source,
+            command_runner=runner,
+            plugin_source=Path(self.temp.name) / "unknown-schema-marketplace" / "alphax",
+            cache_root=Path(self.temp.name) / "unknown-schema-cache" / "alphax",
+        )
+
+        capability = next(
+            check for check in result["checks"] if check["id"] == "codex-plugin"
+        )
+        plugin = next(check for check in result["checks"] if check["id"] == "ocr-plugin")
+        self.assertEqual(capability["status"], "blocked")
+        self.assertEqual(plugin["status"], "blocked")
+        self.assertNotIn(marker, json.dumps(result))
+
     def test_doctor_ready_is_read_only_and_reports_managed_gate(self) -> None:
         plugin_source, cache_root = self._ready_doctor_paths()
         runner = ScriptedRunner(
@@ -930,6 +1034,42 @@ class AlphaXPluginTest(unittest.TestCase):
 
         self.assertEqual([change["status"] for change in result["changes"]], ["already-satisfied"] * 4)
         self.assertFalse(any("install" in call or "add" in call for call in runner.calls))
+
+    def test_doctor_install_current_schema_records_plugin_already_satisfied(self) -> None:
+        plugin_source, cache_root = self._ready_doctor_paths()
+        responses = self._doctor_responses(
+            marketplaces=[
+                {
+                    "name": "open-code-review",
+                    "repository": alphax_plugin.OCR_MARKETPLACE_REPOSITORY,
+                }
+            ],
+            plugin_payload=self._current_codex_plugin_payload(),
+        )
+        plugin_add = (
+            "codex",
+            "plugin",
+            "add",
+            alphax_plugin.OCR_PLUGIN_SELECTOR,
+            "--json",
+        )
+        responses[plugin_add] = (0, "", "")
+        runner = ScriptedRunner(responses)
+
+        result = alphax_plugin.doctor_setup(
+            self.source,
+            install=True,
+            command_runner=runner,
+            alphax_installer=lambda *_args, **_kwargs: self.fail("installer must not run"),
+            plugin_source=plugin_source,
+            cache_root=cache_root,
+        )
+
+        plugin_change = next(
+            change for change in result["changes"] if change["id"] == "ocr-plugin"
+        )
+        self.assertEqual(plugin_change["status"], "already-satisfied")
+        self.assertNotIn(list(plugin_add), runner.calls)
 
     def test_doctor_install_candidate_source_skips_alphax_installer(self) -> None:
         self._write("AGENTS.md", "dirty candidate\n")
