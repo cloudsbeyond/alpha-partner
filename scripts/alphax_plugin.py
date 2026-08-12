@@ -1133,7 +1133,54 @@ def emit(payload: dict[str, Any]) -> None:
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 
 
-def parse_args() -> argparse.Namespace:
+def render_doctor(result: dict[str, Any]) -> str:
+    lines = [f"Doctor: {result.get('overall', 'blocked')}", "", "Checks:"]
+    checks = result.get("checks", [])
+    for check in checks if isinstance(checks, list) else []:
+        if not isinstance(check, dict):
+            continue
+        lines.append(f"- {check.get('id', 'unknown')}: {check.get('status', 'unknown')}")
+        if check.get("observed") is not None:
+            lines.append(f"  observed: {check['observed']}")
+        if check.get("required") is not None:
+            lines.append(f"  required: {check['required']}")
+        if check.get("action") is not None:
+            lines.append(f"  action: {check['action']}")
+
+    lines.extend(["", "Changes:"])
+    changes = result.get("changes", [])
+    if not changes:
+        lines.append("- none")
+    else:
+        for change in changes if isinstance(changes, list) else []:
+            if not isinstance(change, dict):
+                continue
+            lines.append(f"- {change.get('id', 'unknown')}: {change.get('status', 'unknown')}")
+            if change.get("command_class") is not None:
+                lines.append(f"  command class: {change['command_class']}")
+            if change.get("action") is not None:
+                lines.append(f"  action: {change['action']}")
+
+    lines.extend(["", "Residual risks:"])
+    residual_risk = result.get("residual_risk", [])
+    if not residual_risk:
+        lines.append("- none")
+    else:
+        for risk in residual_risk if isinstance(residual_risk, list) else []:
+            lines.append(f"- {risk}")
+    return "\n".join(lines)
+
+
+def doctor_exit_code(result: dict[str, Any]) -> int:
+    overall = result.get("overall")
+    if overall == "ready":
+        return 0
+    if overall == "action-required":
+        return 2
+    return 1
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-root", type=Path, default=default_source_root())
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -1180,11 +1227,20 @@ def parse_args() -> argparse.Namespace:
     invocation.add_argument("--plugin-root", type=Path, default=default_source_root())
     invocation.add_argument("--live-source-root", type=Path)
     invocation.add_argument("--accepted-ref", default=os.environ.get("ALPHAX_ACCEPTED_REF"))
-    return parser.parse_args()
+    doctor = subparsers.add_parser("doctor")
+    doctor.add_argument("--install", action="store_true")
+    doctor.add_argument("--json", action="store_true")
+    doctor.add_argument("--plugin-source", type=Path, default=Path.home() / "plugins/alphax")
+    doctor.add_argument(
+        "--cache-root",
+        type=Path,
+        default=Path.home() / ".codex/plugins/cache/personal/alphax",
+    )
+    return parser.parse_args(argv)
 
 
-def main() -> int:
-    args = parse_args()
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
     source_root = args.source_root.resolve()
     if args.command == "build":
         emit(build_plugin(source_root, args.out, allow_dirty=args.allow_dirty, accepted_ref=args.accepted_ref))
@@ -1222,6 +1278,18 @@ def main() -> int:
             source_root=args.live_source_root,
             accepted_ref=args.accepted_ref,
         )
+    elif args.command == "doctor":
+        result = doctor_setup(
+            source_root,
+            install=args.install,
+            plugin_source=args.plugin_source,
+            cache_root=args.cache_root,
+        )
+        if args.json:
+            emit(result)
+        else:
+            print(render_doctor(result))
+        return doctor_exit_code(result)
     else:
         raise AssertionError(args.command)
     emit(result)

@@ -540,6 +540,72 @@ class AlphaXPluginTest(unittest.TestCase):
         alphax_plugin.copy_tree(plugin_source, cache_root / built["version"])
         return plugin_source, cache_root
 
+    def test_doctor_cli_parser_and_exit_contract(self) -> None:
+        self.assertFalse(alphax_plugin.parse_args(["doctor"]).install)
+        self.assertTrue(alphax_plugin.parse_args(["doctor", "--install", "--json"]).json)
+        self.assertEqual(alphax_plugin.doctor_exit_code({"overall": "ready"}), 0)
+        self.assertEqual(alphax_plugin.doctor_exit_code({"overall": "action-required"}), 2)
+        self.assertEqual(alphax_plugin.doctor_exit_code({"overall": "blocked"}), 1)
+
+    def test_render_doctor_covers_result_fields_without_unbounded_payloads(self) -> None:
+        result = {
+            "overall": "action-required",
+            "checks": [
+                {
+                    "id": "git",
+                    "status": "pass",
+                    "observed": "2.41.0",
+                    "required": ">=2.41",
+                    "action": None,
+                    "unexpected": "OPENAI_API_KEY=sentinel-secret",
+                },
+                {
+                    "id": "ocr-cli",
+                    "status": "missing",
+                    "observed": None,
+                    "required": "@alibaba-group/open-code-review",
+                    "action": "install @alibaba-group/open-code-review",
+                },
+            ],
+            "changes": [
+                {
+                    "id": "ocr-cli",
+                    "command_class": "npm-install",
+                    "status": "failed",
+                    "action": "install OCR CLI manually and retry",
+                }
+            ],
+            "residual_risk": ["managed-llm-unapproved"],
+        }
+
+        rendered = alphax_plugin.render_doctor(result)
+
+        for value in (
+            "action-required",
+            "git",
+            "pass",
+            "ocr-cli",
+            "missing",
+            "failed",
+            "install @alibaba-group/open-code-review",
+            "managed-llm-unapproved",
+        ):
+            self.assertIn(value, rendered)
+        self.assertNotIn("sentinel-secret", rendered)
+
+    def test_doctor_probe_secret_is_absent_from_json_and_human_output(self) -> None:
+        responses = self._doctor_responses(ocr_code=127)
+        responses[("ocr", "version")] = (127, "", "OPENAI_API_KEY=sentinel-secret")
+        result = alphax_plugin.doctor_setup(
+            self.source,
+            command_runner=ScriptedRunner(responses),
+            plugin_source=Path(self.temp.name) / "missing-marketplace" / "alphax",
+            cache_root=Path(self.temp.name) / "missing-cache" / "alphax",
+        )
+
+        self.assertNotIn("sentinel-secret", json.dumps(result))
+        self.assertNotIn("sentinel-secret", alphax_plugin.render_doctor(result))
+
     def test_doctor_ready_is_read_only_and_reports_managed_gate(self) -> None:
         plugin_source, cache_root = self._ready_doctor_paths()
         runner = ScriptedRunner(
