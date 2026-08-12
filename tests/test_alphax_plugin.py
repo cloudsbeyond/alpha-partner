@@ -616,6 +616,40 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("marker.md", result.stdout)
 
+    def test_source_verifier_binds_doctor_installer_candidate_gate(self) -> None:
+        verifier = (ROOT / "scripts/verify-alpha-source.sh").read_text(encoding="utf-8")
+        helper = verifier.split("required_paths=(", 1)[0]
+        implementation = (ROOT / "scripts/alphax_plugin.py").read_text(encoding="utf-8")
+        self.assertIn("\nverify_doctor_installer_binding\n", verifier)
+
+        def verify(source: Path) -> subprocess.CompletedProcess[str]:
+            return subprocess.run(
+                ["bash", "-c", helper + '\nverify_doctor_installer_binding "$2"', "bash", ".", str(source)],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        with tempfile.TemporaryDirectory() as temporary:
+            temporary_root = Path(temporary)
+            current = temporary_root / "current.py"
+            current.write_text(implementation, encoding="utf-8")
+            changed_value = temporary_root / "changed-value.py"
+            changed_value.write_text(
+                implementation.replace("allow_candidate=False", "allow_candidate=True", 1),
+                encoding="utf-8",
+            )
+            moved_value = temporary_root / "moved-value.py"
+            moved_value.write_text(
+                implementation.replace("allow_candidate=False", "candidate_gate_removed=False", 1)
+                + "\nallow_candidate=False\n",
+                encoding="utf-8",
+            )
+
+            self.assertEqual(verify(current).returncode, 0)
+            self.assertNotEqual(verify(changed_value).returncode, 0)
+            self.assertNotEqual(verify(moved_value).returncode, 0)
+
     def test_render_doctor_covers_result_fields_without_unbounded_payloads(self) -> None:
         result = {
             "overall": "action-required",

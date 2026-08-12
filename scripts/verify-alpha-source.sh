@@ -21,6 +21,55 @@ source_rg() {
     -- "$pattern" "$ROOT"
 }
 
+verify_doctor_installer_binding() {
+  local source_file
+  if [ "$#" -gt 0 ]; then
+    source_file="$1"
+  else
+    source_file="$ROOT/scripts/alphax_plugin.py"
+  fi
+  python3 - "$source_file" <<'PY'
+import ast
+import sys
+from pathlib import Path
+
+source_file = Path(sys.argv[1])
+tree = ast.parse(source_file.read_text(encoding="utf-8"), filename=str(source_file))
+doctor_setup = next(
+    (
+        node
+        for node in tree.body
+        if isinstance(node, ast.FunctionDef) and node.name == "doctor_setup"
+    ),
+    None,
+)
+if doctor_setup is None:
+    raise SystemExit("doctor installer binding: doctor_setup is missing")
+
+calls = [
+    node
+    for node in ast.walk(doctor_setup)
+    if isinstance(node, ast.Call)
+    and isinstance(node.func, ast.Name)
+    and node.func.id == "alphax_installer"
+]
+if len(calls) != 1:
+    raise SystemExit(
+        f"doctor installer binding: expected one alphax_installer call, found {len(calls)}"
+    )
+
+keywords = [keyword for keyword in calls[0].keywords if keyword.arg == "allow_candidate"]
+if (
+    len(keywords) != 1
+    or not isinstance(keywords[0].value, ast.Constant)
+    or keywords[0].value.value is not False
+):
+    raise SystemExit(
+        "doctor installer binding: alphax_installer must pass allow_candidate=False"
+    )
+PY
+}
+
 absent_public() {
   local pattern="$1"
   if source_rg -n "$pattern" >/dev/null; then
@@ -304,6 +353,8 @@ scripts/alphax_plugin.py	OCR_MARKETPLACE_REPOSITORY = "https://github.com/alibab
 scripts/alphax_plugin.py	OCR_PLUGIN_SELECTOR = "open-code-review-codex@open-code-review"
 scripts/alphax_plugin.py	allow_candidate=False
 EOF
+
+verify_doctor_installer_binding
 
 [ ! -e "$ROOT/partner" ] || fail "public source contains legacy local-asset directory: partner"
 [ ! -e "$ROOT/context-reloader" ] || fail "public source contains legacy local-asset directory: context-reloader"
