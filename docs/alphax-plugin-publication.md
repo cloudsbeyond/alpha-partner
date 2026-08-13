@@ -27,7 +27,7 @@ hard_gates:
   - package contains all Source skills plus the alphaX entry skill
   - embedded Source hash matches provenance before project work or review
   - production install requires clean accepted Source
-  - fresh invocation replay covers F01-F11 and G01-G14 with independent verdicts
+  - fresh invocation replay covers F01-F12 and G01-G14 with independent verdicts
   - every observed answer contains complete package and resolved Source identity fields
 
 evidence_boundary:
@@ -49,6 +49,12 @@ source review, it requires `--live-source-root`; the output must identify that
 checkout as accepted or candidate.
 
 ## Formal Review Adopter Quickstart
+
+The canonical invocation and distribution relationship is
+`skills/formal-development/SKILL.md#formal-review-routes`. Install alphaX as
+one publication unit: `formal-development` and `formal-code-review` are
+directly triggerable, while `formal-research-review` is parent-routed.
+Independent triggerability does not authorize standalone publication.
 
 From a clean accepted Source, first inspect the complete local state:
 

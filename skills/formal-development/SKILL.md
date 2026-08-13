@@ -1,6 +1,6 @@
 ---
 name: formal-development
-description: "Use when alphaX is doing, re-entering, refactoring, or reviewing formal-development / 形式化研发 work as a project development OS / 项目研发 OS: project initialization / 项目初始化, later iteration / 后续迭代, existing-project formalization / 存量项目形式化重构, PRD.md creation or refresh, product narrative / 产品叙事 consolidation, architecture narrative / 架构叙事 boundary, formal contracts / 形式化契约, Project Traceability / 项目级追踪, coding or non-coding L0-L4 minimum shapes / 编码或非编码最小形态, project state routing / 项目状态路由, artifact placement / 产物落点, evidence feedback / 证据回灌, L4 validation alignment / 验证证据对齐, spec/SDD residue cleanup, or formal-development review / 形式化研发评审."
+description: "Use when alphaX is doing, re-entering, refactoring, or reviewing formal-development / 形式化研发 work as a project development OS / 项目研发 OS: project initialization / 项目初始化, later iteration / 后续迭代, existing-project formalization / 存量项目形式化重构, PRD.md creation or refresh, product narrative / 产品叙事 consolidation, architecture narrative / 架构叙事 boundary, formal contracts / 形式化契约, Project Traceability / 项目级追踪, coding or non-coding L0-L4 minimum shapes / 编码或非编码最小形态, formal research review / 形式化研究评审, project state routing / 项目状态路由, artifact placement / 产物落点, evidence feedback / 证据回灌, L4 validation alignment / 验证证据对齐, spec/SDD residue cleanup, or formal-development review / 形式化研发评审."
 ---
 
 # Formal Development / 形式化研发
@@ -98,10 +98,116 @@ Reference loading:
   - non-coding work: `references/non-coding-l0-l4.md`
 - Read `references/layer-glossary.md` only when layer terminology, goal,
   non-goal, anti-example, or few-shot classification is ambiguous.
+- For an explicit review of non-coding research artifacts, read
+  `references/formal-research-review.md` after `references/non-coding-l0-l4.md`.
 - If the right reference is unclear, inspect `references/index.md` first, then
   load the smallest matching reference file.
 - Keep `SKILL.md` as the operational route and layer scheme. Keep explanatory
   terminology, scenario examples, and few-shot material in reference files.
+
+## Formal Review Routes / 形式化专业评审路由
+
+`formal-development` owns route selection and shared review governance. Code
+review and research review are sibling specializations with asymmetric
+carriers: code review is a directly triggerable skill, while research review is
+a parent-routed profile of the non-coding route. Neither route loads, invokes,
+accepts, or governs the other.
+
+```yaml
+formal_review_routes:
+  owner: formal-development
+  project_truth: current-target-project-source-and-contracts
+  layer_boundary: L3-professional-review-to-L4-evidence
+  horizontal_contract:
+    topology: sibling-specialized-routes
+    dependency: neither-route-depends-on-the-other
+    primary_key: L3-artifact-kind
+    mixed_scope: review-independently-and-aggregate-at-l4
+    cross_route_drift: route-upstream-before-entering-the-other-route
+    conflict_resolution: current-target-project-contracts-and-human-owner
+    cross_route_acceptance: forbidden
+  shared_governance:
+    mode:
+      default_mode: delegate
+      managed_mode_requires_explicit_request: true
+      silent_mode_fallback: forbidden
+    evidence:
+      required_fields: [observed_evidence, inference, missing_evidence, confidence, unverified_claims]
+      raw_model_reasoning_is_evidence: false
+      review_output_is_acceptance: false
+    authority:
+      l0_l2: target-project-and-human-owner
+      finding_acceptance: human-owner
+      external_write_or_comment: human-owner
+      human_acceptance: human-owner
+      automatic_fix_or_promotion: forbidden
+    knowledge_mapping:
+      flow: project-truth-to-local-review-evidence-to-sanitized-pattern
+      backlinks_only: true
+      project_writeback_or_decision_authority: forbidden
+      promotion: Audit-Confirm-Apply
+  invocation:
+    formal-development: direct
+    formal-code-review: direct-with-parent-governance
+    formal-research-review: parent-routed-only
+  distribution:
+    unit: alphax-plugin
+    bundled_skills: [formal-development, formal-code-review]
+    embedded_profiles: [formal-research-review]
+    standalone_publication: unsupported
+    rule: independent-triggerability-does-not-imply-independent-packaging
+  routes:
+    code:
+      route_id: formal-code-review
+      carrier: skills/formal-code-review/SKILL.md
+      carrier_kind: independently-triggerable-skill
+      specialization: bounded-code-diff-commit-or-workspace
+      required_when: user-or-project-code-review-gate
+      optional_when: nontrivial-L3-code-change-benefits-from-review
+      managed_requires: [explicit-managed-request, explicit-approved-code-endpoint, endpoint-reachability, bounded-code-context]
+      unavailable_behavior: report-exact-gap-and-continue-only-with-authorized-non-OCR-validation
+      boundary: code-review-evidence-not-acceptance-or-project-validation
+    research:
+      route_id: formal-research-review
+      carrier: skills/formal-development/references/formal-research-review.md
+      carrier_kind: parent-routed-profile
+      specialization: bounded-non-coding-research-artifacts
+      required_when: user-or-project-research-review-gate
+      optional_when: nontrivial-L3-research-artifact-benefits-from-review
+      managed_requires: [explicit-managed-request, explicit-approved-model-endpoint, endpoint-reachability, explicit-research-material-egress-authorization, bounded-material-manifest]
+      unavailable_behavior: report-exact-gap-and-continue-only-with-authorized-non-managed-validation
+      boundary: research-review-evidence-not-publication-decision-or-acceptance
+  evolution:
+    extraction_trigger: third-professional-review-route-or-material-cross-route-drift
+    before_trigger: do-not-create-neutral-formal-review-framework
+```
+
+```mermaid
+flowchart TB
+  User["User or agent"]
+  subgraph Plugin["alphaX plugin - publication unit"]
+    FD["formal-development<br/>owner and shared governance"]
+    FC["formal-code-review<br/>directly triggerable skill"]
+    FR["formal-research-review<br/>parent-routed profile"]
+    FD -. "provides shared governance" .-> FC
+    FD -->|"routes research review"| FR
+  end
+  User -->|"direct invocation"| FD
+  User -->|"direct invocation"| FC
+  FC --> CodeL4["Code L4 evidence"]
+  FR --> ResearchL4["Research L4 evidence"]
+  CodeL4 --> L4["Normalized project L4 evidence"]
+  ResearchL4 --> L4
+  L4 -. "cross-domain drift to L0-L2" .-> FD
+```
+
+This block is the only source for review-route selection and shared governance.
+Each route reads it plus its own domain contract. For mixed code/research work,
+review the two bounded targets independently, aggregate normalized evidence only
+at L4, and route cross-domain drift back to L0-L2 before entering the other
+route. All three capabilities ship in the alphaX plugin; direct invocation does
+not imply independent packaging. Add a neutral shared carrier only after the
+stated extraction trigger is evidenced.
 
 ## Project Operating Loop / 项目研发闭环
 
@@ -245,28 +351,14 @@ For a later change in an already formalized project:
    implementation.
 5. If L3 changes, verify the execution artifact remains linked to existing
    L1/L2 contracts and does not introduce new product promises.
-6. When the `formal_code_review_gate` applies, run it after formal development
-   has resolved the current contract path and before project validation. If its
-   review evidence exposes contract drift, route upstream before accepting an
-   L3-only fix.
+6. Select the applicable entry under `formal_review_routes.routes` only after
+   resolving the current L0-L3 path. For mixed code/research scope, run both
+   routes independently and aggregate their normalized evidence only at L4.
+   Route cross-domain drift upstream before entering the other route.
 7. If only L4 changes, update validation evidence without changing L0-L3; when
    L4 exposes drift, route the fix back to the responsible upstream layer.
 8. Update traceability, validation indexes, changelog, and residual risk only
    when they are part of the project's existing spine.
-
-```yaml
-formal_code_review_gate:
-  skill: skills/formal-code-review/SKILL.md
-  required_when: user-or-project-review-gate
-  optional_when: nontrivial-L3-change-benefits-from-review
-  default_for_routine_review: delegation
-  managed_requires: explicit-request-and-approved-endpoint
-  unavailable_behavior: report-exact-gap-and-continue-only-with-non-OCR-validation
-  boundary: does not make OCR mandatory or convert review into acceptance
-```
-
-This gate delegates mode selection and review evidence rules to its named skill;
-it does not change L0-L2 authority or replace project validation.
 
 #### Formalize Existing / 存量项目形式化重构
 
@@ -472,12 +564,19 @@ only when they are already project-native or clearer than the existing schema.
 If the project already has coding-native `prd_refs` / `yaml_refs` / `code_refs`
 / `validation`, do not migrate them to layer labels.
 
-When `formal_code_review_gate` applies, compose the route in this order:
+When `formal_review_routes.routes.code` applies, compose the route in this order:
 `formal_development -> formal_code_review -> project validation -> optional
-PR/CI handling -> closeout`. An unavailable OCR path must retain the gate's
+PR/CI handling -> closeout`. An unavailable OCR path must retain the route's
 exact-gap report and continue only with non-OCR validation. If review evidence
 exposes contract drift, route it to the responsible upstream layer before
 accepting an L3-only fix.
+
+When `formal_review_routes.routes.research` applies, compose the route in this order:
+`formal_development -> non-coding L0-L4 -> formal-research-review -> authorized
+project validation -> closeout`. Managed review stops unless both the explicit
+approved model endpoint and the bounded research-material egress authorization
+are proven. Review output and a derived knowledge map remain L4/downstream
+evidence and cannot decide for or write back to the project.
 
 Completion state vocabulary:
 

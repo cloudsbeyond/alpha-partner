@@ -52,6 +52,17 @@ non_coding_l4_carriers:
   - residual risk memo
 ```
 
+Optional formal research review profile:
+
+- Load `formal-research-review.md` only when the user or project asks for an
+  explicit L3 research-artifact review or a nontrivial research artifact would
+  benefit from one.
+- Delegation is the default. Managed review additionally requires an explicit
+  approved model endpoint and explicit authorization to send the bounded
+  research materials.
+- Its normalized review is an L4 carrier, not human acceptance, publication
+  authority, or a source that may rewrite L0-L2.
+
 Minimal non-coding L4:
 
 ```yaml

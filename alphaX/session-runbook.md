@@ -85,8 +85,8 @@ skill_router:
       pairs_with: [source_work, source_review]
     formal_development:
       file: skills/formal-development/SKILL.md
-      triggers: [formal development, 形式化研发, project initialization, 项目初始化, later iteration, 后续迭代, existing-project formalization, 存量项目形式化重构, formal-development review, 形式化研发评审, PRD.md, product narrative, 产品叙事, architecture narrative, 架构叙事, L0-L4, Project Traceability, spec cleanup, SDD cleanup]
-      pairs_with: [project, project_review, source_work, source_review, spec_checkpoint]
+      triggers: [formal development, 形式化研发, project initialization, 项目初始化, later iteration, 后续迭代, existing-project formalization, 存量项目形式化重构, formal-development review, 形式化研发评审, formal research review, 形式化研究评审, PRD.md, product narrative, 产品叙事, architecture narrative, 架构叙事, L0-L4, Project Traceability, spec cleanup, SDD cleanup]
+      pairs_with: [research, project, project_review, source_work, source_review, spec_checkpoint]
     formal_code_review:
       file: skills/formal-code-review/SKILL.md
       triggers: [formal code review, 形式化研发代码审查, code-review request inside formal-development work]
@@ -99,6 +99,7 @@ skill_router:
     - for creative inputs evaluated as alphaX mechanism candidates, apply insight_catcher to grade dispositions before any tracked change
     - for formal-development initialization, iteration, existing-project refactor, or review, apply formal_development after scope selection and before writing or judging PRD, architecture, contract, traceability, harness, or implementation assets
     - for formal-development code review, compose formal_development -> formal_code_review -> project validation -> optional PR/CI handling -> closeout; OCR remains optional unless the user or project gate requests it
+    - for formal-development research review, compose formal_development -> non-coding L0-L4 -> formal-research-review -> authorized project validation -> closeout; managed mode requires an explicit approved model endpoint and explicit research-material egress authorization
 
 project_local_setup:
   guide: templates/project-work/local-pointer.md

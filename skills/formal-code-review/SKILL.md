@@ -8,9 +8,12 @@ description: "Use when formal code review / 形式化代码审查 is requested; 
 ## Core Contract
 
 ```yaml
-default_mode: delegate
-managed_mode_requires_explicit_request: true
-silent_mode_fallback: forbidden
+route_owner: formal-development
+route_id: formal-code-review
+carrier_kind: independently-triggerable-skill
+shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes
+code_execution_contract: references/mode-and-evidence.md
+code_knowledge_map: references/use-cases/
 layer_boundary: L3 review and L4 evidence only
 project_truth: current target project source and contracts
 ```
@@ -18,7 +21,7 @@ project_truth: current target project source and contracts
 ## Workflow
 
 1. Resolve repository, nearest AGENTS.md, target, diff, and current contract refs.
-2. Select exactly one mode; use delegation unless managed mode was explicit.
+2. Apply the parent shared governance and select exactly one mode.
 3. Read `references/mode-and-evidence.md` before executing OCR.
 4. Account for every previewed file and verify material findings from current source.
 5. Route findings without changing L0-L2.
