@@ -305,6 +305,13 @@ skills/insight-catcher/SKILL.md	templates/source-work/insight-catcher.md
 skills/insight-catcher/SKILL.md	self_iteration_exit_gates:
 skills/insight-catcher/SKILL.md	diminishing_return_stop:
 skills/formal-development/SKILL.md	formal-development
+skills/formal-development/SKILL.md	formal_review_routes:
+skills/formal-development/SKILL.md	parallel-specialized-routes-with-asymmetric-carriers
+skills/formal-development/SKILL.md	carrier_kind: independent-skill
+skills/formal-development/SKILL.md	carrier_kind: child-profile
+skills/formal-development/SKILL.md	current_contract_owner: formal-code-review
+skills/formal-development/SKILL.md	research_reuse_boundary: semantics-only
+skills/formal-development/SKILL.md	third-professional-review-route-or-material-cross-route-drift
 skills/formal-development/SKILL.md	Project Operating Loop
 skills/formal-development/SKILL.md	Semantic Preservation
 skills/formal-development/SKILL.md	L0-L4 is a judgment lens, not a mandatory target-project field schema
@@ -346,9 +353,13 @@ skills/formal-development/references/coding-l0-l4.md	prd_refs/yaml_refs/code_ref
 skills/formal-development/references/non-coding-l0-l4.md	non_coding_minimum_shape:
 skills/formal-development/references/non-coding-l0-l4.md	non_coding_l4_carriers:
 skills/formal-development/references/formal-research-review.md	profile: formal-research-review
+skills/formal-development/references/formal-research-review.md	route_owner: formal-development
+skills/formal-development/references/formal-research-review.md	carrier_kind: child-profile
 skills/formal-development/references/formal-research-review.md	explicit_model_endpoint: required
 skills/formal-development/references/formal-research-review.md	research_material_egress_authorization: required
 skills/formal-development/references/formal-research-review.md	backlinks_only: true
+skills/formal-code-review/SKILL.md	route_owner: formal-development
+skills/formal-code-review/SKILL.md	carrier_kind: independent-skill
 scripts/init-local-alphaX.sh	source-work-candidates
 scripts/init-local-alphaX.sh	applied-runs
 scripts/init-local-alphaX.sh	judgment-replays

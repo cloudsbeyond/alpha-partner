@@ -8,6 +8,9 @@ description: "Use when formal code review / 形式化代码审查 is requested; 
 ## Core Contract
 
 ```yaml
+route_owner: formal-development
+route_id: formal-code-review
+carrier_kind: independent-skill
 default_mode: delegate
 managed_mode_requires_explicit_request: true
 silent_mode_fallback: forbidden

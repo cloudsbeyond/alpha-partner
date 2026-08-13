@@ -212,6 +212,45 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertNotIn("OCR review report", minimal_l4)
         self.assertIn("Optional OCR review carrier", coding)
 
+    def test_formal_review_routes_declare_owner_and_asymmetric_carriers(self) -> None:
+        formal = (ROOT / "skills/formal-development/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        code = (ROOT / "skills/formal-code-review/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        research = (
+            ROOT
+            / "skills/formal-development/references/formal-research-review.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertEqual(formal.count("formal_review_routes:"), 1)
+        relationship = formal.split("formal_review_routes:\n", 1)[1].split(
+            "```", 1
+        )[0]
+        for marker in (
+            "owner: formal-development",
+            "project_truth: current-target-project-source-and-contracts",
+            "layer_boundary: L3-professional-review-to-L4-evidence",
+            "relationship: parallel-specialized-routes-with-asymmetric-carriers",
+            "route_id: formal-code-review",
+            "carrier_kind: independent-skill",
+            "route_id: formal-research-review",
+            "carrier_kind: child-profile",
+            "current_contract_owner: formal-code-review",
+            "research_reuse_boundary: semantics-only",
+            "extraction_trigger: third-professional-review-route-or-material-cross-route-drift",
+        ):
+            self.assertIn(marker, relationship)
+        self.assertIn("route_owner: formal-development", code)
+        self.assertIn("route_id: formal-code-review", code)
+        self.assertIn("carrier_kind: independent-skill", code)
+        self.assertIn("route_owner: formal-development", research)
+        self.assertIn("route_id: formal-research-review", research)
+        self.assertIn("carrier_kind: child-profile", research)
+        self.assertIn("formal_code_review_gate:", formal)
+        self.assertIn("formal_research_review_profile:", formal)
+
     def test_formal_research_review_profile_contract_and_routing(self) -> None:
         profile_path = (
             ROOT

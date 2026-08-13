@@ -105,6 +105,52 @@ Reference loading:
 - Keep `SKILL.md` as the operational route and layer scheme. Keep explanatory
   terminology, scenario examples, and few-shot material in reference files.
 
+## Formal Review Routes / 形式化专业评审路由
+
+`formal-development` owns the L0-L4 route. Code review and research review are
+parallel specialized routes downstream of that owner, but their physical
+carriers are intentionally asymmetric: code review is an independently
+triggerable skill, while research review is a lightweight child profile of the
+non-coding route. They are not three peer skills.
+
+```yaml
+formal_review_routes:
+  owner: formal-development
+  project_truth: current-target-project-source-and-contracts
+  layer_boundary: L3-professional-review-to-L4-evidence
+  relationship: parallel-specialized-routes-with-asymmetric-carriers
+  authority:
+    l0_l2: target-project-and-human-owner
+    finding_acceptance: human-owner
+    review_output: downstream-evidence-only
+  routes:
+    code:
+      route_id: formal-code-review
+      carrier: skills/formal-code-review/SKILL.md
+      carrier_kind: independent-skill
+      specialization: bounded-code-diff-commit-or-workspace
+    research:
+      route_id: formal-research-review
+      carrier: references/formal-research-review.md
+      carrier_kind: child-profile
+      specialization: bounded-non-coding-research-artifacts
+  reused_contracts:
+    current_contract_owner: formal-code-review
+    mode_and_evidence: skills/formal-code-review/references/mode-and-evidence.md
+    knowledge_authority: skills/formal-code-review/references/use-cases/authority-and-promotion.md
+    research_reuse_boundary: semantics-only
+    research_excludes: OCR-commands-code-target-schema-and-code-specific-failure-classes
+  evolution:
+    extraction_trigger: third-professional-review-route-or-material-cross-route-drift
+    before_trigger: do-not-create-neutral-formal-review-framework
+```
+
+The relationship block is canonical for ownership and carrier naming. The
+existing `formal_code_review_gate` and `formal_research_review_profile` names
+below remain operational compatibility keys; they do not imply peer shape or
+different authority. If shared semantics later need a neutral owner, move them
+only after the stated extraction trigger is evidenced.
+
 ## Project Operating Loop / 项目研发闭环
 
 Treat formal-development as a project-level development OS. It is not a

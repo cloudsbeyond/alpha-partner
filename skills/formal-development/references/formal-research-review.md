@@ -14,6 +14,9 @@ or acceptance system.
 ```yaml
 profile: formal-research-review
 parent_skill: formal-development
+route_owner: formal-development
+route_id: formal-research-review
+carrier_kind: child-profile
 layer_boundary: L3 research artifact review and L4 evidence only
 default_mode: delegate
 managed_mode_requires_explicit_request: true
