@@ -181,6 +181,9 @@ An installed OCR plugin proves provenance only when its exact
 provenance is blocked and non-installable. Likewise, any partial AlphaX carrier
 state is blocked: automatic AlphaX installation is allowed only when marketplace
 and cache carriers are both absent, so it cannot overwrite an existing tree.
+Absent means that no filesystem node lexically exists at either carrier root. A
+broken symlink, file, or empty directory is an existing carrier node and remains
+blocked for manual inspection without following, deleting, or replacing it.
 
 ### Documentation And Testing Scope
 

@@ -805,6 +805,10 @@ def _probe_codex_state(
     return capability, marketplace_check, plugin_check
 
 
+def _path_lexically_exists(path: Path) -> bool:
+    return path.exists() or path.is_symlink()
+
+
 def _probe_alphax_state(
     source_root: Path,
     *,
@@ -864,6 +868,19 @@ def _probe_alphax_state(
         False,
         None,
     )
+    for carrier_root in (plugin_source, cache_root):
+        if _path_lexically_exists(carrier_root) and (
+            carrier_root.is_symlink() or not carrier_root.is_dir()
+        ):
+            return source_check, _check(
+                "alphax-parity",
+                "alphax-publication",
+                "blocked",
+                "invalid-carrier-node",
+                "byte-identical generated package, marketplace, and cache",
+                False,
+                "inspect existing AlphaX carrier nodes manually",
+            )
     try:
         verification = alphax_verifier(
             source_root,
@@ -874,9 +891,9 @@ def _probe_alphax_state(
     except (OSError, ValueError):
         verification = {"ok": False, "failure_classes": ["verification-error"]}
     cache = Path(str(verification.get("cache", ""))) if verification.get("cache") else None
-    plugin_present = plugin_source.is_dir()
+    plugin_present = _path_lexically_exists(plugin_source)
     cache_present = cache is not None and cache.is_dir()
-    cache_root_present = cache_root.is_dir() and any(cache_root.iterdir())
+    cache_root_present = _path_lexically_exists(cache_root)
     failure_classes = set(verification.get("failure_classes", []))
     if not plugin_present and not cache_root_present:
         parity_check = _check(

@@ -66,6 +66,9 @@ Python and Git must pass before the first mutation. A partial AlphaX carrier is
 blocked and requires manual inspection; automatic AlphaX installation runs only
 when both marketplace and cache carriers are absent, so it never overwrites an
 existing tree.
+Absent means that no filesystem node lexically exists at either carrier root. A
+broken symlink, file, or empty directory is an existing carrier node and remains
+blocked for manual inspection without following, deleting, or replacing it.
 
 The doctor requires Python `>=3.10`, Git `>=2.41`, and a Codex CLI that can run
 `codex plugin marketplace list --json` and `codex plugin list --json`. If that

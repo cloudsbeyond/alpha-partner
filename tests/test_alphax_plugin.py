@@ -627,6 +627,7 @@ class AlphaXPluginTest(unittest.TestCase):
             "marketplaceSource.source",
             "partial AlphaX carrier",
             "failed` change forces `overall: blocked",
+            "broken symlink, file, or empty directory",
         ):
             self.assertIn(identity, publication)
         for identity in (
@@ -634,6 +635,7 @@ class AlphaXPluginTest(unittest.TestCase):
             "marketplaceSource.source",
             "partial AlphaX carrier",
             "failed` change forces `overall: blocked",
+            "broken symlink, file, or empty directory",
         ):
             self.assertIn(identity, design)
         self.assertIn("docs/alphax-plugin-publication.md", plugin_readme)
@@ -1200,6 +1202,82 @@ class AlphaXPluginTest(unittest.TestCase):
                 self.assertEqual(parity["status"], "blocked")
                 self.assertFalse(parity["installable"])
                 self.assertEqual(result["changes"][-1]["status"], "skipped")
+                self.assertEqual(installer_calls, [])
+
+    def test_doctor_blocks_lexically_existing_alphax_carrier_nodes(self) -> None:
+        cases = (
+            ("plugin-broken-symlink", "plugin", "broken-symlink", "invalid-carrier-node"),
+            ("plugin-file", "plugin", "file", "invalid-carrier-node"),
+            ("cache-broken-symlink", "cache", "broken-symlink", "invalid-carrier-node"),
+            ("cache-file", "cache", "file", "invalid-carrier-node"),
+            ("cache-empty-directory", "cache", "empty-directory", "partial-carrier-state"),
+        )
+
+        for case_name, carrier, node_kind, expected_observed in cases:
+            with self.subTest(case=case_name):
+                case_root = Path(self.temp.name) / case_name
+                plugin_source = case_root / "marketplace" / "alphax"
+                cache_root = case_root / "cache" / "alphax"
+                node = plugin_source if carrier == "plugin" else cache_root
+                node.parent.mkdir(parents=True, exist_ok=True)
+                if node_kind == "broken-symlink":
+                    node.symlink_to(case_root / "missing-target", target_is_directory=True)
+                    original = ("symlink", str(node.readlink()))
+                elif node_kind == "file":
+                    node.write_text(f"preserve-{case_name}\n", encoding="utf-8")
+                    original = ("file", node.read_text(encoding="utf-8"))
+                else:
+                    node.mkdir()
+                    original = ("directory", tuple(node.iterdir()))
+
+                runner = ScriptedRunner(
+                    self._doctor_responses(
+                        marketplaces=[
+                            {
+                                "name": "open-code-review",
+                                "repository": alphax_plugin.OCR_MARKETPLACE_REPOSITORY,
+                            }
+                        ],
+                        plugins=[self._legacy_ocr_plugin()],
+                    )
+                )
+                installer_calls: list[dict[str, object]] = []
+
+                for install in (False, True):
+                    with self.subTest(case=case_name, install=install):
+                        result = alphax_plugin.doctor_setup(
+                            self.source,
+                            install=install,
+                            command_runner=runner,
+                            alphax_installer=lambda *_args, **kwargs: installer_calls.append(
+                                kwargs
+                            ),
+                            plugin_source=plugin_source,
+                            cache_root=cache_root,
+                        )
+
+                        parity = next(
+                            check
+                            for check in result["checks"]
+                            if check["id"] == "alphax-parity"
+                        )
+                        self.assertEqual(parity["status"], "blocked")
+                        self.assertEqual(parity["observed"], expected_observed)
+                        self.assertFalse(parity["installable"])
+                        self.assertNotIn(str(node), json.dumps(result))
+                        if install:
+                            self.assertEqual(result["changes"][-1]["id"], "alphax")
+                            self.assertEqual(result["changes"][-1]["status"], "skipped")
+
+                        self.assertTrue(node.exists() or node.is_symlink())
+                        if node_kind == "broken-symlink":
+                            observed = ("symlink", str(node.readlink()))
+                        elif node_kind == "file":
+                            observed = ("file", node.read_text(encoding="utf-8"))
+                        else:
+                            observed = ("directory", tuple(node.iterdir()))
+                        self.assertEqual(observed, original)
+
                 self.assertEqual(installer_calls, [])
 
     def test_doctor_install_applies_only_missing_steps_in_order(self) -> None:
