@@ -50,6 +50,12 @@ checkout as accepted or candidate.
 
 ## Formal Review Adopter Quickstart
 
+The canonical invocation and distribution relationship is
+`skills/formal-development/SKILL.md#formal-review-routes`. Install alphaX as
+one publication unit: `formal-development` and `formal-code-review` are
+directly triggerable, while `formal-research-review` is parent-routed.
+Independent triggerability does not authorize standalone publication.
+
 From a clean accepted Source, first inspect the complete local state:
 
 ```bash

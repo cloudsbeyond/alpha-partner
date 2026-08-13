@@ -10,7 +10,7 @@ description: "Use when formal code review / 形式化代码审查 is requested; 
 ```yaml
 route_owner: formal-development
 route_id: formal-code-review
-carrier_kind: independent-skill
+carrier_kind: independently-triggerable-skill
 shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes
 code_execution_contract: references/mode-and-evidence.md
 code_knowledge_map: references/use-cases/

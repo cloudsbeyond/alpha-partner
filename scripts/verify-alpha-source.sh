@@ -229,6 +229,7 @@ docs/alphax-plugin-publication.md	https://github.com/alibaba/open-code-review.gi
 docs/alphax-plugin-publication.md	open-code-review-codex@open-code-review
 docs/alphax-plugin-publication.md	managed-llm-unapproved
 docs/alphax-plugin-publication.md	never use --allow-candidate
+docs/alphax-plugin-publication.md	Independent triggerability does not authorize standalone publication
 AGENTS.md	fresh Codex replay of every F01-F12 and G01-G14 case with independent verdicts
 docs/alphax-plugin-publication.md	fresh invocation replay covers F01-F12 and G01-G14
 plugin/skills/alphax/SKILL.md	resolve-invocation
@@ -321,8 +322,17 @@ skills/formal-development/SKILL.md	mixed_scope: review-independently-and-aggrega
 skills/formal-development/SKILL.md	cross_route_drift: route-upstream-before-entering-the-other-route
 skills/formal-development/SKILL.md	conflict_resolution: current-target-project-contracts-and-human-owner
 skills/formal-development/SKILL.md	cross_route_acceptance: forbidden
-skills/formal-development/SKILL.md	carrier_kind: independent-skill
-skills/formal-development/SKILL.md	carrier_kind: child-profile
+skills/formal-development/SKILL.md	carrier_kind: independently-triggerable-skill
+skills/formal-development/SKILL.md	carrier_kind: parent-routed-profile
+skills/formal-development/SKILL.md	formal-code-review: direct-with-parent-governance
+skills/formal-development/SKILL.md	formal-research-review: parent-routed-only
+skills/formal-development/SKILL.md	unit: alphax-plugin
+skills/formal-development/SKILL.md	bundled_skills: \[formal-development, formal-code-review\]
+skills/formal-development/SKILL.md	embedded_profiles: \[formal-research-review\]
+skills/formal-development/SKILL.md	standalone_publication: unsupported
+skills/formal-development/SKILL.md	independent-triggerability-does-not-imply-independent-packaging
+skills/formal-development/SKILL.md	flowchart TB
+skills/formal-development/SKILL.md	alphaX plugin - publication unit
 skills/formal-development/SKILL.md	default_mode: delegate
 skills/formal-development/SKILL.md	managed_mode_requires_explicit_request: true
 skills/formal-development/SKILL.md	silent_mode_fallback: forbidden
@@ -370,14 +380,14 @@ skills/formal-development/references/non-coding-l0-l4.md	non_coding_minimum_shap
 skills/formal-development/references/non-coding-l0-l4.md	non_coding_l4_carriers:
 skills/formal-development/references/formal-research-review.md	profile: formal-research-review
 skills/formal-development/references/formal-research-review.md	route_owner: formal-development
-skills/formal-development/references/formal-research-review.md	carrier_kind: child-profile
+skills/formal-development/references/formal-research-review.md	carrier_kind: parent-routed-profile
 skills/formal-development/references/formal-research-review.md	shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes
 skills/formal-development/references/formal-research-review.md	explicit_model_endpoint: required
 skills/formal-development/references/formal-research-review.md	research_material_egress_authorization: required
 skills/formal-development/references/formal-research-review.md	research_authority_extensions:
 skills/formal-development/references/formal-research-review.md	research_knowledge_extensions:
 skills/formal-code-review/SKILL.md	route_owner: formal-development
-skills/formal-code-review/SKILL.md	carrier_kind: independent-skill
+skills/formal-code-review/SKILL.md	carrier_kind: independently-triggerable-skill
 skills/formal-code-review/SKILL.md	shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes
 scripts/init-local-alphaX.sh	source-work-candidates
 scripts/init-local-alphaX.sh	applied-runs

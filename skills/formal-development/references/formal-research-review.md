@@ -16,7 +16,7 @@ profile: formal-research-review
 parent_skill: formal-development
 route_owner: formal-development
 route_id: formal-research-review
-carrier_kind: child-profile
+carrier_kind: parent-routed-profile
 shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes
 layer_boundary: L3 research artifact review and L4 evidence only
 project_truth: current target project source, research contracts, and research materials

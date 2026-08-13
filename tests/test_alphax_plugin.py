@@ -258,10 +258,18 @@ class AlphaXPluginTest(unittest.TestCase):
             "cross_route_drift: route-upstream-before-entering-the-other-route",
             "conflict_resolution: current-target-project-contracts-and-human-owner",
             "cross_route_acceptance: forbidden",
+            "formal-development: direct",
+            "formal-code-review: direct-with-parent-governance",
+            "formal-research-review: parent-routed-only",
+            "unit: alphax-plugin",
+            "bundled_skills: [formal-development, formal-code-review]",
+            "embedded_profiles: [formal-research-review]",
+            "standalone_publication: unsupported",
+            "rule: independent-triggerability-does-not-imply-independent-packaging",
             "route_id: formal-code-review",
-            "carrier_kind: independent-skill",
+            "carrier_kind: independently-triggerable-skill",
             "route_id: formal-research-review",
-            "carrier_kind: child-profile",
+            "carrier_kind: parent-routed-profile",
             "default_mode: delegate",
             "managed_mode_requires_explicit_request: true",
             "silent_mode_fallback: forbidden",
@@ -275,9 +283,11 @@ class AlphaXPluginTest(unittest.TestCase):
             self.assertIn(marker, relationship)
         self.assertNotIn("current_contract_owner:", relationship)
         self.assertNotIn("current_contract_carrier:", relationship)
+        self.assertNotIn("carrier_kind: independent-skill", relationship)
+        self.assertNotIn("carrier_kind: child-profile", relationship)
         self.assertIn("route_owner: formal-development", code)
         self.assertIn("route_id: formal-code-review", code)
-        self.assertIn("carrier_kind: independent-skill", code)
+        self.assertIn("carrier_kind: independently-triggerable-skill", code)
         self.assertIn(
             "shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes",
             code,
@@ -287,7 +297,7 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertNotIn("silent_mode_fallback:", code)
         self.assertIn("route_owner: formal-development", research)
         self.assertIn("route_id: formal-research-review", research)
-        self.assertIn("carrier_kind: child-profile", research)
+        self.assertIn("carrier_kind: parent-routed-profile", research)
         self.assertIn(
             "shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes",
             research,
@@ -813,6 +823,14 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("python3 scripts/alphax_plugin.py doctor --json", publication)
         self.assertIn("codex plugin marketplace list --json", publication)
         self.assertIn("codex plugin list --json", publication)
+        self.assertIn(
+            "skills/formal-development/SKILL.md#formal-review-routes",
+            publication,
+        )
+        self.assertIn(
+            "Independent triggerability does not authorize standalone publication",
+            publication,
+        )
         for identity in (
             "@alibaba-group/open-code-review",
             "https://github.com/alibaba/open-code-review.git",

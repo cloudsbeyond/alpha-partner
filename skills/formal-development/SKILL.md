@@ -109,9 +109,9 @@ Reference loading:
 
 `formal-development` owns route selection and shared review governance. Code
 review and research review are sibling specializations with asymmetric
-carriers: code review is an independently triggerable skill, while research
-review is a lightweight child profile of the non-coding route. Neither route
-loads, invokes, accepts, or governs the other.
+carriers: code review is a directly triggerable skill, while research review is
+a parent-routed profile of the non-coding route. Neither route loads, invokes,
+accepts, or governs the other.
 
 ```yaml
 formal_review_routes:
@@ -146,11 +146,21 @@ formal_review_routes:
       backlinks_only: true
       project_writeback_or_decision_authority: forbidden
       promotion: Audit-Confirm-Apply
+  invocation:
+    formal-development: direct
+    formal-code-review: direct-with-parent-governance
+    formal-research-review: parent-routed-only
+  distribution:
+    unit: alphax-plugin
+    bundled_skills: [formal-development, formal-code-review]
+    embedded_profiles: [formal-research-review]
+    standalone_publication: unsupported
+    rule: independent-triggerability-does-not-imply-independent-packaging
   routes:
     code:
       route_id: formal-code-review
       carrier: skills/formal-code-review/SKILL.md
-      carrier_kind: independent-skill
+      carrier_kind: independently-triggerable-skill
       specialization: bounded-code-diff-commit-or-workspace
       required_when: user-or-project-code-review-gate
       optional_when: nontrivial-L3-code-change-benefits-from-review
@@ -160,7 +170,7 @@ formal_review_routes:
     research:
       route_id: formal-research-review
       carrier: skills/formal-development/references/formal-research-review.md
-      carrier_kind: child-profile
+      carrier_kind: parent-routed-profile
       specialization: bounded-non-coding-research-artifacts
       required_when: user-or-project-research-review-gate
       optional_when: nontrivial-L3-research-artifact-benefits-from-review
@@ -172,12 +182,32 @@ formal_review_routes:
     before_trigger: do-not-create-neutral-formal-review-framework
 ```
 
+```mermaid
+flowchart TB
+  User["User or agent"]
+  subgraph Plugin["alphaX plugin - publication unit"]
+    FD["formal-development<br/>owner and shared governance"]
+    FC["formal-code-review<br/>directly triggerable skill"]
+    FR["formal-research-review<br/>parent-routed profile"]
+    FD -. "provides shared governance" .-> FC
+    FD -->|"routes research review"| FR
+  end
+  User -->|"direct invocation"| FD
+  User -->|"direct invocation"| FC
+  FC --> CodeL4["Code L4 evidence"]
+  FR --> ResearchL4["Research L4 evidence"]
+  CodeL4 --> L4["Normalized project L4 evidence"]
+  ResearchL4 --> L4
+  L4 -. "cross-domain drift to L0-L2" .-> FD
+```
+
 This block is the only source for review-route selection and shared governance.
 Each route reads it plus its own domain contract. For mixed code/research work,
 review the two bounded targets independently, aggregate normalized evidence only
 at L4, and route cross-domain drift back to L0-L2 before entering the other
-route. Add a neutral shared carrier only after the stated extraction trigger is
-evidenced.
+route. All three capabilities ship in the alphaX plugin; direct invocation does
+not imply independent packaging. Add a neutral shared carrier only after the
+stated extraction trigger is evidenced.
 
 ## Project Operating Loop / 项目研发闭环
 
