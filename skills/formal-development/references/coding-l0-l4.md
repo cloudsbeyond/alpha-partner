@@ -66,7 +66,7 @@ result: pass
 residual_risk: manual product acceptance not yet complete
 ```
 
-Optional OCR review carrier (only when `formal_code_review_gate` applies):
+Optional OCR review carrier (only when the formal code review route applies):
 
 ```yaml
 validation:

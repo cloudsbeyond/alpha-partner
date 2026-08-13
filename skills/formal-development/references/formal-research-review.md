@@ -17,20 +17,15 @@ parent_skill: formal-development
 route_owner: formal-development
 route_id: formal-research-review
 carrier_kind: child-profile
+shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes
 layer_boundary: L3 research artifact review and L4 evidence only
-default_mode: delegate
-managed_mode_requires_explicit_request: true
-silent_mode_fallback: forbidden
-shared_mode_contract: skills/formal-code-review/references/mode-and-evidence.md
-shared_knowledge_authority_contract: skills/formal-code-review/references/use-cases/authority-and-promotion.md
 project_truth: current target project source, research contracts, and research materials
 ```
 
-The shared contract supplies the `delegate|managed` selection rule, evidence
-discipline, routing direction, no-fallback rule, and stop semantics. Its OCR
-commands, code target schema, file coverage fields, and code-specific failure
-classes do not apply to research. Use the research carriers and normalized
-envelope below.
+Apply the parent shared governance for route selection, `delegate|managed`
+mode semantics, normalized evidence, authority, one-way knowledge mapping, and
+stop behavior. This profile supplies only research-specific target, coverage,
+finding, validation, egress, and failure rules.
 
 ## Mode Selection / 模式选择
 
@@ -108,60 +103,38 @@ research_review:
   residual_risk: [unverified-or-uncovered-risk]
 ```
 
-```yaml
-evidence_normalization:
-  required_fields: [observed_evidence, inference, missing_evidence, confidence, unverified_claims]
-  raw_model_reasoning_is_evidence: false
-  review_output_is_acceptance: false
-```
-
 Route a clear L3 artifact defect to `l3-research-fix`. Route a mismatch with the
 research rubric or evidence contract to `l2-research-contract-drift`; route a
 method or workflow ambiguity to `l1-research-design-question`; route a scope,
 publication, decision, or acceptance ambiguity to `l0-owner-decision`. A review
 may recommend a route but cannot approve its own finding or mutate L0-L2.
 
-## Human Authority / 人工权限
+## Research Authority Extensions / 研究权限扩展
 
 ```yaml
-human_authority:
-  finding_acceptance: required
-  research_material_egress: required-for-managed
-  external_write_or_comment: required
-  publication_or_decision: required
-  human_acceptance: required
-  automatic_fix_or_promotion: forbidden
+research_authority_extensions:
+  research_material_egress: human-owner-required-for-managed
+  publication_or_decision: human-owner
 ```
 
-Passing review checks, source agreement, model consensus, or a complete material
-manifest is validation evidence only. It does not authorize changing research
-claims, publishing a memo, making a project decision, or accepting completion.
+The parent contract retains finding acceptance, external-write, human
+acceptance, and automatic-promotion authority. Passing research checks, source
+agreement, model consensus, or a complete material manifest remains validation
+evidence only.
 
 ## One-Way Knowledge Mapping / 单向知识映射
 
-Reuse the shared knowledge authority contract for promotion gates and prohibited
-content. This profile does not create another Wiki or knowledge carrier. If the
-target project already uses a Wiki or derived knowledge map, preserve this
-absolute direction:
-
-```text
-project truth -> local research review evidence -> sanitized pattern
-```
-
 ```yaml
-knowledge_mapping:
-  authority: derived-map-not-source
-  backlinks_only: true
-  project_writeback_or_decision_authority: forbidden
-  promotion: Audit -> Confirm -> Apply
-  current_project_verification: required
+research_knowledge_extensions:
+  private_research_material: promotion-forbidden
+  unpublished_data: promotion-forbidden
+  raw_model_output: promotion-forbidden
 ```
 
-The map may retain sanitized reusable patterns and backlinks to the current
-project evidence. It cannot become a requirement, create a finding, decide for
-the project, or write changes back. Never put concrete project paths, private
-research material, raw sessions, credentials, unpublished data, or raw model
-output into Alpha Partner Source.
+Apply the parent one-way knowledge mapping. This profile creates no Wiki or
+knowledge carrier and adds no writeback path. Never promote concrete project
+paths, private research material, raw sessions, credentials, unpublished data,
+or raw model output into Alpha Partner Source.
 
 ## Failure Classes / 失败分类
 

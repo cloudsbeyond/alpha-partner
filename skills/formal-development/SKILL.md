@@ -107,49 +107,77 @@ Reference loading:
 
 ## Formal Review Routes / 形式化专业评审路由
 
-`formal-development` owns the L0-L4 route. Code review and research review are
-parallel specialized routes downstream of that owner, but their physical
-carriers are intentionally asymmetric: code review is an independently
-triggerable skill, while research review is a lightweight child profile of the
-non-coding route. They are not three peer skills.
+`formal-development` owns route selection and shared review governance. Code
+review and research review are sibling specializations with asymmetric
+carriers: code review is an independently triggerable skill, while research
+review is a lightweight child profile of the non-coding route. Neither route
+loads, invokes, accepts, or governs the other.
 
 ```yaml
 formal_review_routes:
   owner: formal-development
   project_truth: current-target-project-source-and-contracts
   layer_boundary: L3-professional-review-to-L4-evidence
-  relationship: parallel-specialized-routes-with-asymmetric-carriers
-  authority:
-    l0_l2: target-project-and-human-owner
-    finding_acceptance: human-owner
-    review_output: downstream-evidence-only
+  horizontal_contract:
+    topology: sibling-specialized-routes
+    dependency: neither-route-depends-on-the-other
+    primary_key: L3-artifact-kind
+    mixed_scope: review-independently-and-aggregate-at-l4
+    cross_route_drift: route-upstream-before-entering-the-other-route
+    conflict_resolution: current-target-project-contracts-and-human-owner
+    cross_route_acceptance: forbidden
+  shared_governance:
+    mode:
+      default_mode: delegate
+      managed_mode_requires_explicit_request: true
+      silent_mode_fallback: forbidden
+    evidence:
+      required_fields: [observed_evidence, inference, missing_evidence, confidence, unverified_claims]
+      raw_model_reasoning_is_evidence: false
+      review_output_is_acceptance: false
+    authority:
+      l0_l2: target-project-and-human-owner
+      finding_acceptance: human-owner
+      external_write_or_comment: human-owner
+      human_acceptance: human-owner
+      automatic_fix_or_promotion: forbidden
+    knowledge_mapping:
+      flow: project-truth-to-local-review-evidence-to-sanitized-pattern
+      backlinks_only: true
+      project_writeback_or_decision_authority: forbidden
+      promotion: Audit-Confirm-Apply
   routes:
     code:
       route_id: formal-code-review
       carrier: skills/formal-code-review/SKILL.md
       carrier_kind: independent-skill
       specialization: bounded-code-diff-commit-or-workspace
+      required_when: user-or-project-code-review-gate
+      optional_when: nontrivial-L3-code-change-benefits-from-review
+      managed_requires: [explicit-managed-request, explicit-approved-code-endpoint, endpoint-reachability, bounded-code-context]
+      unavailable_behavior: report-exact-gap-and-continue-only-with-authorized-non-OCR-validation
+      boundary: code-review-evidence-not-acceptance-or-project-validation
     research:
       route_id: formal-research-review
-      carrier: references/formal-research-review.md
+      carrier: skills/formal-development/references/formal-research-review.md
       carrier_kind: child-profile
       specialization: bounded-non-coding-research-artifacts
-  reused_contracts:
-    current_contract_owner: formal-code-review
-    mode_and_evidence: skills/formal-code-review/references/mode-and-evidence.md
-    knowledge_authority: skills/formal-code-review/references/use-cases/authority-and-promotion.md
-    research_reuse_boundary: semantics-only
-    research_excludes: OCR-commands-code-target-schema-and-code-specific-failure-classes
+      required_when: user-or-project-research-review-gate
+      optional_when: nontrivial-L3-research-artifact-benefits-from-review
+      managed_requires: [explicit-managed-request, explicit-approved-model-endpoint, endpoint-reachability, explicit-research-material-egress-authorization, bounded-material-manifest]
+      unavailable_behavior: report-exact-gap-and-continue-only-with-authorized-non-managed-validation
+      boundary: research-review-evidence-not-publication-decision-or-acceptance
   evolution:
     extraction_trigger: third-professional-review-route-or-material-cross-route-drift
     before_trigger: do-not-create-neutral-formal-review-framework
 ```
 
-The relationship block is canonical for ownership and carrier naming. The
-existing `formal_code_review_gate` and `formal_research_review_profile` names
-below remain operational compatibility keys; they do not imply peer shape or
-different authority. If shared semantics later need a neutral owner, move them
-only after the stated extraction trigger is evidenced.
+This block is the only source for review-route selection and shared governance.
+Each route reads it plus its own domain contract. For mixed code/research work,
+review the two bounded targets independently, aggregate normalized evidence only
+at L4, and route cross-domain drift back to L0-L2 before entering the other
+route. Add a neutral shared carrier only after the stated extraction trigger is
+evidenced.
 
 ## Project Operating Loop / 项目研发闭环
 
@@ -293,50 +321,14 @@ For a later change in an already formalized project:
    implementation.
 5. If L3 changes, verify the execution artifact remains linked to existing
    L1/L2 contracts and does not introduce new product promises.
-6. When the `formal_code_review_gate` applies, run it after formal development
-   has resolved the current contract path and before project validation. If its
-   review evidence exposes contract drift, route upstream before accepting an
-   L3-only fix.
-7. When the `formal_research_review_profile` applies, load it after the
-   non-coding route has resolved the research L0-L3 path. Keep delegation as
-   the default; require the explicit endpoint and research-material egress
-   gates before any managed review.
-8. If only L4 changes, update validation evidence without changing L0-L3; when
+6. Select the applicable entry under `formal_review_routes.routes` only after
+   resolving the current L0-L3 path. For mixed code/research scope, run both
+   routes independently and aggregate their normalized evidence only at L4.
+   Route cross-domain drift upstream before entering the other route.
+7. If only L4 changes, update validation evidence without changing L0-L3; when
    L4 exposes drift, route the fix back to the responsible upstream layer.
-9. Update traceability, validation indexes, changelog, and residual risk only
+8. Update traceability, validation indexes, changelog, and residual risk only
    when they are part of the project's existing spine.
-
-```yaml
-formal_code_review_gate:
-  skill: skills/formal-code-review/SKILL.md
-  required_when: user-or-project-review-gate
-  optional_when: nontrivial-L3-change-benefits-from-review
-  default_for_routine_review: delegation
-  managed_requires: explicit-request-and-approved-endpoint
-  unavailable_behavior: report-exact-gap-and-continue-only-with-non-OCR-validation
-  boundary: does not make OCR mandatory or convert review into acceptance
-```
-
-This gate delegates mode selection and review evidence rules to its named skill;
-it does not change L0-L2 authority or replace project validation.
-
-```yaml
-formal_research_review_profile:
-  profile: references/formal-research-review.md
-  required_when: user-or-project-research-review-gate
-  optional_when: nontrivial-L3-research-artifact-benefits-from-review
-  default_for_routine_review: delegation
-  managed_requires:
-    - explicit-managed-request
-    - explicit-approved-model-endpoint
-    - explicit-research-material-egress-authorization
-  unavailable_behavior: report-exact-gap-and-continue-only-with-authorized-non-managed-validation
-  boundary: L3 research review and normalized L4 evidence; human authority and project truth remain upstream
-```
-
-This is a lightweight non-coding profile, not a new skill or review runtime. It
-reuses the existing dual-mode and evidence semantics while specializing target,
-coverage, failure, and egress rules for research materials.
 
 #### Formalize Existing / 存量项目形式化重构
 
@@ -542,14 +534,14 @@ only when they are already project-native or clearer than the existing schema.
 If the project already has coding-native `prd_refs` / `yaml_refs` / `code_refs`
 / `validation`, do not migrate them to layer labels.
 
-When `formal_code_review_gate` applies, compose the route in this order:
+When `formal_review_routes.routes.code` applies, compose the route in this order:
 `formal_development -> formal_code_review -> project validation -> optional
-PR/CI handling -> closeout`. An unavailable OCR path must retain the gate's
+PR/CI handling -> closeout`. An unavailable OCR path must retain the route's
 exact-gap report and continue only with non-OCR validation. If review evidence
 exposes contract drift, route it to the responsible upstream layer before
 accepting an L3-only fix.
 
-When `formal_research_review_profile` applies, compose the route in this order:
+When `formal_review_routes.routes.research` applies, compose the route in this order:
 `formal_development -> non-coding L0-L4 -> formal-research-review -> authorized
 project validation -> closeout`. Managed review stops unless both the explicit
 approved model endpoint and the bounded research-material egress authorization

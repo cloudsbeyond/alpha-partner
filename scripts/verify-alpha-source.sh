@@ -7,6 +7,14 @@ fail() { printf 'FAIL: %s\n' "$1" >&2; exit 1; }
 has() { rg -n -- "$1" "$ROOT/$2" >/dev/null || fail "missing pattern in $2: $1"; }
 has_fixed() { rg -n -F -- "$1" "$ROOT/$2" >/dev/null || fail "missing fixed text in $2: $1"; }
 exists() { [ -e "$ROOT/$1" ] || fail "missing path: $1"; }
+absent_fixed_in() {
+  local text="$1"
+  local file="$2"
+  local message="$3"
+  if rg -n -F -- "$text" "$ROOT/$file" >/dev/null; then
+    fail "$message"
+  fi
+}
 
 source_rg() {
   local argument_count=$#
@@ -306,11 +314,19 @@ skills/insight-catcher/SKILL.md	self_iteration_exit_gates:
 skills/insight-catcher/SKILL.md	diminishing_return_stop:
 skills/formal-development/SKILL.md	formal-development
 skills/formal-development/SKILL.md	formal_review_routes:
-skills/formal-development/SKILL.md	parallel-specialized-routes-with-asymmetric-carriers
+skills/formal-development/SKILL.md	topology: sibling-specialized-routes
+skills/formal-development/SKILL.md	dependency: neither-route-depends-on-the-other
+skills/formal-development/SKILL.md	primary_key: L3-artifact-kind
+skills/formal-development/SKILL.md	mixed_scope: review-independently-and-aggregate-at-l4
+skills/formal-development/SKILL.md	cross_route_drift: route-upstream-before-entering-the-other-route
+skills/formal-development/SKILL.md	conflict_resolution: current-target-project-contracts-and-human-owner
+skills/formal-development/SKILL.md	cross_route_acceptance: forbidden
 skills/formal-development/SKILL.md	carrier_kind: independent-skill
 skills/formal-development/SKILL.md	carrier_kind: child-profile
-skills/formal-development/SKILL.md	current_contract_owner: formal-code-review
-skills/formal-development/SKILL.md	research_reuse_boundary: semantics-only
+skills/formal-development/SKILL.md	default_mode: delegate
+skills/formal-development/SKILL.md	managed_mode_requires_explicit_request: true
+skills/formal-development/SKILL.md	silent_mode_fallback: forbidden
+skills/formal-development/SKILL.md	project-truth-to-local-review-evidence-to-sanitized-pattern
 skills/formal-development/SKILL.md	third-professional-review-route-or-material-cross-route-drift
 skills/formal-development/SKILL.md	Project Operating Loop
 skills/formal-development/SKILL.md	Semantic Preservation
@@ -355,11 +371,14 @@ skills/formal-development/references/non-coding-l0-l4.md	non_coding_l4_carriers:
 skills/formal-development/references/formal-research-review.md	profile: formal-research-review
 skills/formal-development/references/formal-research-review.md	route_owner: formal-development
 skills/formal-development/references/formal-research-review.md	carrier_kind: child-profile
+skills/formal-development/references/formal-research-review.md	shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes
 skills/formal-development/references/formal-research-review.md	explicit_model_endpoint: required
 skills/formal-development/references/formal-research-review.md	research_material_egress_authorization: required
-skills/formal-development/references/formal-research-review.md	backlinks_only: true
+skills/formal-development/references/formal-research-review.md	research_authority_extensions:
+skills/formal-development/references/formal-research-review.md	research_knowledge_extensions:
 skills/formal-code-review/SKILL.md	route_owner: formal-development
 skills/formal-code-review/SKILL.md	carrier_kind: independent-skill
+skills/formal-code-review/SKILL.md	shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes
 scripts/init-local-alphaX.sh	source-work-candidates
 scripts/init-local-alphaX.sh	applied-runs
 scripts/init-local-alphaX.sh	judgment-replays
@@ -384,6 +403,12 @@ scripts/verify-local-alphaX.sh	expected_judgment
 scripts/init-local-alphaX.sh	private-patterns.txt
 scripts/init-local-alphaX.sh	source checkout
 EOF
+
+for legacy_key in formal_code_review_gate formal_research_review_profile current_contract_owner current_contract_carrier; do
+  absent_fixed_in "$legacy_key" "skills/formal-development/SKILL.md" "formal-development retains obsolete review key: $legacy_key"
+done
+
+absent_fixed_in "skills/formal-code-review/" "skills/formal-development/references/formal-research-review.md" "formal-research-review depends on sibling formal-code-review contracts"
 
 while IFS=$'\t' read -r file text; do
   has_fixed "$text" "$file"

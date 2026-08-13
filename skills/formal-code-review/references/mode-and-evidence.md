@@ -6,6 +6,11 @@ description: Approved OCR mode selection, review evidence, routing, stop conditi
 
 # Mode And Evidence
 
+Apply the shared governance in
+`skills/formal-development/SKILL.md#formal-review-routes` first. This file
+specializes that contract for OCR execution, code targets, file coverage,
+code findings, validation commands, and code-specific failure classes.
+
 ## Mode Selection
 
 Select exactly one mode for each review. Delegation is the default; managed

@@ -174,6 +174,9 @@ class AlphaXPluginTest(unittest.TestCase):
 
     def test_real_formal_code_review_source_contract(self) -> None:
         skill = (ROOT / "skills/formal-code-review/SKILL.md").read_text(encoding="utf-8")
+        formal = (ROOT / "skills/formal-development/SKILL.md").read_text(
+            encoding="utf-8"
+        )
         mode = (
             ROOT / "skills/formal-code-review/references/mode-and-evidence.md"
         ).read_text(encoding="utf-8")
@@ -183,9 +186,13 @@ class AlphaXPluginTest(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn("name: formal-code-review", skill)
-        self.assertIn("default_mode: delegate", skill)
-        self.assertIn("managed_mode_requires_explicit_request: true", skill)
-        self.assertIn("silent_mode_fallback: forbidden", skill)
+        self.assertIn(
+            "shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes",
+            skill,
+        )
+        self.assertIn("default_mode: delegate", formal)
+        self.assertIn("managed_mode_requires_explicit_request: true", formal)
+        self.assertIn("silent_mode_fallback: forbidden", formal)
         self.assertIn("review-coverage-incomplete", mode)
         self.assertIn("l2-contract-drift", mode)
         self.assertIn("project truth -> local review evidence -> sanitized pattern", authority)
@@ -193,17 +200,29 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertIn("raw model reasoning", authority.lower())
         self.assertIn("forbid", authority.lower())
 
-    def test_formal_development_composes_optional_code_review(self) -> None:
+    def test_formal_development_routes_optional_code_review(self) -> None:
         formal = (ROOT / "skills/formal-development/SKILL.md").read_text(encoding="utf-8")
         coding = (
             ROOT / "skills/formal-development/references/coding-l0-l4.md"
         ).read_text(encoding="utf-8")
 
-        self.assertIn("formal_code_review_gate:", formal)
-        self.assertIn("skill: skills/formal-code-review/SKILL.md", formal)
-        self.assertIn("required_when: user-or-project-review-gate", formal)
-        self.assertIn("default_for_routine_review: delegation", formal)
-        self.assertIn("does not make OCR mandatory", formal)
+        relationship = formal.split("formal_review_routes:\n", 1)[1].split(
+            "```", 1
+        )[0]
+        code_route = relationship.split("    code:\n", 1)[1].split(
+            "    research:\n", 1
+        )[0]
+        self.assertIn("carrier: skills/formal-code-review/SKILL.md", code_route)
+        self.assertIn("required_when: user-or-project-code-review-gate", code_route)
+        self.assertIn(
+            "optional_when: nontrivial-L3-code-change-benefits-from-review",
+            code_route,
+        )
+        self.assertIn("explicit-approved-code-endpoint", code_route)
+        self.assertIn(
+            "continue-only-with-authorized-non-OCR-validation", code_route
+        )
+        self.assertNotIn("formal_code_review_gate:", formal)
         self.assertIn("OCR review report", coding)
         self.assertIn("not human acceptance", coding)
         minimal_l4 = coding.split("Minimal coding L4:\n\n```yaml\n", 1)[1].split(
@@ -212,7 +231,7 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertNotIn("OCR review report", minimal_l4)
         self.assertIn("Optional OCR review carrier", coding)
 
-    def test_formal_review_routes_declare_owner_and_asymmetric_carriers(self) -> None:
+    def test_formal_review_routes_declare_clean_sibling_contract(self) -> None:
         formal = (ROOT / "skills/formal-development/SKILL.md").read_text(
             encoding="utf-8"
         )
@@ -232,24 +251,50 @@ class AlphaXPluginTest(unittest.TestCase):
             "owner: formal-development",
             "project_truth: current-target-project-source-and-contracts",
             "layer_boundary: L3-professional-review-to-L4-evidence",
-            "relationship: parallel-specialized-routes-with-asymmetric-carriers",
+            "topology: sibling-specialized-routes",
+            "dependency: neither-route-depends-on-the-other",
+            "primary_key: L3-artifact-kind",
+            "mixed_scope: review-independently-and-aggregate-at-l4",
+            "cross_route_drift: route-upstream-before-entering-the-other-route",
+            "conflict_resolution: current-target-project-contracts-and-human-owner",
+            "cross_route_acceptance: forbidden",
             "route_id: formal-code-review",
             "carrier_kind: independent-skill",
             "route_id: formal-research-review",
             "carrier_kind: child-profile",
-            "current_contract_owner: formal-code-review",
-            "research_reuse_boundary: semantics-only",
+            "default_mode: delegate",
+            "managed_mode_requires_explicit_request: true",
+            "silent_mode_fallback: forbidden",
+            "required_fields: [observed_evidence, inference, missing_evidence, confidence, unverified_claims]",
+            "flow: project-truth-to-local-review-evidence-to-sanitized-pattern",
+            "backlinks_only: true",
+            "project_writeback_or_decision_authority: forbidden",
+            "human_acceptance: human-owner",
             "extraction_trigger: third-professional-review-route-or-material-cross-route-drift",
         ):
             self.assertIn(marker, relationship)
+        self.assertNotIn("current_contract_owner:", relationship)
+        self.assertNotIn("current_contract_carrier:", relationship)
         self.assertIn("route_owner: formal-development", code)
         self.assertIn("route_id: formal-code-review", code)
         self.assertIn("carrier_kind: independent-skill", code)
+        self.assertIn(
+            "shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes",
+            code,
+        )
+        self.assertNotIn("default_mode:", code)
+        self.assertNotIn("managed_mode_requires_explicit_request:", code)
+        self.assertNotIn("silent_mode_fallback:", code)
         self.assertIn("route_owner: formal-development", research)
         self.assertIn("route_id: formal-research-review", research)
         self.assertIn("carrier_kind: child-profile", research)
-        self.assertIn("formal_code_review_gate:", formal)
-        self.assertIn("formal_research_review_profile:", formal)
+        self.assertIn(
+            "shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes",
+            research,
+        )
+        self.assertNotIn("skills/formal-code-review/", research)
+        self.assertNotIn("formal_code_review_gate:", formal)
+        self.assertNotIn("formal_research_review_profile:", formal)
 
     def test_formal_research_review_profile_contract_and_routing(self) -> None:
         profile_path = (
@@ -284,17 +329,14 @@ class AlphaXPluginTest(unittest.TestCase):
 
         self.assertIn("profile: formal-research-review", profile)
         self.assertIn("parent_skill: formal-development", profile)
-        self.assertIn("default_mode: delegate", profile)
-        self.assertIn("silent_mode_fallback: forbidden", profile)
         self.assertIn(
-            "shared_mode_contract: skills/formal-code-review/references/mode-and-evidence.md",
+            "shared_governance_contract: skills/formal-development/SKILL.md#formal-review-routes",
             profile,
         )
-        self.assertIn(
-            "shared_knowledge_authority_contract: skills/formal-code-review/references/use-cases/authority-and-promotion.md",
-            profile,
-        )
-        self.assertIn("evidence_normalization:", profile)
+        self.assertNotIn("default_mode:", profile)
+        self.assertNotIn("managed_mode_requires_explicit_request:", profile)
+        self.assertNotIn("silent_mode_fallback:", profile)
+        self.assertNotIn("evidence_normalization:", profile)
         for field in (
             "observed_evidence",
             "inference",
@@ -305,14 +347,14 @@ class AlphaXPluginTest(unittest.TestCase):
             self.assertIn(field, profile)
         self.assertIn("explicit_model_endpoint: required", profile)
         self.assertIn("research_material_egress_authorization: required", profile)
-        self.assertIn("human_acceptance: required", profile)
-        self.assertIn(
-            "project truth -> local research review evidence -> sanitized pattern",
-            profile,
-        )
-        self.assertIn("backlinks_only: true", profile)
-        self.assertIn("project_writeback_or_decision_authority: forbidden", profile)
-        self.assertIn("formal_research_review_profile:", formal)
+        self.assertIn("research_authority_extensions:", profile)
+        self.assertIn("publication_or_decision: human-owner", profile)
+        self.assertIn("research_knowledge_extensions:", profile)
+        self.assertIn("private_research_material: promotion-forbidden", profile)
+        self.assertNotIn("human_authority:", profile)
+        self.assertNotIn("knowledge_mapping:", profile)
+        self.assertNotIn("skills/formal-code-review/", profile)
+        self.assertNotIn("formal_research_review_profile:", formal)
         self.assertIn("references/formal-research-review.md", formal)
         self.assertIn("Optional formal research review profile", non_coding)
         self.assertIn("formal_research_review:", invocation)
@@ -829,6 +871,37 @@ class AlphaXPluginTest(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("marker.md", result.stdout)
+
+    def test_source_verifier_rejects_sibling_review_dependency(self) -> None:
+        verifier = (ROOT / "scripts/verify-alpha-source.sh").read_text(encoding="utf-8")
+        helper = verifier.split("required_paths=(", 1)[0]
+        root_assignment = 'ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"'
+        self.assertIn(root_assignment, helper)
+        helper = helper.replace(root_assignment, 'ROOT="$1"')
+
+        with tempfile.TemporaryDirectory() as temporary:
+            source_root = Path(temporary)
+            profile = source_root / "profile.md"
+            profile.write_text(
+                "shared: skills/formal-code-review/references/mode-and-evidence.md\n",
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                [
+                    "bash",
+                    "-c",
+                    helper
+                    + '\nabsent_fixed_in "skills/formal-code-review/" "profile.md" "sibling dependency"',
+                    "bash",
+                    str(source_root),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("sibling dependency", result.stderr)
 
     def test_source_verifier_binds_doctor_installer_candidate_gate(self) -> None:
         verifier = (ROOT / "scripts/verify-alpha-source.sh").read_text(encoding="utf-8")

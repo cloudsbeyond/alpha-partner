@@ -6,6 +6,11 @@ description: One-way derived knowledge authority and audited promotion rules for
 
 # Authority And Promotion
 
+Apply the shared authority and one-way knowledge mapping in
+`skills/formal-development/SKILL.md#formal-review-routes` first. This page
+specializes those rules for the code-review use-case map below; it is not a
+shared contract for sibling review routes.
+
 ```yaml
 knowledge_authority:
   carrier: skills/formal-code-review/references/use-cases/
