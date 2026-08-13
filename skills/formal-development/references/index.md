@@ -1,3 +1,7 @@
+# Profile
+
+- [Formal Research Review](formal-research-review.md) - Lightweight non-coding formal-development profile for dual-mode review of bounded research artifacts with normalized evidence, human authority, and one-way derived knowledge boundaries.
+
 # Reference
 
 - [Coding L0-L4](coding-l0-l4.md) - Coding formal-development coverage, minimum L0-L4 shape, L4 evidence carriers, and few-shot examples for software, scripts, plugins, apps, services, data pipelines, and agent runtime work.

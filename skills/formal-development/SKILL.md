@@ -1,6 +1,6 @@
 ---
 name: formal-development
-description: "Use when alphaX is doing, re-entering, refactoring, or reviewing formal-development / 形式化研发 work as a project development OS / 项目研发 OS: project initialization / 项目初始化, later iteration / 后续迭代, existing-project formalization / 存量项目形式化重构, PRD.md creation or refresh, product narrative / 产品叙事 consolidation, architecture narrative / 架构叙事 boundary, formal contracts / 形式化契约, Project Traceability / 项目级追踪, coding or non-coding L0-L4 minimum shapes / 编码或非编码最小形态, project state routing / 项目状态路由, artifact placement / 产物落点, evidence feedback / 证据回灌, L4 validation alignment / 验证证据对齐, spec/SDD residue cleanup, or formal-development review / 形式化研发评审."
+description: "Use when alphaX is doing, re-entering, refactoring, or reviewing formal-development / 形式化研发 work as a project development OS / 项目研发 OS: project initialization / 项目初始化, later iteration / 后续迭代, existing-project formalization / 存量项目形式化重构, PRD.md creation or refresh, product narrative / 产品叙事 consolidation, architecture narrative / 架构叙事 boundary, formal contracts / 形式化契约, Project Traceability / 项目级追踪, coding or non-coding L0-L4 minimum shapes / 编码或非编码最小形态, formal research review / 形式化研究评审, project state routing / 项目状态路由, artifact placement / 产物落点, evidence feedback / 证据回灌, L4 validation alignment / 验证证据对齐, spec/SDD residue cleanup, or formal-development review / 形式化研发评审."
 ---
 
 # Formal Development / 形式化研发
@@ -98,6 +98,8 @@ Reference loading:
   - non-coding work: `references/non-coding-l0-l4.md`
 - Read `references/layer-glossary.md` only when layer terminology, goal,
   non-goal, anti-example, or few-shot classification is ambiguous.
+- For an explicit review of non-coding research artifacts, read
+  `references/formal-research-review.md` after `references/non-coding-l0-l4.md`.
 - If the right reference is unclear, inspect `references/index.md` first, then
   load the smallest matching reference file.
 - Keep `SKILL.md` as the operational route and layer scheme. Keep explanatory
@@ -249,9 +251,13 @@ For a later change in an already formalized project:
    has resolved the current contract path and before project validation. If its
    review evidence exposes contract drift, route upstream before accepting an
    L3-only fix.
-7. If only L4 changes, update validation evidence without changing L0-L3; when
+7. When the `formal_research_review_profile` applies, load it after the
+   non-coding route has resolved the research L0-L3 path. Keep delegation as
+   the default; require the explicit endpoint and research-material egress
+   gates before any managed review.
+8. If only L4 changes, update validation evidence without changing L0-L3; when
    L4 exposes drift, route the fix back to the responsible upstream layer.
-8. Update traceability, validation indexes, changelog, and residual risk only
+9. Update traceability, validation indexes, changelog, and residual risk only
    when they are part of the project's existing spine.
 
 ```yaml
@@ -267,6 +273,24 @@ formal_code_review_gate:
 
 This gate delegates mode selection and review evidence rules to its named skill;
 it does not change L0-L2 authority or replace project validation.
+
+```yaml
+formal_research_review_profile:
+  profile: references/formal-research-review.md
+  required_when: user-or-project-research-review-gate
+  optional_when: nontrivial-L3-research-artifact-benefits-from-review
+  default_for_routine_review: delegation
+  managed_requires:
+    - explicit-managed-request
+    - explicit-approved-model-endpoint
+    - explicit-research-material-egress-authorization
+  unavailable_behavior: report-exact-gap-and-continue-only-with-authorized-non-managed-validation
+  boundary: L3 research review and normalized L4 evidence; human authority and project truth remain upstream
+```
+
+This is a lightweight non-coding profile, not a new skill or review runtime. It
+reuses the existing dual-mode and evidence semantics while specializing target,
+coverage, failure, and egress rules for research materials.
 
 #### Formalize Existing / 存量项目形式化重构
 
@@ -478,6 +502,13 @@ PR/CI handling -> closeout`. An unavailable OCR path must retain the gate's
 exact-gap report and continue only with non-OCR validation. If review evidence
 exposes contract drift, route it to the responsible upstream layer before
 accepting an L3-only fix.
+
+When `formal_research_review_profile` applies, compose the route in this order:
+`formal_development -> non-coding L0-L4 -> formal-research-review -> authorized
+project validation -> closeout`. Managed review stops unless both the explicit
+approved model endpoint and the bounded research-material egress authorization
+are proven. Review output and a derived knowledge map remain L4/downstream
+evidence and cannot decide for or write back to the project.
 
 Completion state vocabulary:
 

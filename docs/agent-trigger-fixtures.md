@@ -97,6 +97,15 @@ fixtures:
     must_output: [delegation mode by default or explicit managed mode, review target and coverage, verified findings, L0-L3 routing, validation evidence, residual risk]
     forbidden: [silent mode fallback, review output rewriting L0-L2, automatic external write, wiki-derived project decision]
 
+  F12-formal-research-review:
+    trigger: "用形式化研发的双模式评审这份研究材料"
+    expected_intent: formal_research_review
+    scope: project work unless completion judgment is explicitly requested
+    loop: Research loop plus Formal Research Review
+    must_read: [skills/formal-development/SKILL.md, skills/formal-development/references/non-coding-l0-l4.md, skills/formal-development/references/formal-research-review.md, target instructions, current research materials, and contracts]
+    must_output: [delegation mode by default or explicit managed mode, research target and coverage, normalized evidence and verified findings, L0-L3 routing, human authority boundary, residual risk]
+    forbidden: [silent mode fallback, managed review without explicit model endpoint, managed review without research-material egress authorization, review output rewriting L0-L2, wiki-derived project decision or writeback]
+
 pass_criteria:
   - expected intent/scope named or implied
   - required source read or missing evidence stated

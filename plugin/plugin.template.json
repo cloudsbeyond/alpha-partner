@@ -17,13 +17,14 @@
     "double-diamond",
     "insight-catcher",
     "formal-development",
-    "formal-code-review"
+    "formal-code-review",
+    "formal-research-review"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "alphaX",
     "shortDescription": "Invoke source-identified Alpha Partner workflows.",
-    "longDescription": "alphaX is a thin Codex entrypoint generated from Alpha Partner Source. It resolves accepted or candidate Source explicitly, records Source identity, and exposes current problem decomposition, Double Diamond research, Insight Catcher, formal-development, and formal-code-review bridge skills without becoming a runtime or project store.",
+    "longDescription": "alphaX is a thin Codex entrypoint generated from Alpha Partner Source. It resolves accepted or candidate Source explicitly, records Source identity, and exposes current problem decomposition, Double Diamond research, Insight Catcher, formal-development with a formal-research-review profile, and formal-code-review bridge skills without becoming a runtime or project store.",
     "developerName": "Lizhao Hua",
     "category": "Productivity",
     "capabilities": [
@@ -38,7 +39,8 @@
       "Double Diamond research",
       "Insight catching",
       "Formal development",
-      "Formal code review"
+      "Formal code review",
+      "Formal research review"
     ],
     "brandColor": "#2563EB",
     "composerIcon": "./assets/icon.png",

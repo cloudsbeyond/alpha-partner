@@ -78,6 +78,13 @@ intents:
     first_read: [skills/formal-development/SKILL.md, skills/formal-code-review/SKILL.md, target AGENTS.md, current project source, contracts, and diff]
     minimum_output: [mode, target coverage, verified findings, L0-L3 routing, validation evidence, residual risk]
 
+  formal_research_review:
+    triggers: ["用形式化研发的双模式评审这份研究材料", "formal research review"]
+    default_scope: project work unless completion judgment is explicitly requested
+    loop: Research loop plus Formal Research Review
+    first_read: [skills/formal-development/SKILL.md, skills/formal-development/references/non-coding-l0-l4.md, skills/formal-development/references/formal-research-review.md, target instructions, current research materials, and contracts]
+    minimum_output: [mode, research target and coverage, normalized evidence and verified findings, L0-L3 routing, human authority boundary, residual risk]
+
   source_review:
     triggers: ["alphaX self-critique", "检查 alphaX 本身", "source drift check"]
     default_scope: source review
@@ -117,12 +124,17 @@ skill_trigger_layer:
       source: skills/formal-code-review/SKILL.md
       use_when: code-review requests inside formal-development work need an L3/L4-only review of a bounded target
       output: mode, target coverage, verified findings, L0-L3 routing, validation evidence, residual risk
+    formal_research_review:
+      source: skills/formal-development/references/formal-research-review.md
+      use_when: non-coding formal-development research work needs an explicit L3 artifact review and normalized L4 evidence
+      output: mode, research target and coverage, normalized evidence and verified findings, L0-L3 routing, human authority boundary, residual risk
   composition:
     - use problem_decomposer first when the P0 problem level is unclear
     - use formal_development before writing or reviewing PRD, architecture, contract, traceability, harness, or implementation assets in formal-development work
     - use double_diamond_research when the problem is open, multi-stakeholder, strategic, or research-heavy
     - use insight_catcher before source changes triggered by creative input batches
     - for formal-development code review, compose formal_development -> formal_code_review -> project validation -> optional PR/CI handling -> closeout; OCR remains optional unless the user or project gate requests it
+    - for formal-development research review, compose formal_development -> non-coding L0-L4 -> formal_research_review -> authorized project validation -> closeout; managed mode requires an explicit approved model endpoint and explicit research-material egress authorization
     - if both match, run problem_decomposer to locate the problem level, then double_diamond_research to structure research and solution convergence
 
 scope_rules:

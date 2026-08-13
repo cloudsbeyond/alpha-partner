@@ -124,6 +124,7 @@ required_paths=(
   skills/formal-development/references/layer-glossary.md
   skills/formal-development/references/coding-l0-l4.md
   skills/formal-development/references/non-coding-l0-l4.md
+  skills/formal-development/references/formal-research-review.md
   scripts/init-local-alphaX.sh scripts/verify-local-alphaX.sh scripts/verify-alpha-source.sh
   scripts/context-snapshot.sh scripts/detect-applied-run-candidates.sh scripts/generate-alphaX-indexes.mjs
   scripts/alphax_plugin.py scripts/alphax_invocation_replay.py
@@ -220,12 +221,17 @@ docs/alphax-plugin-publication.md	https://github.com/alibaba/open-code-review.gi
 docs/alphax-plugin-publication.md	open-code-review-codex@open-code-review
 docs/alphax-plugin-publication.md	managed-llm-unapproved
 docs/alphax-plugin-publication.md	never use --allow-candidate
-AGENTS.md	fresh Codex replay of every F01-F11 and G01-G14 case with independent verdicts
-docs/alphax-plugin-publication.md	fresh invocation replay covers F01-F11 and G01-G14
+AGENTS.md	fresh Codex replay of every F01-F12 and G01-G14 case with independent verdicts
+docs/alphax-plugin-publication.md	fresh invocation replay covers F01-F12 and G01-G14
 plugin/skills/alphax/SKILL.md	resolve-invocation
 plugin/skills/alphax/SKILL.md	package_source_commit
 docs/agent-trigger-fixtures.md	F11-formal-code-review
 docs/agent-trigger-fixtures.json	F11-formal-code-review
+docs/agent-trigger-fixtures.md	F12-formal-research-review
+docs/agent-trigger-fixtures.json	F12-formal-research-review
+alphaX/session-runbook.md	formal-research-review
+alphaX/operating-system.md	formal-research-review
+plugin/plugin.template.json	formal-research-review
 templates/project-work/local-pointer.md	default: target .git/info/exclude
 templates/project-work/local-pointer.md	target_tracked_tree:
 templates/project-work/local-pointer.md	edit_versioned_AGENTS_md: false
@@ -339,6 +345,10 @@ skills/formal-development/references/coding-l0-l4.md	Coding traceability field n
 skills/formal-development/references/coding-l0-l4.md	prd_refs/yaml_refs/code_refs/validation
 skills/formal-development/references/non-coding-l0-l4.md	non_coding_minimum_shape:
 skills/formal-development/references/non-coding-l0-l4.md	non_coding_l4_carriers:
+skills/formal-development/references/formal-research-review.md	profile: formal-research-review
+skills/formal-development/references/formal-research-review.md	explicit_model_endpoint: required
+skills/formal-development/references/formal-research-review.md	research_material_egress_authorization: required
+skills/formal-development/references/formal-research-review.md	backlinks_only: true
 scripts/init-local-alphaX.sh	source-work-candidates
 scripts/init-local-alphaX.sh	applied-runs
 scripts/init-local-alphaX.sh	judgment-replays

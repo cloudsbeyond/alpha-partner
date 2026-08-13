@@ -105,6 +105,10 @@ class AlphaXPluginTest(unittest.TestCase):
         )
         self._write("skills/formal-development/references/rule.md", "rule\n")
         self._write(
+            "skills/formal-development/references/formal-research-review.md",
+            "research review profile\n",
+        )
+        self._write(
             "skills/formal-code-review/SKILL.md",
             "---\nname: formal-code-review\ndescription: Use when formal code review is requested.\n---\n# Formal Code Review\ndefault_mode: delegate\n",
         )
@@ -149,6 +153,13 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertTrue((out / "skills/alphax/SKILL.md").is_file())
         self.assertTrue((out / "skills/problem-decomposer/SKILL.md").is_file())
         self.assertTrue((out / "skills/formal-development/SKILL.md").is_file())
+        self.assertEqual(
+            (
+                out
+                / "skills/formal-development/references/formal-research-review.md"
+            ).read_text(),
+            "research review profile\n",
+        )
         self.assertTrue((out / "skills/formal-code-review/SKILL.md").is_file())
         self.assertTrue(
             (out / "skills/formal-code-review/references/mode-and-evidence.md").is_file()
@@ -201,6 +212,113 @@ class AlphaXPluginTest(unittest.TestCase):
         self.assertNotIn("OCR review report", minimal_l4)
         self.assertIn("Optional OCR review carrier", coding)
 
+    def test_formal_research_review_profile_contract_and_routing(self) -> None:
+        profile_path = (
+            ROOT
+            / "skills/formal-development/references/formal-research-review.md"
+        )
+        profile = profile_path.read_text(encoding="utf-8")
+        formal = (ROOT / "skills/formal-development/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        non_coding = (
+            ROOT / "skills/formal-development/references/non-coding-l0-l4.md"
+        ).read_text(encoding="utf-8")
+        invocation = (ROOT / "docs/agent-invocation-contract.md").read_text(
+            encoding="utf-8"
+        )
+        runbook = (ROOT / "alphaX/session-runbook.md").read_text(encoding="utf-8")
+        operating = (ROOT / "alphaX/operating-system.md").read_text(
+            encoding="utf-8"
+        )
+        manifest = json.loads(
+            (ROOT / "plugin/plugin.template.json").read_text(encoding="utf-8")
+        )
+        fixtures = json.loads(
+            (ROOT / "docs/agent-trigger-fixtures.json").read_text(encoding="utf-8")
+        )
+        review = next(
+            item
+            for item in fixtures["fixtures"]
+            if item["id"] == "F12-formal-research-review"
+        )
+
+        self.assertIn("profile: formal-research-review", profile)
+        self.assertIn("parent_skill: formal-development", profile)
+        self.assertIn("default_mode: delegate", profile)
+        self.assertIn("silent_mode_fallback: forbidden", profile)
+        self.assertIn(
+            "shared_mode_contract: skills/formal-code-review/references/mode-and-evidence.md",
+            profile,
+        )
+        self.assertIn(
+            "shared_knowledge_authority_contract: skills/formal-code-review/references/use-cases/authority-and-promotion.md",
+            profile,
+        )
+        self.assertIn("evidence_normalization:", profile)
+        for field in (
+            "observed_evidence",
+            "inference",
+            "missing_evidence",
+            "confidence",
+            "unverified_claims",
+        ):
+            self.assertIn(field, profile)
+        self.assertIn("explicit_model_endpoint: required", profile)
+        self.assertIn("research_material_egress_authorization: required", profile)
+        self.assertIn("human_acceptance: required", profile)
+        self.assertIn(
+            "project truth -> local research review evidence -> sanitized pattern",
+            profile,
+        )
+        self.assertIn("backlinks_only: true", profile)
+        self.assertIn("project_writeback_or_decision_authority: forbidden", profile)
+        self.assertIn("formal_research_review_profile:", formal)
+        self.assertIn("references/formal-research-review.md", formal)
+        self.assertIn("Optional formal research review profile", non_coding)
+        self.assertIn("formal_research_review:", invocation)
+        self.assertIn("formal research review", runbook)
+        self.assertIn("formal-research-review", runbook)
+        self.assertIn("formal research review", operating)
+        self.assertIn("formal-research-review", operating)
+        self.assertIn("formal-research-review", manifest["keywords"])
+        self.assertIn("Formal research review", manifest["interface"]["capabilities"])
+        self.assertEqual(
+            review,
+            {
+                "id": "F12-formal-research-review",
+                "trigger": "用形式化研发的双模式评审这份研究材料",
+                "expected_intent": "formal_research_review",
+                "scope": "project work unless completion judgment is explicitly requested",
+                "loop": "Research loop plus Formal Research Review",
+                "must_read": [
+                    "skills/formal-development/SKILL.md",
+                    "skills/formal-development/references/non-coding-l0-l4.md",
+                    "skills/formal-development/references/formal-research-review.md",
+                    "target instructions, current research materials, and contracts",
+                ],
+                "must_output": [
+                    "delegation mode by default or explicit managed mode",
+                    "research target and coverage",
+                    "normalized evidence and verified findings",
+                    "L0-L3 routing",
+                    "human authority boundary",
+                    "residual risk",
+                ],
+                "forbidden": [
+                    "silent mode fallback",
+                    "managed review without explicit model endpoint",
+                    "managed review without research-material egress authorization",
+                    "review output rewriting L0-L2",
+                    "wiki-derived project decision or writeback",
+                ],
+            },
+        )
+        self.assertFalse(
+            (ROOT / "skills/formal-research-review/SKILL.md").exists(),
+            "the profile must stay lightweight under formal-development",
+        )
+
     def test_formal_code_review_routing_is_registered(self) -> None:
         invocation = (ROOT / "docs/agent-invocation-contract.md").read_text(encoding="utf-8")
         runbook = (ROOT / "alphaX/session-runbook.md").read_text(encoding="utf-8")
@@ -241,7 +359,7 @@ class AlphaXPluginTest(unittest.TestCase):
                 "wiki-derived project decision",
             ],
         })
-        self.assertIn("F01-F11", publication)
+        self.assertIn("F01-F12", publication)
         self.assertIn("formal-code-review", manifest["keywords"])
         self.assertIn("Formal code review", manifest["interface"]["capabilities"])
 

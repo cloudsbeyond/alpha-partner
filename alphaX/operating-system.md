@@ -113,15 +113,15 @@ source_skills:
     expected_effect: produce a disposition-tracked candidate ledger and judgment trace so no candidate is silently lost or narrowed into a single patch
   formal_development:
     source: skills/formal-development/SKILL.md
-    strengthens: [project, project_review, source_work, source_review, spec_checkpoint]
-    use_when: formal-development work needs project initialization, later iteration, existing-project formalization, conformance review, product narrative consolidation, fixed PRD.md projection, architecture narrative separation, formal contract alignment, Project Traceability, or spec/SDD residue cleanup
-    expected_effect: route work by phase, keep L0 product intent, L1/L2 architecture/contracts, and L3/L4 implementation evidence separated and verifiable, and support report-first conformance review
+    strengthens: [research, project, project_review, source_work, source_review, spec_checkpoint]
+    use_when: formal-development work needs project initialization, later iteration, existing-project formalization, conformance review, formal research review, product narrative consolidation, fixed PRD.md projection, architecture narrative separation, formal contract alignment, Project Traceability, or spec/SDD residue cleanup
+    expected_effect: route work by phase, keep L0 product intent, L1/L2 architecture/contracts, and L3/L4 implementation or research evidence separated and verifiable, and support report-first conformance review through the formal-research-review profile when applicable
   formal_code_review:
     source: skills/formal-code-review/SKILL.md
     strengthens: [project, project_review]
     use_when: code-review requests inside formal-development work need L3/L4-only bounded review coverage
     expected_effect: select explicit mode, state target coverage, verify findings, route findings to their L0-L3 owner, and retain validation evidence and residual risk
-  composition_rule: if multiple skills match, use Problem Decomposer for problem level first, Formal Development for L0-L4 delivery structure, then 双菱形思考法 for research and solution convergence when needed; for formal-development code review, compose formal_development -> formal_code_review -> project validation -> optional PR/CI handling -> closeout, keeping OCR optional unless the user or project gate requests it
+  composition_rule: if multiple skills match, use Problem Decomposer for problem level first, Formal Development for L0-L4 delivery structure, then 双菱形思考法 for research and solution convergence when needed; for formal-development code review, compose formal_development -> formal_code_review -> project validation -> optional PR/CI handling -> closeout, keeping OCR optional unless the user or project gate requests it; for formal-development research review, compose formal_development -> non-coding L0-L4 -> formal-research-review -> authorized project validation -> closeout, with explicit managed endpoint and research-material egress gates
 
 agent_intake_rule:
   principle: between agents there is no shared runtime and no mutual presence; only file trace
