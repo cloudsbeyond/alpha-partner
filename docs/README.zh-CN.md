@@ -98,7 +98,14 @@ review 一下我现在几个项目的风险
 
 Codex plugin 只能从本仓库单向生成。Project work / review 使用包内不可变的 accepted Source 快照；source work / review 才连接显式 live checkout。版本号绑定 Source commit 或 dirty candidate 全量指纹；生成包、marketplace source 与同版本安装 cache 只要有字节差异就必须失败。
 
-构建、安装、parity、Source identity 和 fresh invocation replay 合约见 `docs/alphax-plugin-publication.md`。
+Formal review adopter setup 可直接运行：
+
+```bash
+python3 scripts/alphax_plugin.py doctor
+python3 scripts/alphax_plugin.py doctor --install
+```
+
+完整 quickstart、前置条件、退出码、构建、安装、parity、Source identity 和 fresh invocation replay 合约见 [`docs/alphax-plugin-publication.md`](alphax-plugin-publication.md)。
 
 ## 目录结构
 

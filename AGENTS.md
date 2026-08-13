@@ -39,7 +39,7 @@ plugin_distribution:
   embedded_source: immutable accepted Source archive used by project work and project review
   live_source: explicit checkout used only by source work and source review
   hard_gate: same version must be byte-identical across generated package, marketplace source, and installed cache
-  invocation_evidence: fresh Codex replay of every F01-F10 and G01-G14 case with independent verdicts
+  invocation_evidence: fresh Codex replay of every F01-F11 and G01-G14 case with independent verdicts
 
 organization_level_pipeline:
   role: product-level frame for source work and review, not a runtime or control plane
@@ -150,9 +150,9 @@ source_map:
   judgment_contract: [docs/agent-judgment-fixtures.json, docs/agent-judgment-fixtures.md]
   core_sops: [alphaX/session-runbook.md, alphaX/activation-guide.md, alphaX/operating-system.md, alphaX/persona.md]
   work_sops: [alphaX/source-work/agent-workflow.md, alphaX/source-work/intelligence-ceiling-half-life.md, alphaX/source-review/agent-workflow.md, alphaX/project-work/agent-workflow.md, alphaX/project-work/context-reloader.md, alphaX/project-review/agent-workflow.md]
-  docs: [docs/evidence-index.md, docs/research-backlog.md, docs/okf-markdown-profile.md, docs/asset-boundary.yaml, docs/local-alphaX-schema.md, docs/checkpoint-memory-evaluation-prd.md, docs/alphax-plugin-publication.md]
+  docs: [docs/evidence-index.md, docs/research-backlog.md, docs/okf-markdown-profile.md, docs/asset-boundary.yaml, docs/local-alphaX-schema.md, docs/checkpoint-memory-evaluation-prd.md, docs/alphax-plugin-publication.md, docs/formal-code-review-integration.md]
   templates: [templates/]
-  skills: [skills/problem-decomposer/SKILL.md, skills/double-diamond-research/SKILL.md, skills/insight-catcher/SKILL.md, skills/formal-development/SKILL.md]
+  skills: [skills/problem-decomposer/SKILL.md, skills/double-diamond-research/SKILL.md, skills/insight-catcher/SKILL.md, skills/formal-development/SKILL.md, skills/formal-code-review/SKILL.md]
   plugin: [plugin/plugin.template.json, plugin/README.md, plugin/skills/alphax/SKILL.md]
   scripts: [scripts/init-local-alphaX.sh, scripts/verify-local-alphaX.sh, scripts/verify-alpha-source.sh, scripts/context-snapshot.sh, scripts/detect-applied-run-candidates.sh, scripts/generate-alphaX-indexes.mjs, scripts/alphax_plugin.py, scripts/alphax_invocation_replay.py]
   tests: [tests/test_alphax_plugin.py, tests/test_alphax_invocation_replay.py]

@@ -245,10 +245,28 @@ For a later change in an already formalized project:
    implementation.
 5. If L3 changes, verify the execution artifact remains linked to existing
    L1/L2 contracts and does not introduce new product promises.
-6. If only L4 changes, update validation evidence without changing L0-L3; when
+6. When the `formal_code_review_gate` applies, run it after formal development
+   has resolved the current contract path and before project validation. If its
+   review evidence exposes contract drift, route upstream before accepting an
+   L3-only fix.
+7. If only L4 changes, update validation evidence without changing L0-L3; when
    L4 exposes drift, route the fix back to the responsible upstream layer.
-7. Update traceability, validation indexes, changelog, and residual risk only
+8. Update traceability, validation indexes, changelog, and residual risk only
    when they are part of the project's existing spine.
+
+```yaml
+formal_code_review_gate:
+  skill: skills/formal-code-review/SKILL.md
+  required_when: user-or-project-review-gate
+  optional_when: nontrivial-L3-change-benefits-from-review
+  default_for_routine_review: delegation
+  managed_requires: explicit-request-and-approved-endpoint
+  unavailable_behavior: report-exact-gap-and-continue-only-with-non-OCR-validation
+  boundary: does not make OCR mandatory or convert review into acceptance
+```
+
+This gate delegates mode selection and review evidence rules to its named skill;
+it does not change L0-L2 authority or replace project validation.
 
 #### Formalize Existing / 存量项目形式化重构
 
@@ -453,6 +471,13 @@ Interpret the last scan before acting: `l0_refs`-style fields are acceptable
 only when they are already project-native or clearer than the existing schema.
 If the project already has coding-native `prd_refs` / `yaml_refs` / `code_refs`
 / `validation`, do not migrate them to layer labels.
+
+When `formal_code_review_gate` applies, compose the route in this order:
+`formal_development -> formal_code_review -> project validation -> optional
+PR/CI handling -> closeout`. An unavailable OCR path must retain the gate's
+exact-gap report and continue only with non-OCR validation. If review evidence
+exposes contract drift, route it to the responsible upstream layer before
+accepting an L3-only fix.
 
 Completion state vocabulary:
 

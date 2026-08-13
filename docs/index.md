@@ -2,6 +2,10 @@
 
 - [Agent Invocation Contract](agent-invocation-contract.md) - Machine-facing contract for mapping short alphaX triggers to scope, loops, evidence, and output.
 
+# Architecture
+
+- [Formal Code Review Integration](formal-code-review-integration.md) - Approved design for composing alphaX formal development with Open Code Review, validation, PR feedback, closeout, and a skill-scoped derived knowledge map.
+
 # Data Schema
 
 - [Local alphaX Data Schema](local-alphaX-schema.md) - Schema and bootstrap contract for ignored local .alphaX data.

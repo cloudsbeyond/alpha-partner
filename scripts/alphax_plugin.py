@@ -8,6 +8,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -20,6 +21,16 @@ from typing import Any, Callable
 SOURCE_SCOPES = {"source-work", "source-review"}
 PROJECT_SCOPES = {"project-work", "project-review"}
 IGNORED_NAMES = {".DS_Store", "__pycache__"}
+DOCTOR_SCHEMA_VERSION = 1
+OCR_PACKAGE = "@alibaba-group/open-code-review"
+OCR_MARKETPLACE_REPOSITORY = "https://github.com/alibaba/open-code-review.git"
+OCR_PLUGIN_SELECTOR = "open-code-review-codex@open-code-review"
+
+
+def run_command(
+    argv: list[str], **_kwargs: Any
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(argv, text=True, capture_output=True, check=False)
 
 
 def run_git(source_root: Path, *args: str, check: bool = True) -> str:
@@ -538,6 +549,719 @@ def install_plugin(
         }
 
 
+def _version_tuple(value: str) -> tuple[int, ...] | None:
+    match = re.search(r"\d+(?:\.\d+)*", value)
+    if not match:
+        return None
+    return tuple(int(part) for part in match.group().split("."))
+
+
+def _ocr_cli_version(value: str) -> str | None:
+    lines = [line.strip() for line in value.splitlines() if line.strip()]
+    if not lines or re.search(r"\bdev(?:elopment)?\b", lines[0], re.IGNORECASE):
+        return None
+    match = re.fullmatch(
+        r"open-code-review\s+v(\d+(?:\.\d+)+)"
+        r"(?:\s+\([0-9a-z.-]+\))?"
+        r"(?:\s+[0-9a-z._-]+/[0-9a-z._-]+)?",
+        lines[0],
+        re.IGNORECASE,
+    )
+    return match.group(1) if match else None
+
+
+def _check(
+    check_id: str,
+    scope: str,
+    status: str,
+    observed: str | None,
+    required: str,
+    installable: bool,
+    action: str | None,
+) -> dict[str, Any]:
+    return {
+        "id": check_id,
+        "scope": scope,
+        "status": status,
+        "observed": observed,
+        "required": required,
+        "installable": installable,
+        "action": action,
+    }
+
+
+def _run_probe(
+    command_runner: Callable[[list[str]], subprocess.CompletedProcess[str]], argv: list[str]
+) -> subprocess.CompletedProcess[str]:
+    try:
+        return command_runner(argv)
+    except OSError:
+        return subprocess.CompletedProcess(argv, 127, "", "")
+
+
+def _json_object(completed: subprocess.CompletedProcess[str]) -> dict[str, Any] | None:
+    if completed.returncode != 0:
+        return None
+    try:
+        value = json.loads(completed.stdout)
+    except json.JSONDecodeError:
+        return None
+    if isinstance(value, dict):
+        return value
+    if isinstance(value, list):
+        return {"items": value}
+    return None
+
+
+def _items(payload: dict[str, Any], *keys: str) -> list[dict[str, Any]] | None:
+    for key in keys:
+        if key not in payload:
+            continue
+        value = payload[key]
+        if not isinstance(value, list):
+            return None
+        return [item for item in value if isinstance(item, dict)]
+    return None
+
+
+def _marketplace_source(marketplace: dict[str, Any]) -> str | None:
+    repository = marketplace.get("repository")
+    if isinstance(repository, str):
+        return repository
+    marketplace_source = marketplace.get("marketplaceSource")
+    if isinstance(marketplace_source, dict):
+        source = marketplace_source.get("source")
+        if isinstance(source, str):
+            return source
+    return None
+
+
+def _plugin_marketplace_source(plugin: dict[str, Any]) -> str | None:
+    marketplace_source = plugin.get("marketplaceSource")
+    if not isinstance(marketplace_source, dict):
+        return None
+    source = marketplace_source.get("source")
+    return source if isinstance(source, str) else None
+
+
+def _probe_codex_state(
+    command_runner: Callable[[list[str]], subprocess.CompletedProcess[str]],
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    marketplaces = _json_object(
+        _run_probe(command_runner, ["codex", "plugin", "marketplace", "list", "--json"])
+    )
+    plugins = _json_object(_run_probe(command_runner, ["codex", "plugin", "list", "--json"]))
+    marketplace_items = (
+        _items(marketplaces, "marketplaces", "items") if marketplaces is not None else None
+    )
+    plugin_items = (
+        _items(plugins, "installed", "plugins", "items") if plugins is not None else None
+    )
+    if marketplace_items is None or plugin_items is None:
+        capability = _check(
+            "codex-plugin",
+            "delegation",
+            "blocked",
+            None,
+            "Codex plugin marketplace and list JSON commands",
+            False,
+            "install or repair a Codex CLI with plugin support",
+        )
+        unavailable = _check(
+            "ocr-marketplace",
+            "delegation",
+            "blocked",
+            None,
+            OCR_MARKETPLACE_REPOSITORY,
+            False,
+            "repair Codex plugin capability before configuring OCR",
+        )
+        return capability, unavailable, _check(
+            "ocr-plugin",
+            "delegation",
+            "blocked",
+            None,
+            OCR_PLUGIN_SELECTOR,
+            False,
+            "repair Codex plugin capability before configuring OCR",
+        )
+
+    capability = _check(
+        "codex-plugin",
+        "delegation",
+        "pass",
+        "plugin-json-supported",
+        "Codex plugin marketplace and list JSON commands",
+        False,
+        None,
+    )
+    marketplace = next(
+        (
+            item
+            for item in marketplace_items
+            if item.get("name") == "open-code-review"
+        ),
+        None,
+    )
+    if marketplace is None:
+        marketplace_check = _check(
+            "ocr-marketplace",
+            "delegation",
+            "missing",
+            "absent",
+            OCR_MARKETPLACE_REPOSITORY,
+            True,
+            "add the Open Code Review marketplace from its approved repository",
+        )
+    elif _marketplace_source(marketplace) != OCR_MARKETPLACE_REPOSITORY:
+        marketplace_check = _check(
+            "ocr-marketplace",
+            "delegation",
+            "blocked",
+            "source-mismatch",
+            OCR_MARKETPLACE_REPOSITORY,
+            False,
+            "resolve the existing Open Code Review marketplace source manually",
+        )
+    else:
+        marketplace_check = _check(
+            "ocr-marketplace",
+            "delegation",
+            "pass",
+            "approved-source",
+            OCR_MARKETPLACE_REPOSITORY,
+            False,
+            None,
+        )
+
+    plugin = next(
+        (
+            item
+            for item in plugin_items
+            if item.get("id") == OCR_PLUGIN_SELECTOR or item.get("pluginId") == OCR_PLUGIN_SELECTOR
+        ),
+        None,
+    )
+    if plugin is None:
+        plugin_check = _check(
+            "ocr-plugin",
+            "delegation",
+            "missing",
+            "absent",
+            "installed and enabled " + OCR_PLUGIN_SELECTOR,
+            True,
+            "install and enable the Open Code Review Codex plugin",
+        )
+    elif _plugin_marketplace_source(plugin) is None:
+        plugin_check = _check(
+            "ocr-plugin",
+            "delegation",
+            "blocked",
+            "source-unverified",
+            "installed and enabled " + OCR_PLUGIN_SELECTOR,
+            False,
+            "verify the installed Open Code Review plugin source manually",
+        )
+    elif _plugin_marketplace_source(plugin) != OCR_MARKETPLACE_REPOSITORY:
+        plugin_check = _check(
+            "ocr-plugin",
+            "delegation",
+            "blocked",
+            "source-mismatch",
+            "installed and enabled " + OCR_PLUGIN_SELECTOR,
+            False,
+            "resolve the installed Open Code Review plugin source manually",
+        )
+    elif "installed" in plugins and plugin.get("installed") is not True:
+        plugin_check = _check(
+            "ocr-plugin",
+            "delegation",
+            "missing",
+            "not-installed",
+            "installed and enabled " + OCR_PLUGIN_SELECTOR,
+            True,
+            "install and enable the Open Code Review Codex plugin",
+        )
+    elif plugin.get("enabled") is not True:
+        plugin_check = _check(
+            "ocr-plugin",
+            "delegation",
+            "missing",
+            "not-enabled",
+            "installed and enabled " + OCR_PLUGIN_SELECTOR,
+            True,
+            "install and enable the Open Code Review Codex plugin",
+        )
+    else:
+        plugin_check = _check(
+            "ocr-plugin",
+            "delegation",
+            "pass",
+            "installed-enabled" if "installed" in plugins else "enabled",
+            "installed and enabled " + OCR_PLUGIN_SELECTOR,
+            False,
+            None,
+        )
+    return capability, marketplace_check, plugin_check
+
+
+def _path_lexically_exists(path: Path) -> bool:
+    return path.exists() or path.is_symlink()
+
+
+def _probe_alphax_state(
+    source_root: Path,
+    *,
+    plugin_source: Path,
+    cache_root: Path,
+    alphax_verifier: Callable[..., dict[str, Any]],
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    try:
+        identity = source_identity(source_root)
+    except (OSError, ValueError):
+        return (
+            _check(
+                "alphax-source",
+                "alphax-publication",
+                "error",
+                None,
+                "clean accepted Source",
+                False,
+                "repair the AlphaX Source checkout before installation",
+            ),
+            _check(
+                "alphax-parity",
+                "alphax-publication",
+                "blocked",
+                None,
+                "byte-identical generated package, marketplace, and cache",
+                False,
+                "verify an accepted AlphaX Source first",
+            ),
+        )
+    if identity["source_authority"] != "accepted":
+        source_check = _check(
+            "alphax-source",
+            "alphax-publication",
+            "manual-gate",
+            "candidate",
+            "clean accepted Source",
+            False,
+            "clean or accept the AlphaX Source before production installation",
+        )
+        return source_check, _check(
+            "alphax-parity",
+            "alphax-publication",
+            "manual-gate",
+            "source-not-accepted",
+            "byte-identical generated package, marketplace, and cache",
+            False,
+            "verify package parity after Source acceptance",
+        )
+
+    source_check = _check(
+        "alphax-source",
+        "alphax-publication",
+        "pass",
+        "accepted",
+        "clean accepted Source",
+        False,
+        None,
+    )
+    for carrier_root in (plugin_source, cache_root):
+        if _path_lexically_exists(carrier_root) and (
+            carrier_root.is_symlink() or not carrier_root.is_dir()
+        ):
+            return source_check, _check(
+                "alphax-parity",
+                "alphax-publication",
+                "blocked",
+                "invalid-carrier-node",
+                "byte-identical generated package, marketplace, and cache",
+                False,
+                "inspect existing AlphaX carrier nodes manually",
+            )
+    try:
+        verification = alphax_verifier(
+            source_root,
+            plugin_source=plugin_source,
+            cache_root=cache_root,
+            require_accepted=True,
+        )
+    except (OSError, ValueError):
+        verification = {"ok": False, "failure_classes": ["verification-error"]}
+    cache = Path(str(verification.get("cache", ""))) if verification.get("cache") else None
+    plugin_present = _path_lexically_exists(plugin_source)
+    cache_present = cache is not None and cache.is_dir()
+    cache_root_present = _path_lexically_exists(cache_root)
+    failure_classes = set(verification.get("failure_classes", []))
+    if not plugin_present and not cache_root_present:
+        parity_check = _check(
+            "alphax-parity",
+            "alphax-publication",
+            "missing",
+            "generated-path-absent",
+            "byte-identical generated package, marketplace, and cache",
+            True,
+            "install AlphaX from clean accepted Source and verify parity",
+        )
+    elif plugin_present and cache_present and verification.get("ok"):
+        parity_check = _check(
+            "alphax-parity",
+            "alphax-publication",
+            "pass",
+            "byte-identical",
+            "byte-identical generated package, marketplace, and cache",
+            False,
+            None,
+        )
+    else:
+        observed = (
+            "drift-detected"
+            if any("drift" in failure for failure in failure_classes)
+            and not failure_classes.issubset({"marketplace-content-drift", "cache-content-drift"})
+            else "partial-carrier-state"
+        )
+        if plugin_present and "marketplace-content-drift" in failure_classes:
+            observed = "drift-detected"
+        if cache_present and "cache-content-drift" in failure_classes:
+            observed = "drift-detected"
+        parity_check = _check(
+            "alphax-parity",
+            "alphax-publication",
+            "blocked",
+            observed,
+            "byte-identical generated package, marketplace, and cache",
+            False,
+            "inspect existing AlphaX carriers and restore verified parity manually",
+        )
+    return source_check, parity_check
+
+
+def _overall_status(checks: list[dict[str, Any]]) -> str:
+    required = [check for check in checks if check["id"] != "managed-mode"]
+    if any(check["status"] in {"blocked", "incompatible", "error"} for check in required):
+        return "blocked"
+    if any(check["status"] in {"missing", "manual-gate"} for check in required):
+        return "action-required"
+    return "ready"
+
+
+def doctor_setup(
+    source_root: Path,
+    *,
+    install: bool = False,
+    command_runner: Callable[[list[str]], subprocess.CompletedProcess[str]] = run_command,
+    alphax_verifier: Callable[..., dict[str, Any]] = verify_installed,
+    alphax_installer: Callable[..., dict[str, Any]] = install_plugin,
+    platform_name: str | None = None,
+    plugin_source: Path | None = None,
+    cache_root: Path | None = None,
+) -> dict[str, Any]:
+    install_requested = install is True
+    plugin_source = plugin_source or Path.home() / "plugins/alphax"
+    cache_root = cache_root or Path.home() / ".codex/plugins/cache/personal/alphax"
+    python_version = tuple(sys.version_info[:3])
+    python_ready = python_version >= (3, 10)
+    python_check = _check(
+        "python",
+        "core",
+        "pass" if python_ready else "incompatible",
+        ".".join(str(part) for part in python_version),
+        ">=3.10",
+        False,
+        None if python_ready else "install Python >=3.10",
+    )
+
+    git_probe = _run_probe(command_runner, ["git", "--version"])
+    git_version = _version_tuple(git_probe.stdout)
+    git_status = "pass" if git_probe.returncode == 0 and git_version and git_version >= (2, 41) else (
+        "missing" if git_probe.returncode != 0 else "incompatible"
+    )
+    git_check = _check(
+        "git",
+        "core",
+        git_status,
+        ".".join(str(part) for part in git_version) if git_version else None,
+        ">=2.41",
+        False,
+        None if git_status == "pass" else "install Git >=2.41",
+    )
+
+    ocr_probe = _run_probe(command_runner, ["ocr", "version"])
+    ocr_version = _ocr_cli_version(ocr_probe.stdout)
+    ocr_status = "pass" if ocr_probe.returncode == 0 and ocr_version else (
+        "missing" if ocr_probe.returncode != 0 else "incompatible"
+    )
+    if ocr_status == "pass":
+        ocr_observed = f"{ocr_version} (provenance-unverified)"
+    elif re.search(r"\bdev(?:elopment)?\b", ocr_probe.stdout, re.IGNORECASE):
+        ocr_observed = "development-build"
+    elif ocr_probe.returncode == 0:
+        ocr_observed = "identity-unverified"
+    else:
+        ocr_observed = None
+    ocr_check = _check(
+        "ocr-cli",
+        "delegation",
+        ocr_status,
+        ocr_observed,
+        OCR_PACKAGE,
+        ocr_status == "missing",
+        (
+            None
+            if ocr_status == "pass"
+            else "install " + OCR_PACKAGE
+            if ocr_status == "missing"
+            else "resolve the existing ocr executable manually"
+        ),
+    )
+
+    if ocr_status == "missing":
+        node_probe = _run_probe(command_runner, ["node", "--version"])
+        npm_probe = _run_probe(command_runner, ["npm", "--version"])
+        node_version = _version_tuple(node_probe.stdout)
+        npm_version = _version_tuple(npm_probe.stdout)
+        if node_probe.returncode != 0 or npm_probe.returncode != 0:
+            node_status = "missing"
+        elif node_version is None or node_version < (14,) or npm_version is None:
+            node_status = "incompatible"
+        else:
+            node_status = "pass"
+        node_observed = (
+            f"node-{'.'.join(str(part) for part in node_version)} npm-{'.'.join(str(part) for part in npm_version)}"
+            if node_version and npm_version
+            else None
+        )
+    else:
+        node_status = "pass"
+        node_observed = "not-required"
+    node_check = _check(
+        "node-npm",
+        "delegation",
+        node_status,
+        node_observed,
+        "Node >=14 and runnable npm when OCR CLI is missing",
+        node_status == "missing",
+        None if node_status == "pass" else "install Node >=14 with npm",
+    )
+
+    codex_check, marketplace_check, plugin_check = _probe_codex_state(command_runner)
+    source_check, parity_check = _probe_alphax_state(
+        source_root,
+        plugin_source=plugin_source,
+        cache_root=cache_root,
+        alphax_verifier=alphax_verifier,
+    )
+    managed_check = _check(
+        "managed-mode",
+        "managed",
+        "manual-gate",
+        "unapproved",
+        "explicit endpoint and target-code egress approval",
+        False,
+        "obtain managed-model approval outside doctor",
+    )
+    checks = [
+        python_check,
+        git_check,
+        codex_check,
+        node_check,
+        ocr_check,
+        marketplace_check,
+        plugin_check,
+        source_check,
+        parity_check,
+        managed_check,
+    ]
+    payload = {
+        "schema_version": DOCTOR_SCHEMA_VERSION,
+        "mode": "install" if install_requested else "doctor",
+        "overall": _overall_status(checks),
+        "checks": checks,
+        "changes": [],
+        "residual_risk": ["managed-llm-unapproved"]
+        + (["ocr-cli-provenance-unverified"] if ocr_status == "pass" else []),
+    }
+    if not install_requested:
+        return payload
+
+    install_steps = [
+        ("ocr-cli", "npm-install", ["npm", "install", "-g", OCR_PACKAGE]),
+        (
+            "ocr-marketplace",
+            "marketplace-add",
+            [
+                "codex",
+                "plugin",
+                "marketplace",
+                "add",
+                "alibaba/open-code-review",
+                "--ref",
+                "main",
+                "--json",
+            ],
+        ),
+        (
+            "ocr-plugin",
+            "plugin-install",
+            ["codex", "plugin", "add", OCR_PLUGIN_SELECTOR, "--json"],
+        ),
+    ]
+    changes: list[dict[str, Any]] = []
+    ocr_package_installed = False
+
+    def record(
+        check_id: str, command_class: str, status: str, action: str | None = None
+    ) -> None:
+        changes.append(
+            {
+                "id": check_id,
+                "command_class": command_class,
+                "status": status,
+                "action": action,
+            }
+        )
+
+    def finish() -> dict[str, Any]:
+        refreshed = doctor_setup(
+            source_root,
+            command_runner=command_runner,
+            alphax_verifier=alphax_verifier,
+            alphax_installer=alphax_installer,
+            platform_name=platform_name,
+            plugin_source=plugin_source,
+            cache_root=cache_root,
+        )
+        refreshed["mode"] = "install"
+        refreshed["changes"] = changes
+        if ocr_package_installed:
+            refreshed_cli = next(
+                check for check in refreshed["checks"] if check["id"] == "ocr-cli"
+            )
+            if refreshed_cli["status"] == "pass" and isinstance(
+                refreshed_cli["observed"], str
+            ):
+                version = refreshed_cli["observed"].split(" ", 1)[0]
+                refreshed_cli["observed"] = f"{version} (package-installed)"
+                refreshed["residual_risk"] = [
+                    risk
+                    for risk in refreshed["residual_risk"]
+                    if risk != "ocr-cli-provenance-unverified"
+                ]
+        if any(change["status"] == "failed" for change in changes):
+            refreshed["overall"] = "blocked"
+        return refreshed
+
+    check_by_id = {check["id"]: check for check in checks}
+    if any(check_by_id[check_id]["status"] != "pass" for check_id in ("python", "git")):
+        action = "repair Python and Git core prerequisites before installation"
+        for check_id, command_class, _command in install_steps:
+            record(check_id, command_class, "skipped", action)
+        record("alphax", "alphax-install", "skipped", action)
+        return finish()
+
+    if (platform_name or sys.platform).lower() not in {"darwin", "linux"}:
+        for check_id, command_class, _command in install_steps:
+            record(check_id, command_class, "skipped", "run this installation manually on a supported platform")
+        record("alphax", "alphax-install", "skipped", "install AlphaX manually on a supported platform")
+        return finish()
+
+    ocr_check = check_by_id["ocr-cli"]
+    if ocr_check["status"] == "pass":
+        record("ocr-cli", "npm-install", "already-satisfied")
+    elif ocr_check["status"] != "missing" or check_by_id["node-npm"]["status"] != "pass":
+        record("ocr-cli", "npm-install", "skipped", "repair Node/npm or OCR prerequisites first")
+        return finish()
+    else:
+        _check_id, command_class, command = install_steps[0]
+        completed = _run_probe(command_runner, command)
+        reprobe = _run_probe(command_runner, ["ocr", "version"])
+        if (
+            completed.returncode != 0
+            or reprobe.returncode != 0
+            or _ocr_cli_version(reprobe.stdout) is None
+        ):
+            record("ocr-cli", command_class, "failed", "install OCR CLI manually and retry")
+            return finish()
+        ocr_package_installed = True
+        record("ocr-cli", command_class, "applied")
+
+    marketplace_check = _probe_codex_state(command_runner)[1]
+    if marketplace_check["status"] == "pass":
+        record("ocr-marketplace", "marketplace-add", "already-satisfied")
+    elif marketplace_check["status"] != "missing":
+        record("ocr-marketplace", "marketplace-add", "skipped", marketplace_check["action"])
+        return finish()
+    else:
+        _check_id, command_class, command = install_steps[1]
+        completed = _run_probe(command_runner, command)
+        reprobe = _probe_codex_state(command_runner)[1]
+        if completed.returncode != 0 or reprobe["status"] != "pass":
+            record("ocr-marketplace", command_class, "failed", "add the approved marketplace manually and retry")
+            return finish()
+        record("ocr-marketplace", command_class, "applied")
+
+    plugin_check = _probe_codex_state(command_runner)[2]
+    if plugin_check["status"] == "pass":
+        record("ocr-plugin", "plugin-install", "already-satisfied")
+    elif plugin_check["status"] != "missing":
+        record("ocr-plugin", "plugin-install", "skipped", plugin_check["action"])
+        return finish()
+    else:
+        _check_id, command_class, command = install_steps[2]
+        completed = _run_probe(command_runner, command)
+        reprobe = _probe_codex_state(command_runner)[2]
+        if completed.returncode != 0 or reprobe["status"] != "pass":
+            record("ocr-plugin", command_class, "failed", "install the OCR plugin manually and retry")
+            return finish()
+        record("ocr-plugin", command_class, "applied")
+
+    source_check, parity_check = _probe_alphax_state(
+        source_root,
+        plugin_source=plugin_source,
+        cache_root=cache_root,
+        alphax_verifier=alphax_verifier,
+    )
+    if source_check["status"] != "pass":
+        record("alphax", "alphax-install", "skipped", source_check["action"])
+        return finish()
+    if parity_check["status"] == "pass":
+        record("alphax", "alphax-install", "already-satisfied")
+    elif parity_check["status"] != "missing":
+        record("alphax", "alphax-install", "skipped", parity_check["action"])
+        return finish()
+    else:
+        def installer_runner(
+            argv: list[str], **_kwargs: Any
+        ) -> subprocess.CompletedProcess[str]:
+            return command_runner(argv)
+
+        try:
+            alphax_installer(
+                source_root,
+                plugin_source=plugin_source,
+                cache_root=cache_root,
+                allow_candidate=False,
+                runner=installer_runner,
+            )
+        except Exception:
+            record("alphax", "alphax-install", "failed", "install AlphaX from accepted Source manually and retry")
+            return finish()
+        _source_check, reprobe = _probe_alphax_state(
+            source_root,
+            plugin_source=plugin_source,
+            cache_root=cache_root,
+            alphax_verifier=alphax_verifier,
+        )
+        if reprobe["status"] != "pass":
+            record("alphax", "alphax-install", "failed", "verify AlphaX parity and retry")
+            return finish()
+        record("alphax", "alphax-install", "applied")
+
+    return finish()
+
+
 def default_source_root() -> Path:
     return Path(__file__).resolve().parents[1]
 
@@ -546,7 +1270,60 @@ def emit(payload: dict[str, Any]) -> None:
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 
 
-def parse_args() -> argparse.Namespace:
+def render_doctor(result: dict[str, Any]) -> str:
+    lines = [f"Doctor: {result.get('overall', 'blocked')}", "", "Checks:"]
+    checks = result.get("checks", [])
+    for check in checks if isinstance(checks, list) else []:
+        if not isinstance(check, dict):
+            continue
+        lines.append(f"- {check.get('id', 'unknown')}: {check.get('status', 'unknown')}")
+        if check.get("observed") is not None:
+            lines.append(f"  observed: {check['observed']}")
+        if check.get("required") is not None:
+            lines.append(f"  required: {check['required']}")
+        if check.get("action") is not None:
+            lines.append(f"  action: {check['action']}")
+
+    lines.extend(["", "Changes:"])
+    changes = result.get("changes", [])
+    if not changes:
+        lines.append("- none")
+    else:
+        for change in changes if isinstance(changes, list) else []:
+            if not isinstance(change, dict):
+                continue
+            lines.append(f"- {change.get('id', 'unknown')}: {change.get('status', 'unknown')}")
+            if change.get("command_class") is not None:
+                lines.append(f"  command class: {change['command_class']}")
+            if change.get("action") is not None:
+                lines.append(f"  action: {change['action']}")
+
+    lines.extend(["", "Residual risks:"])
+    residual_risk = result.get("residual_risk", [])
+    if not residual_risk:
+        lines.append("- none")
+    else:
+        for risk in residual_risk if isinstance(residual_risk, list) else []:
+            lines.append(f"- {risk}")
+    return "\n".join(lines)
+
+
+def doctor_exit_code(result: dict[str, Any]) -> int:
+    changes = result.get("changes", [])
+    if isinstance(changes, list) and any(
+        isinstance(change, dict) and change.get("status") == "failed"
+        for change in changes
+    ):
+        return 1
+    overall = result.get("overall")
+    if overall == "ready":
+        return 0
+    if overall == "action-required":
+        return 2
+    return 1
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-root", type=Path, default=default_source_root())
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -593,11 +1370,20 @@ def parse_args() -> argparse.Namespace:
     invocation.add_argument("--plugin-root", type=Path, default=default_source_root())
     invocation.add_argument("--live-source-root", type=Path)
     invocation.add_argument("--accepted-ref", default=os.environ.get("ALPHAX_ACCEPTED_REF"))
-    return parser.parse_args()
+    doctor = subparsers.add_parser("doctor")
+    doctor.add_argument("--install", action="store_true")
+    doctor.add_argument("--json", action="store_true")
+    doctor.add_argument("--plugin-source", type=Path, default=Path.home() / "plugins/alphax")
+    doctor.add_argument(
+        "--cache-root",
+        type=Path,
+        default=Path.home() / ".codex/plugins/cache/personal/alphax",
+    )
+    return parser.parse_args(argv)
 
 
-def main() -> int:
-    args = parse_args()
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
     source_root = args.source_root.resolve()
     if args.command == "build":
         emit(build_plugin(source_root, args.out, allow_dirty=args.allow_dirty, accepted_ref=args.accepted_ref))
@@ -635,6 +1421,18 @@ def main() -> int:
             source_root=args.live_source_root,
             accepted_ref=args.accepted_ref,
         )
+    elif args.command == "doctor":
+        result = doctor_setup(
+            source_root,
+            install=args.install,
+            plugin_source=args.plugin_source,
+            cache_root=args.cache_root,
+        )
+        if args.json:
+            emit(result)
+        else:
+            print(render_doctor(result))
+        return doctor_exit_code(result)
     else:
         raise AssertionError(args.command)
     emit(result)

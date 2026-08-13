@@ -27,7 +27,7 @@ hard_gates:
   - package contains all Source skills plus the alphaX entry skill
   - embedded Source hash matches provenance before project work or review
   - production install requires clean accepted Source
-  - fresh invocation replay covers F01-F10 and G01-G14 with independent verdicts
+  - fresh invocation replay covers F01-F11 and G01-G14 with independent verdicts
   - every observed answer contains complete package and resolved Source identity fields
 
 evidence_boundary:
@@ -47,6 +47,55 @@ For project work and project review, `resolve-invocation` reads the embedded
 accepted Source and verifies its full tree fingerprint. For source work and
 source review, it requires `--live-source-root`; the output must identify that
 checkout as accepted or candidate.
+
+## Formal Review Adopter Quickstart
+
+From a clean accepted Source, first inspect the complete local state:
+
+```bash
+python3 scripts/alphax_plugin.py doctor
+python3 scripts/alphax_plugin.py doctor --install
+python3 scripts/alphax_plugin.py doctor --json
+```
+
+`doctor` is read-only. `doctor --install` is idempotent: it changes only a
+missing automatic dependency, re-probes after each attempted change, and reports
+the final observed state. Production AlphaX installation requires a clean
+accepted Source; never use --allow-candidate to bypass that gate.
+Python and Git must pass before the first mutation. A partial AlphaX carrier is
+blocked and requires manual inspection; automatic AlphaX installation runs only
+when both marketplace and cache carriers are absent, so it never overwrites an
+existing tree.
+Absent means that no filesystem node lexically exists at either carrier root. A
+broken symlink, file, or empty directory is an existing carrier node and remains
+blocked for manual inspection without following, deleting, or replacing it.
+
+The doctor requires Python `>=3.10`, Git `>=2.41`, and a Codex CLI that can run
+`codex plugin marketplace list --json` and `codex plugin list --json`. If that
+Codex capability is absent, doctor returns `blocked` with a manual action and
+does not self-install Codex. Node `>=14` plus runnable npm are conditional:
+they are needed only when the OCR CLI is absent. The OCR identities are
+`@alibaba-group/open-code-review`,
+`https://github.com/alibaba/open-code-review.git`, and
+`open-code-review-codex@open-code-review`. Automated installation is supported
+on macOS and Linux; on Windows, doctor remains read-only and returns upstream
+manual guidance.
+
+The OCR CLI must report an `open-code-review v...` product signature and must
+not be a development build. A runnable pre-existing carrier is usable but is
+reported as `provenance-unverified` with residual risk
+`ocr-cli-provenance-unverified`; only a successful npm install and product
+re-probe is `package-installed` for that run. An installed OCR plugin passes
+only when its exact `marketplaceSource.source` is the approved repository.
+Missing or mismatched plugin provenance is blocked and never overwritten.
+
+Exit codes are stable: `ready: 0`, `blocked: 1`, and `action-required: 2`.
+Any `failed` change forces `overall: blocked` and exit code 1 while the final
+checks and a bounded retry action remain in the report.
+Managed review remains `managed-llm-unapproved` until an explicit endpoint and
+target-code egress approval exist outside doctor. Unit tests use mocked command
+results; local Source verification proves the tracked contract, not a live
+installation, managed review, or human acceptance.
 
 ## Build And Verify
 

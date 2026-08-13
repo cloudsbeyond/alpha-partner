@@ -48,6 +48,7 @@ coding_l4_carriers:
   - CI result
   - AI Contract Index
   - fixture comparison
+  - OCR review report
   - runtime or manual acceptance artifact
 ```
 
@@ -55,16 +56,25 @@ Minimal coding L4:
 
 ```yaml
 expectation: import request preserves source, authority, and scope fields
-refs:
-  l0: [README.md#import-workflow, PRD.md#p0-scope]
-  l2: [architecture/concept-registry.yaml#import_request]
-  l3: [src/import/request.ts]
-evidence:
+prd_refs: [README.md#import-workflow, PRD.md#p0-scope]
+yaml_refs: [architecture/concept-registry.yaml#import_request]
+code_refs: [src/import/request.ts]
+validation:
   command: npm test -- import-request
   artifact: test-results/import-request.json
 result: pass
 residual_risk: manual product acceptance not yet complete
 ```
+
+Optional OCR review carrier (only when `formal_code_review_gate` applies):
+
+```yaml
+validation:
+  review: OCR review report
+```
+
+An OCR review report is review evidence, not human acceptance, merge readiness,
+or proof of defect absence.
 
 Coding traceability field names:
 

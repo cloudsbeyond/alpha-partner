@@ -4,13 +4,89 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 
 fail() { printf 'FAIL: %s\n' "$1" >&2; exit 1; }
-has() { rg -n "$1" "$ROOT/$2" >/dev/null || fail "missing pattern in $2: $1"; }
+has() { rg -n -- "$1" "$ROOT/$2" >/dev/null || fail "missing pattern in $2: $1"; }
+has_fixed() { rg -n -F -- "$1" "$ROOT/$2" >/dev/null || fail "missing fixed text in $2: $1"; }
 exists() { [ -e "$ROOT/$1" ] || fail "missing path: $1"; }
 
 source_rg() {
-  rg "$@" "$ROOT" \
+  local argument_count=$#
+  local pattern="${!argument_count}"
+  local -a rg_flags=()
+  if [ "$argument_count" -gt 1 ]; then
+    rg_flags=("${@:1:$((argument_count - 1))}")
+  fi
+  rg "${rg_flags[@]}" \
     -g '*.md' -g '*.yaml' -g '*.yml' -g '*.json' -g '*.js' -g '*.mjs' -g '*.py' -g '*.sh' -g '*.txt' \
-    --glob '!.git/**' --glob '!.alphaX/**' --glob '!scripts/verify-alpha-source.sh'
+    --glob '!.git/**' --glob '!.alphaX/**' --glob '!scripts/verify-alpha-source.sh' \
+    -- "$pattern" "$ROOT"
+}
+
+verify_doctor_installer_binding() {
+  local source_file
+  if [ "$#" -gt 0 ]; then
+    source_file="$1"
+  else
+    source_file="$ROOT/scripts/alphax_plugin.py"
+  fi
+  python3 - "$source_file" <<'PY'
+import ast
+import sys
+from pathlib import Path
+
+source_file = Path(sys.argv[1])
+tree = ast.parse(source_file.read_text(encoding="utf-8"), filename=str(source_file))
+doctor_setup = next(
+    (
+        node
+        for node in tree.body
+        if isinstance(node, ast.FunctionDef) and node.name == "doctor_setup"
+    ),
+    None,
+)
+if doctor_setup is None:
+    raise SystemExit("doctor installer binding: doctor_setup is missing")
+
+class ExecutionScopeCallFinder(ast.NodeVisitor):
+    def __init__(self):
+        self.calls = []
+
+    def visit_FunctionDef(self, node):
+        return
+
+    def visit_AsyncFunctionDef(self, node):
+        return
+
+    def visit_Lambda(self, node):
+        return
+
+    def visit_ClassDef(self, node):
+        return
+
+    def visit_Call(self, node):
+        if isinstance(node.func, ast.Name) and node.func.id == "alphax_installer":
+            self.calls.append(node)
+        self.generic_visit(node)
+
+
+finder = ExecutionScopeCallFinder()
+for statement in doctor_setup.body:
+    finder.visit(statement)
+calls = finder.calls
+if len(calls) != 1:
+    raise SystemExit(
+        f"doctor installer binding: expected one alphax_installer call, found {len(calls)}"
+    )
+
+keywords = [keyword for keyword in calls[0].keywords if keyword.arg == "allow_candidate"]
+if (
+    len(keywords) != 1
+    or not isinstance(keywords[0].value, ast.Constant)
+    or keywords[0].value.value is not False
+):
+    raise SystemExit(
+        "doctor installer binding: alphax_installer must pass allow_candidate=False"
+    )
+PY
 }
 
 absent_public() {
@@ -111,9 +187,11 @@ alphaX/source-review/agent-workflow.md	intelligence-ceiling-half-life.md
 alphaX/session-runbook.md	skill_router:
 alphaX/session-runbook.md	double_diamond_research
 alphaX/session-runbook.md	formal_development
+alphaX/session-runbook.md	formal_code_review
 alphaX/operating-system.md	source_skills:
 alphaX/operating-system.md	problem_decomposer:
 alphaX/operating-system.md	formal_development:
+alphaX/operating-system.md	formal_code_review:
 alphaX/operating-system.md	loop_verification_gate:
 alphaX/operating-system.md	independent_sensor
 alphaX/loop-registry.md	loop_quality_gate:
@@ -123,6 +201,7 @@ docs/agent-invocation-contract.md	intents:
 docs/agent-invocation-contract.md	skill_trigger_layer:
 docs/agent-invocation-contract.md	insight_catcher
 docs/agent-invocation-contract.md	formal_development
+docs/agent-invocation-contract.md	formal_code_review
 docs/agent-invocation-contract.md	scope_rules:
 docs/agent-invocation-contract.md	required_first_pass:
 docs/agent-invocation-contract.md	output_self_check:
@@ -130,12 +209,23 @@ docs/agent-invocation-contract.md	forbidden_shortcuts:
 docs/agent-invocation-contract.md	source_identity_gate:
 docs/agent-invocation-contract.md	package_source_commit
 docs/alphax-plugin-publication.md	manual_edits_to_generated_outputs: forbidden
-AGENTS.md	fresh Codex replay of every F01-F10 and G01-G14 case with independent verdicts
-docs/alphax-plugin-publication.md	fresh invocation replay covers F01-F10 and G01-G14
+scripts/alphax_plugin.py	subparsers\.add_parser\("doctor"\)
+scripts/alphax_plugin.py	doctor\.add_argument\("--install"
+scripts/alphax_plugin.py	alphax_installer\(
+docs/alphax-plugin-publication.md	python3 scripts/alphax_plugin.py doctor
+docs/alphax-plugin-publication.md	codex plugin marketplace list --json
+docs/alphax-plugin-publication.md	codex plugin list --json
+docs/alphax-plugin-publication.md	@alibaba-group/open-code-review
+docs/alphax-plugin-publication.md	https://github.com/alibaba/open-code-review.git
+docs/alphax-plugin-publication.md	open-code-review-codex@open-code-review
+docs/alphax-plugin-publication.md	managed-llm-unapproved
+docs/alphax-plugin-publication.md	never use --allow-candidate
+AGENTS.md	fresh Codex replay of every F01-F11 and G01-G14 case with independent verdicts
+docs/alphax-plugin-publication.md	fresh invocation replay covers F01-F11 and G01-G14
 plugin/skills/alphax/SKILL.md	resolve-invocation
 plugin/skills/alphax/SKILL.md	package_source_commit
-docs/agent-trigger-fixtures.md	F10-loop-verification-gate
-docs/agent-trigger-fixtures.json	F10-loop-verification-gate
+docs/agent-trigger-fixtures.md	F11-formal-code-review
+docs/agent-trigger-fixtures.json	F11-formal-code-review
 templates/project-work/local-pointer.md	default: target .git/info/exclude
 templates/project-work/local-pointer.md	target_tracked_tree:
 templates/project-work/local-pointer.md	edit_versioned_AGENTS_md: false
@@ -273,6 +363,17 @@ scripts/verify-local-alphaX.sh	expected_judgment
 scripts/init-local-alphaX.sh	private-patterns.txt
 scripts/init-local-alphaX.sh	source checkout
 EOF
+
+while IFS=$'\t' read -r file text; do
+  has_fixed "$text" "$file"
+done <<'EOF'
+scripts/alphax_plugin.py	OCR_PACKAGE = "@alibaba-group/open-code-review"
+scripts/alphax_plugin.py	OCR_MARKETPLACE_REPOSITORY = "https://github.com/alibaba/open-code-review.git"
+scripts/alphax_plugin.py	OCR_PLUGIN_SELECTOR = "open-code-review-codex@open-code-review"
+scripts/alphax_plugin.py	allow_candidate=False
+EOF
+
+verify_doctor_installer_binding
 
 [ ! -e "$ROOT/partner" ] || fail "public source contains legacy local-asset directory: partner"
 [ ! -e "$ROOT/context-reloader" ] || fail "public source contains legacy local-asset directory: context-reloader"

@@ -88,6 +88,15 @@ fixtures:
     must_output: [loop goal, authority boundary, independent sensor, feedback-to-next-action path, cost or stop boundary, manual-or-upgrade call]
     forbidden: [treating repeated activity as improvement, scheduling without approval, hidden authority upgrade]
 
+  F11-formal-code-review:
+    trigger: "用形式化研发的双模式代码审查检查这个分支"
+    expected_intent: formal_code_review
+    scope: project work unless completion judgment is explicitly requested
+    loop: Project loop plus Formal Code Review
+    must_read: [skills/formal-development/SKILL.md, skills/formal-code-review/SKILL.md, target AGENTS.md, current project source, contracts, and diff]
+    must_output: [delegation mode by default or explicit managed mode, review target and coverage, verified findings, L0-L3 routing, validation evidence, residual risk]
+    forbidden: [silent mode fallback, review output rewriting L0-L2, automatic external write, wiki-derived project decision]
+
 pass_criteria:
   - expected intent/scope named or implied
   - required source read or missing evidence stated

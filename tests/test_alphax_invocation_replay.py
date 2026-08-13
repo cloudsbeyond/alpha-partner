@@ -18,7 +18,7 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
     def test_loads_all_trigger_and_judgment_cases(self) -> None:
         cases = replay.load_cases(ROOT)
 
-        self.assertEqual(len(cases), 24)
+        self.assertEqual(len(cases), 25)
         self.assertEqual({case["id"] for case in cases if case["kind"] == "trigger"}, {f"F{i:02d}" + suffix for i, suffix in [
             (1, "-risk-current-project"),
             (2, "-progress-reentry"),
@@ -30,6 +30,7 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
             (8, "-engage"),
             (9, "-double-diamond-research"),
             (10, "-loop-verification-gate"),
+            (11, "-formal-code-review"),
         ]})
         judgment_ids = {case["id"] for case in cases if case["kind"] == "judgment"}
         self.assertIn("G11-project-delivery-loop-before-execution", judgment_ids)

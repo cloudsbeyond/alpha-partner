@@ -116,7 +116,12 @@ source_skills:
     strengthens: [project, project_review, source_work, source_review, spec_checkpoint]
     use_when: formal-development work needs project initialization, later iteration, existing-project formalization, conformance review, product narrative consolidation, fixed PRD.md projection, architecture narrative separation, formal contract alignment, Project Traceability, or spec/SDD residue cleanup
     expected_effect: route work by phase, keep L0 product intent, L1/L2 architecture/contracts, and L3/L4 implementation evidence separated and verifiable, and support report-first conformance review
-  composition_rule: if multiple skills match, use Problem Decomposer for problem level first, Formal Development for L0-L4 delivery structure, then 双菱形思考法 for research and solution convergence when needed
+  formal_code_review:
+    source: skills/formal-code-review/SKILL.md
+    strengthens: [project, project_review]
+    use_when: code-review requests inside formal-development work need L3/L4-only bounded review coverage
+    expected_effect: select explicit mode, state target coverage, verify findings, route findings to their L0-L3 owner, and retain validation evidence and residual risk
+  composition_rule: if multiple skills match, use Problem Decomposer for problem level first, Formal Development for L0-L4 delivery structure, then 双菱形思考法 for research and solution convergence when needed; for formal-development code review, compose formal_development -> formal_code_review -> project validation -> optional PR/CI handling -> closeout, keeping OCR optional unless the user or project gate requests it
 
 agent_intake_rule:
   principle: between agents there is no shared runtime and no mutual presence; only file trace
