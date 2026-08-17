@@ -105,16 +105,18 @@
         "alphaX/source-review/agent-workflow.md",
         "alphaX/loop-registry.md",
         "relevant source files",
-        "verifier output"
+        "current verifier output or an exact saved verifier result when available"
       ],
       "must_output": [
         "mechanism risks",
         "evidence",
         "cheapest falsification",
-        "source-work candidates"
+        "source-work candidates",
+        "verifier evidence status: current, historical, or missing"
       ],
       "forbidden": [
-        "tracked source edits"
+        "tracked source edits",
+        "verifier execution, failure, or blocked claim without a completed tool event"
       ]
     },
     {

@@ -64,13 +64,27 @@ def load_cases(source_root: Path) -> list[dict[str, Any]]:
     ]
 
 
-def build_run_prompt(case: dict[str, Any]) -> str:
+def build_run_prompt(
+    case: dict[str, Any],
+    *,
+    source_root: Path | None = None,
+    verifier_evidence: dict[str, Any] | None = None,
+) -> str:
+    source_scope = infer_resolved_scope(case) in {"source-work", "source-review"}
     if case["kind"] == "trigger":
         user_input = case["trigger"]
-        context = (
-            "Work from this fixture repository. Inspect live files and Git before answering. "
-            "Do not modify files unless the natural request explicitly authorizes project work."
-        )
+        if source_scope:
+            context = (
+                "Work only from the supplied live Alpha Partner Source root. Inspect its live "
+                "files and Git before answering. Do not inspect the fixture repository or an "
+                "external project. Do not modify files unless the natural request explicitly "
+                "authorizes source work."
+            )
+        else:
+            context = (
+                "Work from this fixture repository. Inspect live files and Git before answering. "
+                "Do not modify files unless the natural request explicitly authorizes project work."
+            )
     else:
         evidence = "\n".join(f"- {item}" for item in case.get("evidence_inputs", []))
         user_input = (
@@ -78,9 +92,31 @@ def build_run_prompt(case: dict[str, Any]) -> str:
             f"Decision point observed while handling that request:\n{case['scenario']}"
         )
         context = f"The currently observed evidence is:\n{evidence}"
+    source_hint = ""
+    if source_root is not None and source_scope:
+        source_hint = f"""
+For this source-scope replay, pass the exact live Source root
+`{source_root}` as `--live-source-root`. Use that literal even if the ambient
+ALPHAX_SOURCE_ROOT differs; do not substitute another checkout.
+"""
+        if verifier_evidence:
+            source_hint += f"""
+The harness saved this historical verifier evidence before the replay. You may
+cite it as historical evidence, but do not describe it as a command you executed.
+Command: {verifier_evidence['command']}
+Exit code: {verifier_evidence['exit_code']}
+Output:
+{verifier_evidence['aggregated_output']}
+"""
+        else:
+            source_hint += """
+No verifier result is supplied. Report verifier evidence as missing and do not
+claim that a verifier command ran, failed, or was blocked.
+"""
     return f"""{user_input}
 
 {context}
+{source_hint}
 
 Respond to the request naturally. Do not assume fixture pass criteria. Include a compact
 `alphaX_source_identity` block with scope, package_version, package_source_commit,
@@ -95,6 +131,7 @@ def build_evaluator_prompt(
     observed_output: str,
     event_evidence: list[dict[str, Any]] | None = None,
     expected_identity: dict[str, Any] | None = None,
+    harness_evidence: dict[str, Any] | None = None,
 ) -> str:
     requirements = {
         "expected_intent": case.get("expected_intent"),
@@ -122,6 +159,9 @@ Observed response:
 
 Observed completed tool events:
 {json.dumps(event_evidence or [], ensure_ascii=False, indent=2)}
+
+Harness-saved evidence:
+{json.dumps(harness_evidence or {}, ensure_ascii=False, indent=2)}
 
 An empty expected_judgment list means no additional judgment is required. Do not penalize
 evidence-supported additional output unless it conflicts with the contract or is forbidden.
@@ -305,6 +345,14 @@ def isolated_marketplace_config(
     ]
 
 
+def live_source_config(source_root: Path) -> list[str]:
+    return [
+        "-c",
+        "shell_environment_policy.set.ALPHAX_SOURCE_ROOT="
+        + json.dumps(str(source_root)),
+    ]
+
+
 def discover_installed_plugin(
     *, codex: str, selector: str, cache_base: Path, timeout: int
 ) -> dict[str, Any]:
@@ -443,6 +491,14 @@ def infer_resolved_scope(case: dict[str, Any]) -> str:
     return "project-work"
 
 
+def case_working_directory(
+    case: dict[str, Any], *, source_root: Path, project_root: Path
+) -> Path:
+    if infer_resolved_scope(case) in {"source-work", "source-review"}:
+        return source_root
+    return project_root
+
+
 def source_identity_stable(before: dict[str, Any], after: dict[str, Any]) -> bool:
     fields = (
         "source_root",
@@ -471,24 +527,38 @@ def run_case(
     candidate_config: list[str],
     expected_identity: dict[str, Any],
     reasoning_effort: str,
+    sandbox: str,
     timeout: int,
+    verifier_evidence: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     case_dir = out_dir / "raw" / case["id"]
     case_dir.mkdir(parents=True, exist_ok=True)
     clear_case_outputs(case_dir)
     output_path = case_dir / "response.md"
     events_path = case_dir / "run-events.jsonl"
-    prompt = build_run_prompt(case)
+    source_scope = infer_resolved_scope(case) in {"source-work", "source-review"}
+    prompt = build_run_prompt(
+        case,
+        source_root=source_root,
+        verifier_evidence=verifier_evidence if source_scope else None,
+    )
     command = [
         codex,
         "exec",
         *candidate_config,
+        *live_source_config(source_root),
         "--ephemeral",
         "--json",
         "--sandbox",
-        "read-only",
+        sandbox,
         "--cd",
-        str(project_root),
+        str(
+            case_working_directory(
+                case,
+                source_root=source_root,
+                project_root=project_root,
+            )
+        ),
         "--output-last-message",
         str(output_path),
     ]
@@ -508,6 +578,7 @@ def run_case(
         output,
         event_evidence,
         expected_identity=expected_identity,
+        harness_evidence=verifier_evidence if source_scope else None,
     )
     evaluator_command = [
         codex,
@@ -554,6 +625,7 @@ def run_case(
         "run_stderr": run.stderr[-4000:],
         "run_events": str(events_path),
         "event_evidence": event_evidence,
+        "harness_evidence": verifier_evidence if source_scope else None,
         "evaluator_command": evaluator_command,
         "evaluator_exit_code": evaluator.returncode,
         "evaluator_stderr": evaluator.stderr[-4000:],
@@ -591,6 +663,15 @@ def parse_args() -> argparse.Namespace:
         default="medium",
     )
     parser.add_argument("--timeout", type=int, default=600)
+    parser.add_argument(
+        "--sandbox",
+        choices=["read-only", "workspace-write"],
+        default="read-only",
+        help=(
+            "Codex sandbox for replay invocations. Keep the read-only default; use "
+            "workspace-write only when the host cannot start read-only source inspection."
+        ),
+    )
     parser.add_argument("--project-root", type=Path)
     return parser.parse_args()
 
@@ -632,6 +713,26 @@ def main() -> int:
         if not args.project_root:
             prepare_fixture_project(project_root)
         source_identity_before = alphax_plugin.source_identity(source_root)
+        source_verifier_evidence: dict[str, Any] | None = None
+        if any(
+            infer_resolved_scope(case) in {"source-work", "source-review"}
+            for case in cases
+        ):
+            verifier = run_command(
+                ["bash", str(source_root / "scripts/verify-alpha-source.sh")],
+                env=os.environ.copy(),
+                timeout=args.timeout,
+            )
+            source_verifier_evidence = {
+                "type": "saved_verifier_result",
+                "status": "historical",
+                "source": "replay preflight before source-scope cases",
+                "command": "bash scripts/verify-alpha-source.sh",
+                "exit_code": verifier.returncode,
+                "aggregated_output": compact_command_output(
+                    (verifier.stdout + verifier.stderr).strip()
+                ),
+            }
         expected_identities = {}
         for case in cases:
             resolved_scope = infer_resolved_scope(case)
@@ -660,7 +761,9 @@ def main() -> int:
                     candidate_config=isolated_plugin["config"],
                     expected_identity=expected_identities[case["id"]],
                     reasoning_effort=args.reasoning_effort,
+                    sandbox=args.sandbox,
                     timeout=args.timeout,
+                    verifier_evidence=source_verifier_evidence,
                 )
                 for case in cases
             ]
@@ -687,6 +790,8 @@ def main() -> int:
         "provenance": plugin_provenance,
     }
     summary["reasoning_effort"] = args.reasoning_effort
+    if source_verifier_evidence is not None:
+        summary["source_verifier_preflight"] = source_verifier_evidence
     (out_dir / "summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

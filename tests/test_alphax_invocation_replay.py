@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import inspect
 import subprocess
 import sys
 import tempfile
@@ -126,6 +127,53 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
         self.assertIn("package_source_authority", prompt)
         self.assertNotIn("You must pass", prompt)
         self.assertNotIn("expected_intent", prompt)
+
+    def test_source_scope_replay_uses_live_source_context_and_directory(self) -> None:
+        self.assertIn("source_root", inspect.signature(replay.build_run_prompt).parameters)
+        self.assertIn("verifier_evidence", inspect.signature(replay.build_run_prompt).parameters)
+        self.assertTrue(hasattr(replay, "case_working_directory"))
+        case = {
+            "id": "F05-source-self-critique",
+            "kind": "trigger",
+            "trigger": "alphaX self-critique",
+            "expected_intent": "source_review",
+            "scope": "source review",
+        }
+
+        prompt = replay.build_run_prompt(
+            case,
+            source_root=Path("/candidate/source"),
+            verifier_evidence={
+                "status": "historical",
+                "command": "bash scripts/verify-alpha-source.sh",
+                "exit_code": 0,
+                "aggregated_output": "Alpha Partner source verification passed",
+            },
+        )
+
+        self.assertIn("/candidate/source", prompt)
+        self.assertIn("--live-source-root", prompt)
+        self.assertIn("ALPHAX_SOURCE_ROOT differs", prompt)
+        self.assertIn("Work only from the supplied live Alpha Partner Source root.", prompt)
+        self.assertNotIn("Work from this fixture repository.", prompt)
+        self.assertIn("historical verifier evidence", prompt)
+        self.assertIn("do not describe it as a command you executed", prompt)
+        self.assertEqual(
+            replay.case_working_directory(
+                case,
+                source_root=Path("/candidate/source"),
+                project_root=Path("/fixture/project"),
+            ),
+            Path("/candidate/source"),
+        )
+        self.assertEqual(
+            replay.case_working_directory(
+                {"expected_intent": "risk_review", "scope": "project work"},
+                source_root=Path("/candidate/source"),
+                project_root=Path("/fixture/project"),
+            ),
+            Path("/fixture/project"),
+        )
 
     def test_evaluator_prompt_contains_fixture_and_observed_output(self) -> None:
         case = {
@@ -292,6 +340,36 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
         self.assertIn('plugins."alphax@personal".enabled=true', text)
         self.assertIn('model_reasoning_effort="medium"', text)
         self.assertNotIn("html-anything", text)
+
+    def test_live_source_config_overrides_stale_parent_environment(self) -> None:
+        self.assertTrue(hasattr(replay, "live_source_config"))
+
+        args = replay.live_source_config(Path("/candidate/source"))
+
+        self.assertEqual(
+            args,
+            [
+                "-c",
+                'shell_environment_policy.set.ALPHAX_SOURCE_ROOT="/candidate/source"',
+            ],
+        )
+
+    def test_replay_cli_keeps_read_only_default_and_accepts_workspace_write_override(self) -> None:
+        original_argv = sys.argv
+        try:
+            sys.argv = ["alphax_invocation_replay.py", "--out-dir", "/tmp/replay"]
+            self.assertEqual(replay.parse_args().sandbox, "read-only")
+
+            sys.argv = [
+                "alphax_invocation_replay.py",
+                "--out-dir",
+                "/tmp/replay",
+                "--sandbox",
+                "workspace-write",
+            ]
+            self.assertEqual(replay.parse_args().sandbox, "workspace-write")
+        finally:
+            sys.argv = original_argv
 
     def test_identity_gate_requires_package_and_resolved_source_fields(self) -> None:
         complete = """
