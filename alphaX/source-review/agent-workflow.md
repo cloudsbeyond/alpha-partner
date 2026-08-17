@@ -37,8 +37,17 @@ read:
 run:
   - bash scripts/verify-alpha-source.sh
 
+verifier_evidence:
+  required_output:
+    status: current | historical | missing
+    evidence: completed tool event, exact saved-result reference, or none
+    result: observed result for current or historical; not_observed for missing
+  current: use only when the completed verifier tool event is present
+  historical: use only when an exact saved verifier result was actually read; label its date or source
+  missing: use when neither current nor historical evidence exists; do not claim that the verifier ran, failed, or was blocked
+
 output:
-  - verifier result
+  - verifier evidence with status, evidence, and result
   - source/mechanism risks with evidence and confidence
   - layer call when a mechanism mixes durable principle, cognitive framework, operational scaffold, or implementation carrier
   - intelligence-ceiling and half-life impact when relevant

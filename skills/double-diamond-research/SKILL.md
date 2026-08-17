@@ -258,6 +258,12 @@ Use this final deliverable structure when the user needs a decision-ready answer
 
 ## Default Output
 
+When the caller requests `alphaX_source_identity`, copy every value from the
+alphaX resolver. Keep `scope` as exactly one of `source-work`, `source-review`,
+`project-work`, or `project-review`; never append `double-diamond-research`.
+`source_branch` and `source_ref` identify Alpha Partner Source, not the target
+project Git branch, and must not be inferred or normalized.
+
 Use this compact output unless the user asks for a full report:
 
 ```text
