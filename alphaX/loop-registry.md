@@ -69,7 +69,7 @@ loops:
     trigger: alphaX self-critique
     purpose: find internally consistent but unverified alphaX claims
     allowed_signals: [contract claim without evidence, process claim without evidence, value claim without cross-day test, meta-only ledger, unused rules]
-    output: suspect claim, why unverified, cheapest confirm/falsify evidence
+    output: suspect claim, why unverified, and the Source Review claim-to-test-to-call mapping
     writes: none unless user switches to source work
 
 upgrade_gate:

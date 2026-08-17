@@ -90,7 +90,7 @@ intents:
     default_scope: source review
     loop: Source review or self-critique
     first_read: [alphaX/source-review/agent-workflow.md, alphaX/loop-registry.md Loop 7]
-    minimum_output: [source risks, evidence, source-work candidates]
+    minimum_output: [source risks, evidence, claim-specific cheapest confirm/falsify test with result-dependent decision update, source-work candidates]
 
   manual_loop:
     triggers: ["alphaX nudge check", "alphaX PR CI watch", "alphaX research intake", "alphaX 设计一个自迭代 loop"]

@@ -49,6 +49,7 @@ verifier_evidence:
 output:
   - verifier evidence with status, evidence, and result
   - source/mechanism risks with evidence and confidence
+  - for each material mechanism risk: the claim-specific cheapest confirm/falsify test and the keep, narrow, park, or escalate call made by each result; a generic replay or evidence-gap request without this mapping is insufficient
   - layer call when a mechanism mixes durable principle, cognitive framework, operational scaffold, or implementation carrier
   - intelligence-ceiling and half-life impact when relevant
   - proof boundary when a claimed improvement is supported only by docs or passing checks

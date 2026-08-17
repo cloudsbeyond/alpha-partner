@@ -110,7 +110,7 @@
       "must_output": [
         "mechanism risks",
         "evidence",
-        "cheapest falsification",
+        "claim-specific cheapest confirm/falsify test and result-dependent decision update",
         "source-work candidates",
         "verifier evidence status: current, historical, or missing"
       ],

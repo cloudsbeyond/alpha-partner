@@ -56,7 +56,7 @@ fixtures:
   F05-source-self-critique:
     expected_intent: source_review
     must_read: [alphaX/source-review/agent-workflow.md, alphaX/loop-registry.md, relevant source files, current verifier output or an exact saved verifier result when available]
-    must_output: [mechanism risks, evidence, cheapest falsification, source-work candidates, verifier evidence status as current or historical or missing]
+    must_output: [mechanism risks, evidence, claim-specific cheapest confirm/falsify test and result-dependent decision update, source-work candidates, verifier evidence status as current or historical or missing]
     forbidden: [tracked source edits, verifier execution or failure or blocked claim without a completed tool event]
 
   F06-source-drift:

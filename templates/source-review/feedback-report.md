@@ -32,6 +32,14 @@ unused_mechanisms:
 candidate_source_iteration: "<small source change or none>"
 evidence_pointers: []
 
+source_self_critique:
+  required_when: review_scope is source_review and a material mechanism risk is reported
+  material_claims:
+    - claim: "<specific mechanism claim>"
+      cheapest_confirm_or_falsify_test: "<smallest test that can change this claim>"
+      if_confirmed: "<keep|narrow|park|escalate call>"
+      if_falsified: "<keep|narrow|park|escalate call>"
+
 boundary_checks:
   target_project_facts_copied: "<no|explain>"
   secrets_or_private_paths: "<none|explain>"
