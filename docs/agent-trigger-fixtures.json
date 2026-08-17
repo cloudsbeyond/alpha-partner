@@ -175,7 +175,7 @@
       ],
       "must_output": [
         "P0",
-        "source of truth",
+        "explicit project source-of-truth statement",
         "loop",
         "next action"
       ],

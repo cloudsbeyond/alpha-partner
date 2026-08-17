@@ -34,7 +34,11 @@ intents:
     default_scope: infer from target
     loop: Project loop
     first_read: [AGENTS.md, alphaX/session-runbook.md, target instructions]
-    minimum_output: [P0, source of truth, loop, next action]
+    minimum_output: [P0, explicit project source-of-truth statement, loop, next action]
+    source_of_truth_output:
+      label: "Project source of truth"
+      rule: explicitly name the live project artifact or command evidence that governs the P0 and current state; name the evidence as missing when the first pass cannot resolve it
+      precedence: live project source and direct command evidence override target .alphaX/, memory, handoff, and partner defaults
 
   context_progress:
     triggers: ["alphaX 现在项目进展到哪儿了", "restore this project context", "项目现在怎么样"]
@@ -158,7 +162,7 @@ required_first_pass:
 output_self_check:
   - intent and scope named or clearly implied
   - write boundary respected
-  - source of truth read or missing evidence stated
+  - engage output explicitly labels the Project source of truth, or states that first-pass evidence is missing
   - material claims have evidence strength and freshness
   - cited target-file claims have an explicit successful content read; discovery or listing alone is missing evidence
   - weak/stale claims listed under unverified_claims

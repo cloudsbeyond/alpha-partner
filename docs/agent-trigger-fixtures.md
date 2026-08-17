@@ -71,6 +71,7 @@ fixtures:
   F08-engage:
     expected_intent: engage
     must_read: [AGENTS.md, alphaX/session-runbook.md, target instructions, skill router check]
+    must_output: [P0, explicit project source-of-truth statement, Project loop, next action]
     forbidden: [asking user to restate context before first source pass]
 
   F09-double-diamond-research:

@@ -36,7 +36,7 @@ agent_responsibility:
     - inferred project/conversation surface
     - inferred P0
     - primary loop
-    - source of truth found
+    - "Project source of truth: explicit live artifact or command evidence; state missing when unresolved"
     - missing evidence
     - next concrete move
   ask_user_only_when: first pass cannot resolve target, boundary, or source of truth

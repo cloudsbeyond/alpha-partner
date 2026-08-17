@@ -79,6 +79,19 @@ class AlphaXInvocationReplayTest(unittest.TestCase):
             "project-work",
         )
 
+    def test_engage_requires_an_explicit_project_source_of_truth_statement(self) -> None:
+        cases = {case["id"]: case for case in replay.load_cases(ROOT)}
+
+        self.assertEqual(
+            cases["F08-engage"]["must_output"],
+            [
+                "P0",
+                "explicit project source-of-truth statement",
+                "loop",
+                "next action",
+            ],
+        )
+
     def test_thread_objective_cases_include_negative_and_positive_boundaries(self) -> None:
         cases = {case["id"]: case for case in replay.load_cases(ROOT)}
 
